@@ -1,6 +1,7 @@
 import { asc, eq } from "drizzle-orm";
 import { db } from "./db";
 import { acts, categories, categoriesInGroup, countries, groups, groupsRelations, userInGroups, users, usersRelations } from "./schema";
+import { createInsertSchema } from "drizzle-zod";
 
 // Returns one act selected by id
 export function getAct(id: string) {
@@ -58,6 +59,9 @@ export function getGroup(groupID: string) {
   return db.select().from(groups).where(eq(groups.id, groupID)).limit(1)
 }
 
-export function joinGroup(groupID: string, userID: string) {
-  return db.insert(userInGroups).values({ groupId: groupID, userId: userID }).onConflictDoNothing().execute()
+export const JoinGroupSchema = createInsertSchema(userInGroups)
+export type JoinGroup = typeof userInGroups.$inferInsert
+export function joinGroup(join: JoinGroup) {
+  JoinGroupSchema.parse(join)
+  return db.insert(userInGroups).values({ groupId: join.groupId, userId: join.userId }).onConflictDoNothing().execute()
 }

@@ -20,7 +20,7 @@ export const actions = {
 
     data.forEach(async (_, key) => {
       if (key != 'name' && key != 'description') {
-        console.log(await addCategorieToGroup(key.toString(), group[0].id))
+        await addCategorieToGroup(key.toString(), group[0].id)
       }
     })
 

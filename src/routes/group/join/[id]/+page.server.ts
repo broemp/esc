@@ -1,8 +1,4 @@
-import { db } from '$lib/server/db/db';
-import { getGroup, joinGroup, type GroupInfo } from '$lib/server/db/querys';
-import { userInGroups } from '$lib/server/db/schema';
-import { redirect } from '@sveltejs/kit';
-import type { Actions } from '../../[id]/$types';
+import { getGroup, type GroupInfo } from '$lib/server/db/querys';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }: any) => {
@@ -10,17 +6,6 @@ export const load: PageServerLoad = async ({ params }: any) => {
 
   return {
     slug: params.id,
-    group: group
-  }
-}
-
-export const actions: Actions = {
-  default: async (event) => {
-    const user = await event.locals.auth()
-    const userID = user?.user?.id
-    if (!user) {
-      return redirect(303, "/")
-    }
-    joinGroup(event.params.id, userID!)
+    group: group[0]
   }
 }
