@@ -1,18 +1,31 @@
 import { asc, eq } from "drizzle-orm";
 import { db } from "./db";
-import { acts, categories, categoriesInGroup, countries, groups, groupsRelations, userInGroups, users, usersRelations } from "./schema";
+import { acts, categories, categoriesInGroup, countries, groups, userInGroups, users } from "./schema";
 import { createInsertSchema } from "drizzle-zod";
 
+
+const insertActSchema = createInsertSchema(acts)
 // Returns one act selected by id
+export type Act = Awaited<ReturnType<typeof getAct>>
 export function getAct(id: string) {
   return db.select().from(acts).where(eq(acts.id, id))
     .leftJoin(countries, eq(acts.countryID, countries.id))
     .limit(1)
 }
 
-export type Act = Awaited<ReturnType<typeof getAct>>
+export type UpdateAct = typeof acts.$inferSelect
+export function updateAct(act: UpdateAct) {
+  console.log(act)
+  try {
+    insertActSchema.parse(act)
+  } catch (e) {
+    console.log(e)
+    return { error: true, message: e }
+  }
+  return db.update(acts).set(act).where(eq(acts.id, act.id)).returning().execute()
+}
 
-// List Acts with number and offset orderd by position
+export type ActList = Awaited<ReturnType<typeof listActs>>
 export function listActs(limit: number, offset: number) {
   return db.select().from(acts).
     innerJoin(countries, eq(acts.countryID, countries.id))
@@ -21,7 +34,15 @@ export function listActs(limit: number, offset: number) {
     .orderBy(asc(acts.position))
 }
 
-export type ActList = Awaited<ReturnType<typeof listActs>>
+export type CountryList = Awaited<ReturnType<typeof listCountries>>
+export function listCountries(limit: number, offset: number) {
+  return db.select().from(countries).limit(limit).offset(offset)
+}
+
+export type NewAct = typeof acts.$inferInsert
+export function createAct(newAct: NewAct) {
+  return db.insert(acts).values(newAct).onConflictDoNothing()
+}
 
 export type NewCategory = typeof categories.$inferInsert
 export function newCategor(category: NewCategory) {
@@ -64,4 +85,11 @@ export type JoinGroup = typeof userInGroups.$inferInsert
 export function joinGroup(join: JoinGroup) {
   JoinGroupSchema.parse(join)
   return db.insert(userInGroups).values({ groupId: join.groupId, userId: join.userId }).onConflictDoNothing().execute()
+}
+
+export type CreateCountry = typeof countries.$inferInsert
+export function createCountry(country: CreateCountry) {
+  return db.insert(countries)
+    .values(country)
+    .onConflictDoNothing()
 }

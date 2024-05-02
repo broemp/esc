@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
+	import { page } from '$app/stores';
+
+	const callbackUrl = $page.url.searchParams.get('callbackUrl');
 
 	const handleSignIn = (provider: string) => {
-		signIn(provider, { callbackUrl: '/' });
+		signIn(provider, { callbackUrl: callbackUrl ? callbackUrl : '/' });
 	};
 </script>
 

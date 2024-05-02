@@ -1,19 +1,31 @@
 <script lang="ts">
 	import { Table } from '@skeletonlabs/skeleton';
 	import type { TableSource } from '@skeletonlabs/skeleton';
-	import ActList from '$lib/components/admin/ActList.svelte';
+	import type { ActList } from '$lib/server/db/querys';
 
-	export let acts: any | null;
+	export let acts: ActList | null;
+	type ActListElement = ActList[0];
 	export let selectedAct: string;
 
-	function tableMapper(data: ActList) {
-		return data.map((item: any) => {
-			return [item.act.position || 'TBD', item.country.name, item.act.artist, item.act.title];
+	function tableMapper(data: ActList | null) {
+		if (data == null) {
+			return [[], []];
+		}
+		return data!.map((item: ActListElement) => {
+			return [
+				String(item.act.position) || 'TBD',
+				item.country.name,
+				item.act.artist,
+				item.act.title
+			];
 		});
 	}
 
-	function tableMapperMeta(data: ActList) {
-		return data.map((item: any) => {
+	function tableMapperMeta(data: ActList | null) {
+		if (data == null) {
+			return [[], []];
+		}
+		return data!.map((item: ActListElement) => {
 			let act = item.act;
 			return [act.id];
 		});
@@ -30,7 +42,7 @@
 	};
 </script>
 
-<div class="w-full h-full p-2">
+<div class="w-full h-full">
 	{#if !acts}
 		<div class="text-xl content-center">EMPTY</div>
 	{:else}

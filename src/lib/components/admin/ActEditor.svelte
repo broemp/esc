@@ -1,6 +1,12 @@
 <script lang="ts">
 	import axios from 'axios';
+	import CountryAutocomplete from './CountryAutocomplete.svelte';
+	import type { CountryList } from '$lib/server/db/querys';
+	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { enhance } from '$app/forms';
 
+	const toastStore = getToastStore();
+	export let countries: CountryList;
 	export let actID: string;
 	let act: any;
 	let country: any;
@@ -14,26 +20,32 @@
 				act = response.data[0].act;
 				country = response.data[0].country;
 			})
-			.catch(function (error) {});
-	}
-
-	function updateAct() {
-		console.log(act.title);
+			.catch(function (error) {
+				const t: ToastSettings = {
+					message: 'OOPS! Something went wrong 😕',
+					background: 'variant-filled-error'
+				};
+				toastStore.trigger(t);
+			});
 	}
 </script>
 
 <div class="w-full h-full">
 	<div class="card text-xl p-4">
 		{#if act}
-			<form on:submit|preventDefault={updateAct}>
-				<div class="grid grid-cols-5 space-x-2">
+			<form method="POST">
+				<div class="grid grid-cols-5 space-x-2 space-y-2">
+					<label class="label col-span-full">
+						Act ID
+						<input class="input" type="text " name="act_id" bind:value={act.id} readonly /></label
+					>
 					<label class="label col-span-4">
 						<span>Artist</span>
 						<input class="input" name="artist" type="text" bind:value={act.artist} />
 					</label>
 					<label class="label col-span-1">
 						<span>Year</span>
-						<select class="select" bind:value={act.year}>
+						<select class="select" bind:value={act.year} name="year">
 							<option value={null}>NULL</option>
 							{#each years as year}
 								<option value={year}>{year}</option>
@@ -51,6 +63,8 @@
 						<input class="input" type="number" name="position" bind:value={act.position} />
 					</label>
 				</div>
+				<CountryAutocomplete {countries} countryID={country.id} countryName={country.name}
+				></CountryAutocomplete>
 				<label class="label">
 					<span>Endpoints</span>
 					<input class="input" type="number" name="endpoints" bind:value={act.endpoints} />

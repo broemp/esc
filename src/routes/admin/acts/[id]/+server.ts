@@ -9,10 +9,3 @@ export async function GET(event: RequestEvent) {
   const act = await getAct(id)
   return json(act)
 }
-
-export async function POST(event: RequestEvent) {
-  const { params } = event
-  const { id } = params
-  const act = await getAct(id)
-  return json(act)
-}

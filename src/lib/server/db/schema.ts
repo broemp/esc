@@ -122,7 +122,8 @@ export const acts = pgTable("act", {
   artist: text("artist").notNull(),
   title: text("title").notNull(),
   year: smallint("year").notNull(),
-  position: integer("position").unique(),
+  picture_url: text("picture_url"),
+  position: integer("position"),
   endpoints: integer("endpoints"),
   eliminated: boolean("eliminated").default(false)
 })
@@ -131,7 +132,8 @@ export const countries = pgTable("country", {
   id: uuid("id").notNull().primaryKey()
     .defaultRandom(),
   name: text("name").notNull(),
-  code: varchar("code", { length: 2 }).notNull()
+  code: varchar("code", { length: 4 }).notNull(),
+  imageURL: text("imageURL"),
 })
 
 export const drinks = pgTable("drink", {
