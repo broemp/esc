@@ -3,9 +3,9 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 import { env } from '$env/dynamic/private';
 
-let ssl = false
-if (env.DB_SSL) {
-  ssl = env.DB_SSL.toLowerCase() == "true"
+let ssl: 'require' | 'allow' | 'prefer' | 'verify-full' | boolean | object = false
+if (env.DB_SSL && env.DB_SSL.toLowerCase() == "true") {
+  ssl = 'require'
 }
 
 const dbOptions: postgres.Options<any> = {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	//export let data: PageServerData;
 
 	let elemCarousel: HTMLDivElement;
 	const unsplashIds = [
