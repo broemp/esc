@@ -7,7 +7,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { DISCORD_ID, DISCORD_SECRET, GOOGLE_ID, GOOGLE_SECRET, REDDIT_ID, REDDIT_SECRET } from "$env/static/private"
 import { db } from "$lib/server/db/db";
 import { eq } from 'drizzle-orm';
-import { categories, sessions, users } from "$lib/server/db/schema";
+import { users } from "$lib/server/db/schema";
 import Reddit from "@auth/core/providers/reddit";
 import Google from "@auth/core/providers/google";
 

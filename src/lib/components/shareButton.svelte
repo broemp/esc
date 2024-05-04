@@ -1,7 +1,7 @@
 <script>
-	import { PUBLIC_APP_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	export let text = 'Check out this page!';
-	export let url = PUBLIC_APP_URL;
+	export let url = env.PUBLIC_APP_URL;
 	export let design = 'btn';
 	export let title = url.split('/').splice(-1)[0]; // default to end of url
 

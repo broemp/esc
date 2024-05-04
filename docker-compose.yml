@@ -1,4 +1,3 @@
-
 services:
   esc_db:
     container_name: esc_db
@@ -10,3 +9,23 @@ services:
       POSTGRES_USER: ${DB_USER:-esc}
       POSTGRES_PASSWORD: ${DB_PASS:-esc}
       POSTGRES_DB: ${DB_DB:-esc}
+    networks:
+      - esc
+
+  esc_app:
+    container_name: esc_app
+    image: broemp:esc
+    build:
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: esc_db
+      DB_PORT: 5432
+    ports:
+      - 127.0.0.1:3000:80
+    env_file: .env
+    networks:
+      - esc
+
+networks:
+  esc:
+    external: false

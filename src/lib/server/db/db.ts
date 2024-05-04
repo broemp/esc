@@ -1,15 +1,20 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
-import { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_DB, DB_SSL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+
+let ssl = false
+if (env.DB_SSL) {
+  ssl = env.DB_SSL.toLowerCase() == "true"
+}
 
 const dbOptions: postgres.Options<any> = {
-  host: DB_HOST,
-  port: +DB_PORT,
-  user: DB_USER,
-  password: DB_PASS,
-  database: DB_DB,
-  ssl: (DB_SSL.toLowerCase() == "true"),
+  host: env.DB_HOST,
+  port: +env.DB_PORT,
+  user: env.DB_USER,
+  password: env.DB_PASS,
+  database: env.DB_DB,
+  ssl: ssl,
   max: 1,
 }
 

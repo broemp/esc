@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	import type { PageServerData } from './$types';
-	import { PUBLIC_APP_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import { qr } from '@svelte-put/qr/svg';
 	import ShareButton from '$lib/components/shareButton.svelte';
 
 	export let data: PageServerData;
-	const ShareURL = PUBLIC_APP_URL + '/group/join/' + data.slug;
+	const ShareURL = env.PUBLIC_APP_URL + '/group/join/' + data.slug;
 	let tabSet: number = 0;
 </script>
 
