@@ -4,7 +4,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { redirect, type Handle } from '@sveltejs/kit';
 import Discord from "@auth/core/providers/discord"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import { DISCORD_ID, DISCORD_SECRET, GOOGLE_ID, GOOGLE_SECRET, REDDIT_ID, REDDIT_SECRET } from "$env/static/private"
+import { env } from "$env/dynamic/private"
 import { db } from "$lib/server/db/db";
 import { eq } from 'drizzle-orm';
 import { users } from "$lib/server/db/schema";
@@ -14,9 +14,9 @@ import Google from "@auth/core/providers/google";
 const { handle: authenticationHandle } = SvelteKitAuth({
   adapter: DrizzleAdapter(db),
   providers: [
-    Discord({ clientId: DISCORD_ID, clientSecret: DISCORD_SECRET }),
-    Reddit({ clientId: REDDIT_ID, clientSecret: REDDIT_SECRET }),
-    Google({ clientId: GOOGLE_ID, clientSecret: GOOGLE_SECRET })
+    Discord({ clientId: env.DISCORD_ID, clientSecret: env.DISCORD_SECRET }),
+    Reddit({ clientId: env.REDDIT_ID, clientSecret: env.REDDIT_SECRET }),
+    Google({ clientId: env.GOOGLE_ID, clientSecret: env.GOOGLE_SECRET })
   ],
   pages: {
     signIn: "/auth/signIn",
