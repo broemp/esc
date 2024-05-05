@@ -21,7 +21,7 @@ services:
       DB_HOST: esc_db
       DB_PORT: 5432
     ports:
-      - 127.0.0.1:3000:80
+      - 127.0.0.1:5173:5173
     env_file: .env
     networks:
       - esc

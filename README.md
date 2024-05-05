@@ -42,7 +42,7 @@ You can preview the production build with `npm run preview`.
 ```environment
 DEV=false
 
-# DB Change what you need to 
+# DB Change what you need to
 DB_HOST=localhost
 DB_PORT=5434
 DB_USER=esc

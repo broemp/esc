@@ -8,9 +8,9 @@ declare namespace App {
 	// interface Platform {}
 }
 
-import "@auth/sveltekit"
-declare module "@auth/sveltekit" {
-  interface User {
-    role: string
-  }
+import '@auth/sveltekit';
+declare module '@auth/sveltekit' {
+	interface User {
+		role: string;
+	}
 }
