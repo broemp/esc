@@ -2,14 +2,14 @@
 	import ActEditor from '$lib/components/admin/ActEditor.svelte';
 	import ActList from '$lib/components/admin/ActList.svelte';
 	import type { ActList as ActListDB, CountryList } from '$lib/server/db/querys';
-	import type { ActionData } from '../$types';
+	import type { ActionData } from './$types';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 	export let data: { acts: ActListDB | null; countries: CountryList };
 	let actID = '';
 
-	export let form: ActionData = {};
+	export let form: ActionData;
 
 	if (form?.success) {
 		const t: ToastSettings = {
@@ -17,7 +17,11 @@
 			// Provide any utility or variant background style:
 			background: 'variant-filled-success'
 		};
-		actID = form.act.id;
+
+		if (form.act?.id != undefined) {
+			actID = form.act.id;
+		}
+
 		toastStore.trigger(t);
 	} else if (form?.message) {
 		const t: ToastSettings = {

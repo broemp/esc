@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import { db } from './db';
 import {
   acts,
@@ -7,9 +7,13 @@ import {
   countries,
   groups,
   userInGroups,
-  users
+  users,
+  votes
 } from './schema';
 import { createInsertSchema } from 'drizzle-zod';
+import { z } from "zod";
+
+const UUIDVerifier = z.string().uuid()
 
 const insertActSchema = createInsertSchema(acts);
 // Returns one act selected by id
@@ -25,7 +29,6 @@ export function getAct(id: string) {
 
 export type UpdateAct = typeof acts.$inferSelect;
 export function updateAct(act: UpdateAct) {
-  console.log(act);
   try {
     insertActSchema.parse(act);
   } catch (e) {
@@ -33,6 +36,11 @@ export function updateAct(act: UpdateAct) {
     return { error: true, message: e };
   }
   return db.update(acts).set(act).where(eq(acts.id, act.id)).returning().execute();
+}
+
+export function deleteAct(actID: string) {
+  console.log("deleting act: ", actID)
+  return db.delete(acts).where(eq(acts.id, actID)).execute()
 }
 
 export type ActList = Awaited<ReturnType<typeof listActs>>;
@@ -53,11 +61,11 @@ export function listCountries(limit: number, offset: number) {
 
 export type NewAct = typeof acts.$inferInsert;
 export function createAct(newAct: NewAct) {
-  return db.insert(acts).values(newAct).onConflictDoNothing();
+  return db.insert(acts).values(newAct).onConflictDoNothing().execute();
 }
 
 export type NewCategory = typeof categories.$inferInsert;
-export function newCategor(category: NewCategory) {
+export function newCategory(category: NewCategory) {
   return db.insert(categories).values(category);
 }
 
@@ -113,3 +121,44 @@ export type CreateCountry = typeof countries.$inferInsert;
 export function createCountry(country: CreateCountry) {
   return db.insert(countries).values(country).onConflictDoNothing().execute();
 }
+
+export type User = Awaited<ReturnType<typeof getUser>>
+export function getUser(userId: string) {
+  UUIDVerifier.parse(userId)
+  return db.select().from(users).where(eq(users.id, userId)).limit(1)
+}
+
+export type Group = Awaited<ReturnType<typeof getGroupsFromUser>>
+export function getGroupsFromUser(userId: string) {
+  UUIDVerifier.parse(userId)
+  return db.select().from(userInGroups)
+    .where(eq(userInGroups.userId, userId))
+    .leftJoin(groups, eq(groups.id, userInGroups.groupId))
+}
+
+export type UserCategories = Awaited<ReturnType<typeof getUserCategories>>;
+export function getUserCategories(userId: string) {
+  return db.selectDistinctOn([categories.id]).from(categories)
+    .where(eq(users.id, userId))
+    .leftJoin(categoriesInGroup, eq(categories.id, categoriesInGroup.categoryId))
+    .leftJoin(groups, eq(groups.id, categoriesInGroup.groupId))
+    .leftJoin(userInGroups, eq(groups.id, userInGroups.groupId))
+    .leftJoin(users, eq(users.id, userInGroups.userId))
+}
+
+const insertVoteSchema = createInsertSchema(votes);
+export type Vote = typeof votes.$inferInsert
+export function createVote(newVote: Vote) {
+  insertVoteSchema.parse(newVote)
+  return db.insert(votes).values(newVote)
+    .onConflictDoUpdate({ target: [votes.categories, votes.userID], set: { points: newVote.points } })
+    .returning().execute()
+}
+
+export type VotesForActByUser = Awaited<ReturnType<typeof getVoteForActByUser>>;
+export function getVoteForActByUser(userId: string, actId: string) {
+  return db.select({ points: votes.points, categories: votes.categories }).from(votes)
+    .where(and(eq(votes.userID, userId), eq(votes.actID, actId)))
+    .limit(1)
+}
+

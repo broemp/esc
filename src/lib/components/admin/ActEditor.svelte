@@ -33,7 +33,7 @@
 <div class="w-full h-full">
 	<div class="card text-xl p-4">
 		{#if act}
-			<form method="POST">
+			<form method="POST" action="?/update">
 				<div class="grid grid-cols-5 space-x-2 space-y-2">
 					<label class="label col-span-full">
 						Act ID
@@ -74,7 +74,8 @@
 						<input class="checkbox" type="checkbox" name="eliminated" bind:value={act.eliminated} />
 						<p>Eliminated</p>
 					</label>
-					<button class="btn variant-filled" type="submit">Save</button>
+					<button formaction="?/delete" class="btn variant-filled-error">Delete</button>
+					<button class="btn variant-filled-primary" type="submit">Save</button>
 				</div>
 			</form>
 		{/if}

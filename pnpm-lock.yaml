@@ -26,6 +26,9 @@ importers:
       '@svelte-put/qr':
         specifier: ^1.2.0
         version: 1.2.0
+      '@vincjo/datatables':
+        specifier: ^1.14.5
+        version: 1.14.5(svelte@4.2.15)
       axios:
         specifier: ^1.6.8
         version: 1.6.8
@@ -924,6 +927,11 @@ packages:
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+
+  '@vincjo/datatables@1.14.5':
+    resolution: {integrity: sha512-kvjr8ggRTRzwDTgOqK3bQPe5ZJo68h30SHcx0WS3daLVt/IUzN2132wtH2JZQkpxyjmh9EiblugOzUv/36Xpug==}
+    peerDependencies:
+      svelte: '>=3.54.0'
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2923,6 +2931,10 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   '@ungap/structured-clone@1.2.0': {}
+
+  '@vincjo/datatables@1.14.5(svelte@4.2.15)':
+    dependencies:
+      svelte: 4.2.15
 
   acorn-jsx@5.3.2(acorn@8.11.3):
     dependencies:

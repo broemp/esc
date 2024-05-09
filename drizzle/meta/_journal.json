@@ -1,27 +1,13 @@
 {
-	"version": "5",
-	"dialect": "pg",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "5",
-			"when": 1714328564855,
-			"tag": "0000_flowery_molecule_man",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "5",
-			"when": 1714392667913,
-			"tag": "0001_faithful_mockingbird",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "5",
-			"when": 1714655120397,
-			"tag": "0002_demonic_talon",
-			"breakpoints": true
-		}
-	]
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1715189078463,
+      "tag": "0000_damp_thaddeus_ross",
+      "breakpoints": true
+    }
+  ]
 }

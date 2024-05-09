@@ -1,23 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { PageServerData } from './$types';
-	//export let data: PageServerData;
+
+	export let data: PageServerData;
+	let acts = data.acts;
 
 	let elemCarousel: HTMLDivElement;
-	const unsplashIds = [
-		'vjUokUWbFOs',
-		'1aJuPtQJX_I',
-		'Jp6O3FFRdEI',
-		'I3C_eojFVQY',
-		's0fXOuyTH1M',
-		'z_X0PxmBuIQ'
-	];
+	let currentAct = data.acts[0];
+	let actIndex = 0;
 	function carouselLeft(): void {
 		const x =
 			elemCarousel.scrollLeft === 0
 				? elemCarousel.clientWidth * elemCarousel.childElementCount // loop
 				: elemCarousel.scrollLeft - elemCarousel.clientWidth; // step left
 		elemCarousel.scroll(x, 0);
+		actIndex = (actIndex - 1) % data.acts.length;
+		currentAct = data.acts[actIndex];
 	}
 
 	function carouselRight(): void {
@@ -26,6 +24,8 @@
 				? 0 // loop
 				: elemCarousel.scrollLeft + elemCarousel.clientWidth; // step right
 		elemCarousel.scroll(x, 0);
+		actIndex = (actIndex + 1) % data.acts.length;
+		currentAct = data.acts[actIndex];
 	}
 </script>
 
@@ -50,13 +50,15 @@
 				bind:this={elemCarousel}
 				class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto"
 			>
-				{#each unsplashIds as unsplashId}
-					<img
-						class="snap-center w-[1024px] rounded-container-token"
-						src="https://source.unsplash.com/{unsplashId}/1024x768"
-						alt={unsplashId}
-						loading="lazy"
-					/>
+				{#each acts as act}
+					<a href="/vote/{act.act.id}">
+						<img
+							class="snap-center w-[1024px] rounded-container-token"
+							src={act.act.picture_url}
+							alt={act.act.id}
+							loading="lazy"
+						/></a
+					>
 				{/each}
 			</div>
 			<!-- Button: Right -->
@@ -67,11 +69,11 @@
 		<!-- Info Field -->
 		<section class="p-4">
 			<span class="grid grid-cols-1">
-				<p>1. LAND FLAG</p>
+				<p>{currentAct.act.position} {currentAct.country.imageURL}</p>
 				<br />
-				<p>Artist</p>
+				<p>{currentAct.act.artist}</p>
 				<br />
-				<p>Songname</p>
+				<p>{currentAct.act.title}</p>
 				<br />
 			</span>
 		</section>

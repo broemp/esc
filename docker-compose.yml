@@ -9,8 +9,6 @@ services:
       POSTGRES_USER: ${DB_USER:-esc}
       POSTGRES_PASSWORD: ${DB_PASS:-esc}
       POSTGRES_DB: ${DB_DB:-esc}
-    networks:
-      - esc
 
   esc_app:
     container_name: esc_app
@@ -23,9 +21,3 @@ services:
     ports:
       - 127.0.0.1:5173:5173
     env_file: .env
-    networks:
-      - esc
-
-networks:
-  esc:
-    external: false

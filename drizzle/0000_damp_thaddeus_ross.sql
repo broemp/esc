@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS "act" (
 	"artist" text NOT NULL,
 	"title" text NOT NULL,
 	"year" smallint NOT NULL,
+	"picture_url" text,
 	"position" integer,
 	"endpoints" integer,
-	"eliminated" boolean DEFAULT false,
-	CONSTRAINT "act_position_unique" UNIQUE("position")
+	"eliminated" boolean DEFAULT false
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "category" (
@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS "category_group" (
 CREATE TABLE IF NOT EXISTS "country" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"code" varchar(2) NOT NULL
+	"code" varchar(4) NOT NULL,
+	"imageURL" text
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "drink" (
@@ -89,12 +90,12 @@ CREATE TABLE IF NOT EXISTS "verificationToken" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "vote" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userID" text NOT NULL,
 	"actID" uuid NOT NULL,
 	"categoriesID" uuid NOT NULL,
 	"points" smallint NOT NULL,
-	"created_at" time DEFAULT now() NOT NULL
+	"created_at" time DEFAULT now() NOT NULL,
+	CONSTRAINT "vote_userID_actID_categoriesID_pk" PRIMARY KEY("userID","actID","categoriesID")
 );
 --> statement-breakpoint
 DO $$ BEGIN
