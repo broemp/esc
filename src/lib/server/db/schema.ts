@@ -8,7 +8,8 @@ import {
   boolean,
   smallint,
   time,
-  varchar
+  varchar,
+  numeric
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccount } from '@auth/core/adapters';
 import { relations } from 'drizzle-orm';
@@ -168,7 +169,7 @@ export const votes = pgTable('vote', {
   categories: uuid('categoriesID')
     .notNull()
     .references(() => categories.id, { onDelete: 'cascade' }),
-  points: smallint('points').notNull(),
+  points: numeric('points', { precision: 3, scale: 1 }).notNull(),
   created_at: time('created_at').notNull().defaultNow(),
 }, (table) => {
   return {

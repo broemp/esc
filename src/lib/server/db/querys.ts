@@ -1,4 +1,4 @@
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, or } from 'drizzle-orm';
 import { db } from './db';
 import {
   acts,
@@ -150,8 +150,12 @@ const insertVoteSchema = createInsertSchema(votes);
 export type Vote = typeof votes.$inferInsert
 export function createVote(newVote: Vote) {
   insertVoteSchema.parse(newVote)
-  return db.insert(votes).values(newVote)
-    .onConflictDoUpdate({ target: [votes.categories, votes.userID], set: { points: newVote.points } })
+  return db.insert(votes)
+    .values(newVote)
+    .onConflictDoUpdate({
+      target: [votes.categories, votes.userID, votes.actID],
+      set: { points: newVote.points }
+    })
     .returning().execute()
 }
 
@@ -159,6 +163,16 @@ export type VotesForActByUser = Awaited<ReturnType<typeof getVoteForActByUser>>;
 export function getVoteForActByUser(userId: string, actId: string) {
   return db.select({ points: votes.points, categories: votes.categories }).from(votes)
     .where(and(eq(votes.userID, userId), eq(votes.actID, actId)))
-    .limit(1)
 }
 
+export type AdjacentActs = Awaited<ReturnType<typeof getAdjacentActs>>;
+export function getAdjacentActs(actPosition: number) {
+  return db.select().from(acts)
+    .where(
+      or(
+        eq(acts.position, actPosition - 1),
+        eq(acts.position, actPosition + 1)
+      ))
+    .orderBy(asc(acts.position))
+    .limit(2)
+}

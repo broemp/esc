@@ -10,7 +10,7 @@
 
 	interface Vote {
 		points: number;
-		id: string;
+		categoryId: string;
 		name: string;
 	}
 
@@ -18,49 +18,60 @@
 	let country = data.act[0].country!;
 	let categories: UserCategories = data.categories;
 	let votes = data.votes;
+	let adjacentActs = data.adjacentActs;
 	const max = 10;
+
+	let prevAct: any | undefined;
+	let nextAct: any | undefined;
+
+	adjacentActs?.forEach((a) => {
+		if (a.position! < act.position!) {
+			prevAct = a;
+			return;
+		}
+		if (a.position! > act.position!) {
+			nextAct = a;
+		}
+	});
+
+	let votesMap = new Map(votes.map((i): [string, number] => [i.categories, +i.points]));
 
 	if (categories.length === 0) {
 		// TODO: Get default categories
 	}
-	let categorieVote: Vote[] = [];
-	categories.forEach((category) => {
-		categorieVote.push({
-			id: category.category.id,
-			name: category.category.name,
-			points: 5
-		});
-	});
 
-	categorieVote.forEach((categorieVote) => {
-		votes.forEach((vote) => {
-			if (categorieVote.id == vote.categories) {
-				categorieVote.points = vote.points;
-			}
-		});
-	});
+	var categoryMap = categories.map((i): [string, Vote] => [
+		i.category.id,
+		{
+			categoryId: i.category.id,
+			name: i.category.name,
+			points: votesMap.has(i.category.id) ? votesMap.get(i.category.id)! : 5
+		}
+	]);
 
 	async function updateVote(vote: Vote) {
 		await axios
 			.post('/vote/' + act.id, {
 				data: {
-					category: vote.id,
+					category: vote.categoryId,
 					points: vote.points
 				}
 			})
 			.then(() => {
 				const t: ToastSettings = {
 					message: 'Success! 🎉',
-					// Provide any utility or variant background style:
-					background: 'variant-filled-success'
+					background: 'variant-filled-success',
+					hideDismiss: true,
+					timeout: 500
 				};
 				toastStore.trigger(t);
 			})
 			.catch(() => {
 				const t: ToastSettings = {
 					message: 'Error! 🎉',
-					// Provide any utility or variant background style:
-					background: 'variant-filled-error'
+					background: 'variant-filled-error',
+					hideDismiss: true,
+					timeout: 500
 				};
 				toastStore.trigger(t);
 			});
@@ -68,19 +79,32 @@
 </script>
 
 <div>
-	<img src={act.picture_url} alt="act" />
-	<div>
+	<img src={act.picture_url} alt="act" class="w-full" />
+	<div class="grid grid-cols-3 w-full">
+		{#if prevAct}
+			<div>
+				<a href="/vote/{prevAct.id}">
+					<i class="fa-regular fa-circle-left"></i>
+				</a>
+			</div>
+		{/if}
 		<p>
 			{act.position} - {country.name} <br />
 			{act.artist} <br />
 			{act.title}
 		</p>
+		{#if nextAct}<div>
+				<a href="/vote/{nextAct.id}">
+					<i class="fa-regular fa-circle-right"></i>
+				</a>
+			</div>
+		{/if}
 	</div>
 	<form method="post" action="?/vote">
-		{#each categorieVote as category}
+		{#each [...categoryMap] as [id, category]}
 			<div>
 				<RangeSlider
-					name={category.id}
+					name={id}
 					bind:value={category.points}
 					on:change={() => updateVote(category)}
 					{max}
@@ -94,8 +118,5 @@
 				</RangeSlider>
 			</div>
 		{/each}
-		<div class="flex justify-center">
-			<button class="btn variant-soft-success">Vote!</button>
-		</div>
 	</form>
 </div>

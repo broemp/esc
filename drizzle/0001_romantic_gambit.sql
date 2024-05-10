@@ -1,0 +1,1 @@
+ALTER TABLE "vote" ALTER COLUMN "points" SET DATA TYPE numeric(3, 1);

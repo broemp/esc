@@ -21,7 +21,7 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<a href="/">
-					<strong class="text-xl uppercase">B & W & ESC</strong>
+					<img src="/logo.png" alt="logo" width="150" />
 				</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">

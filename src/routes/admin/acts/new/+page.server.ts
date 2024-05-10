@@ -28,6 +28,7 @@ export const actions = {
     const data = await event.request.formData();
     let date = new Date();
     let act: NewAct = {
+      position: data.has("positon") ? +data.get("position")?.toString()! : null,
       countryID: data.get('country_id')?.toString()!,
       artist: data.get('artist')?.toString()!,
       title: data.get('title')?.toString()!,
