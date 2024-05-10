@@ -1,0 +1,1 @@
+ALTER TABLE "group" ADD COLUMN "public" boolean DEFAULT false NOT NULL;

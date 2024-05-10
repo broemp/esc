@@ -6,7 +6,11 @@
 	import ShareButton from '$lib/components/shareButton.svelte';
 
 	export let data: PageServerData;
-	const ShareURL = env.PUBLIC_APP_URL + '/group/join/' + data.slug;
+	const group = data.group;
+	const members = data.members;
+	const isAdmin = data.isAdmin;
+
+	const ShareURL = env.PUBLIC_APP_URL + '/group/join/' + group.group.id;
 	let tabSet: number = 0;
 </script>
 
@@ -19,8 +23,8 @@
 		{#if tabSet === 0}
 			(tab panel 1 contents)
 		{:else if tabSet === 1}
-			<div class="flex justify-center">
-				{#each data.members as member}
+			<div class="grid grid-cols-1 justify-center space-y-4 px-4">
+				{#each members as member}
 					<a href={'/user/' + member.userid} class="btn variant-glass-primary">
 						{member.username}
 					</a>
@@ -41,7 +45,9 @@
 				>
 			</div>
 		{:else if tabSet === 3}
-			(tab panel 4 contents)
+			{#if data}
+				Admin
+			{/if}
 		{/if}
 	</svelte:fragment>
 </TabGroup>

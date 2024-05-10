@@ -1,10 +1,22 @@
-import { getMembersOfGroup, type MembersList } from '$lib/server/db/querys';
+import { getGroup, getMembersOfGroup } from '$lib/server/db/querys';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }: any) => {
-  const members = getMembersOfGroup(params.id);
+export const load: PageServerLoad = async (event: RequestEvent) => {
+  let session = await event.locals.auth()
+  if (!session) {
+    return redirect(303, "/")
+  }
+  const group = await getGroup(event.params.id!)
+  const members = await getMembersOfGroup(event.params.id!)
+
+  let isAdmin = false
+  if (group[0].group.admin == session.user?.id) {
+    isAdmin = true
+  }
   return {
-    slug: params.id,
-    members: await members
+    group: group[0],
+    members: members,
+    isAdmin: isAdmin,
   };
 };

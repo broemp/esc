@@ -36,10 +36,6 @@
 
 	let votesMap = new Map(votes.map((i): [string, number] => [i.categories, +i.points]));
 
-	if (categories.length === 0) {
-		// TODO: Get default categories
-	}
-
 	var categoryMap = categories.map((i): [string, Vote] => [
 		i.category.id,
 		{
@@ -79,7 +75,7 @@
 </script>
 
 <div>
-	<img src={act.picture_url} alt="act" class="w-full" />
+	<img src={act.picture_url} alt="act" class="w-full h-48" />
 	<div class="grid grid-cols-3 w-full">
 		{#if prevAct}
 			<div>

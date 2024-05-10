@@ -25,7 +25,12 @@ export const actions = {
       picture_url: data.get("picture_url")?.toString()!,
       eliminated: data.get('eliminated')?.toString().toLowerCase() == 'true'
     };
-    let res = await updateAct(act);
+    let res;
+    try {
+      res = await updateAct(act);
+    } catch (e) {
+      return { success: false }
+    }
     return { success: true, act: res };
   },
   delete: async ({ request }) => {

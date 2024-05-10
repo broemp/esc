@@ -1,4 +1,4 @@
-import { createVote, getAct, getAdjacentActs, getUserCategories, getVoteForActByUser, type AdjacentActs, type UserCategories, type Vote, type VotesForActByUser } from '$lib/server/db/querys';
+import { createVote, getAct, getAdjacentActs, getDefaultCategories, getUserCategories, getVoteForActByUser, type AdjacentActs, type DefaultCategories, type UserCategories, type Vote, type VotesForActByUser } from '$lib/server/db/querys';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { RequestEvent } from './$types';
@@ -11,12 +11,19 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
   }
   let adjacentActs: AdjacentActs | undefined;
   const act = await getAct(event.params.id);
-  const categories: UserCategories = await getUserCategories(session.user.id!);
+  let categories: UserCategories | DefaultCategories = await getUserCategories(session.user.id!);
   const votesByUser: VotesForActByUser = await getVoteForActByUser(session.user.id!, event.params.id)
+
+
+  if (categories.length == 0) {
+    categories = await getDefaultCategories()
+  }
+
   if (act[0].act.position) {
     adjacentActs = await getAdjacentActs(act[0].act.position)
     console.log(adjacentActs)
   }
+
   return {
     act: act,
     categories: categories,

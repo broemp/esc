@@ -4,8 +4,10 @@ import {
   acts,
   categories,
   categoriesInGroup,
+  categoriesRelation,
   countries,
   groups,
+  groupsRelations,
   userInGroups,
   users,
   votes
@@ -29,12 +31,7 @@ export function getAct(id: string) {
 
 export type UpdateAct = typeof acts.$inferSelect;
 export function updateAct(act: UpdateAct) {
-  try {
-    insertActSchema.parse(act);
-  } catch (e) {
-    console.log(e);
-    return { error: true, message: e };
-  }
+  insertActSchema.parse(act);
   return db.update(acts).set(act).where(eq(acts.id, act.id)).returning().execute();
 }
 
@@ -103,7 +100,13 @@ export function getMembersOfGroup(groupID: string) {
 
 export type GroupInfo = Awaited<ReturnType<typeof getGroup>>;
 export function getGroup(groupID: string) {
-  return db.select().from(groups).where(eq(groups.id, groupID)).limit(1);
+  UUIDVerifier.parse(groupID)
+  return db.select()
+    .from(groups)
+    .where(eq(groups.id, groupID))
+    .leftJoin(userInGroups, eq(userInGroups.groupId, groups.id))
+    .leftJoin(categoriesInGroup, eq(categoriesInGroup.groupId, groups.id))
+    .limit(1)
 }
 
 export const JoinGroupSchema = createInsertSchema(userInGroups);
@@ -128,6 +131,19 @@ export function getUser(userId: string) {
   return db.select().from(users).where(eq(users.id, userId)).limit(1)
 }
 
+const UpdateUsernameSchema = z.object({
+  username: z.string().max(64).min(3),
+  userID: z.string().uuid()
+})
+export type UpdateUsername = { username: string, userID: string }
+export function updateUsername(update: UpdateUsername) {
+  UpdateUsernameSchema.parse(update)
+  return db.update(users)
+    .set({ name: update.username })
+    .where(eq(users.id, update.userID))
+    .returning()
+}
+
 export type Group = Awaited<ReturnType<typeof getGroupsFromUser>>
 export function getGroupsFromUser(userId: string) {
   UUIDVerifier.parse(userId)
@@ -144,6 +160,14 @@ export function getUserCategories(userId: string) {
     .leftJoin(groups, eq(groups.id, categoriesInGroup.groupId))
     .leftJoin(userInGroups, eq(groups.id, userInGroups.groupId))
     .leftJoin(users, eq(users.id, userInGroups.userId))
+}
+
+
+export type DefaultCategories = Awaited<ReturnType<typeof getDefaultCategories>>;
+export function getDefaultCategories() {
+  return db.selectDistinct().from(categories)
+    .where(eq(categories.default, true))
+    .orderBy(asc(categories.position))
 }
 
 const insertVoteSchema = createInsertSchema(votes);

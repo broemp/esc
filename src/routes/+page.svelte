@@ -69,7 +69,9 @@
 		<!-- Info Field -->
 		<section class="p-4">
 			<span class="grid grid-cols-1">
-				<p>{currentAct.act.position} {currentAct.country.imageURL}</p>
+				<p>
+					{currentAct.act.position} <img src={currentAct.country.imageURL} alt="country icon" />
+				</p>
 				<br />
 				<p>{currentAct.act.artist}</p>
 				<br />

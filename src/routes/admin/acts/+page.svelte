@@ -14,7 +14,6 @@
 	if (form?.success) {
 		const t: ToastSettings = {
 			message: 'Success! 🎉',
-			// Provide any utility or variant background style:
 			background: 'variant-filled-success'
 		};
 
@@ -23,10 +22,9 @@
 		}
 
 		toastStore.trigger(t);
-	} else if (form?.message) {
+	} else {
 		const t: ToastSettings = {
-			message: 'Error!' + form.message,
-			// Provide any utility or variant background style:
+			message: 'Error!',
 			background: 'variant-filled-error'
 		};
 		toastStore.trigger(t);
