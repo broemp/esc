@@ -14,7 +14,11 @@
 		{#each acts as act}
 			<a href="/vote/{act.act.id}">
 				<div class="w-full bg-surface-900 border-black border-t-2 grid grid-cols-2">
-					<img class="pic aspect-square w-3/6" src={act.act.picture_url} alt="artist" />
+					<img
+						class="pic aspect-square object-contain w-3/6"
+						src={act.act.picture_url}
+						alt="artist"
+					/>
 					<div class="flex justify-items-center self-center text-center">
 						<p>
 							<span class="text-xl font-bold text-[#ff47df]"

@@ -1,4 +1,4 @@
-import { and, asc, eq, or } from 'drizzle-orm';
+import { and, asc, avg, desc, eq, like, or, sql } from 'drizzle-orm';
 import { db } from './db';
 import {
   acts,
@@ -14,6 +14,7 @@ import {
 } from './schema';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from "zod";
+import { describe } from 'node:test';
 
 const UUIDVerifier = z.string().uuid()
 
@@ -70,6 +71,14 @@ export type CreatedGroup = Awaited<ReturnType<typeof createGroup>>;
 export type NewGroup = typeof groups.$inferInsert;
 export function createGroup(group: NewGroup) {
   return db.insert(groups).values(group).returning({ id: groups.id });
+}
+
+export function getPublicGroups(limit: number, offset: number) {
+  return db.select()
+    .from(groups)
+    .where(eq(groups.public, true))
+    .offset(offset)
+    .limit(limit)
 }
 
 export function addUserToGroup(groupID: string, userID: string) {
@@ -199,4 +208,26 @@ export function getAdjacentActs(actPosition: number) {
       ))
     .orderBy(asc(acts.position))
     .limit(2)
+}
+
+export type TopActs = Awaited<ReturnType<typeof getCurrentTopActs>>
+export function getCurrentTopActs(limit: number, offset: number) {
+  return db.select(
+    {
+      actID: acts.id,
+      title: acts.title,
+      artist: acts.artist,
+      countryName: countries.name,
+      countryImage: countries.imageURL,
+      averagePoints: sql<number>`cast(avg(${votes.points}) AS DECIMAL(10,2))`
+    })
+    .from(acts)
+    .leftJoin(votes, eq(votes.actID, acts.id))
+    .leftJoin(categories, eq(categories.id, votes.categories))
+    .leftJoin(countries, eq(countries.id, acts.countryID))
+    .where(like(categories.name, 'song'))
+    .groupBy(acts.id, countries.name, countries.imageURL)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(desc(sql<number>`avg(${votes.points})`))
 }

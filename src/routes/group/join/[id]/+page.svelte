@@ -5,7 +5,7 @@
 
 	export let data: PageServerData;
 	let groupID = data.slug;
-	let groupName = data.group.name;
+	let group = data.group.group;
 
 	async function joinGroup() {
 		let resp = await fetch('/group/join/' + groupID, {
@@ -20,17 +20,19 @@
 	}
 </script>
 
-<div class="flex justify-center">
-	<div class="grid grid-cols-1 mt-12">
-		<h1 class="text-xl text-center">Do you wanna join <br /> {groupName}</h1>
-		<div class="flex justify-center mt-28 space-x-2">
-			<btn
-				type="submit"
-				name="button-yes"
-				class="btn variant-glass-primary w-full"
-				on:click={() => joinGroup()}>Yes</btn
-			>
-			<a href="/" class="btn variant-glass-warning w-full"> No </a>
+<div class="flex h-screen justify-center">
+	<div class="m-auto">
+		<div class="grid grid-cols-1 mt-12">
+			<h1 class="text-xl text-center">Do you wanna join <br /> {group.name}?</h1>
+			<div class="flex justify-center mt-16 space-x-2">
+				<btn
+					type="submit"
+					name="button-yes"
+					class="btn variant-glass-primary w-full"
+					on:click={() => joinGroup()}>Yes</btn
+				>
+				<a href="/" class="btn variant-glass-warning w-full"> No </a>
+			</div>
 		</div>
 	</div>
 </div>

@@ -11,6 +11,14 @@
 				<input class="input" title="Description" name="description" type="text" />
 			</div>
 		</div>
+		<hr class="!border-t-2 mt-2" />
+		<div class="flex justify-center py-2">
+			<label class="">
+				<input name="public" class="checkbox" type="checkbox" />
+				Public
+			</label>
+		</div>
+		<hr class="!border-t-2" />
 		<div class="default-categories my-4 flex justify-center">
 			<div class="grid grid-cols-2 space-y-2">
 				<label class="flex items-center space-x-2">

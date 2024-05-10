@@ -75,7 +75,7 @@
 </script>
 
 <div>
-	<img src={act.picture_url} alt="act" class="w-full h-48" />
+	<img src={act.picture_url} alt="act" class="w-full h-48 object-cover" />
 	<div class="grid grid-cols-3 w-full">
 		{#if prevAct}
 			<div>
@@ -107,9 +107,12 @@
 					step={0.5}
 					ticked
 				>
-					<div class="flex justify-between items-center">
-						<div class="font-bold">{category.name}</div>
-						<div class="text-xs">{category.points} / {max}</div>
+					<div class="grid grid-cols-3 items-center">
+						<div></div>
+						<div class="font-bold">
+							{category.name.replace('_', ' ').toLocaleUpperCase().trim()}
+						</div>
+						<div class="ml-auto text-xs">{category.points} / {max}</div>
 					</div>
 				</RangeSlider>
 			</div>

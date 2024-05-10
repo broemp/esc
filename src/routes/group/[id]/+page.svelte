@@ -45,8 +45,11 @@
 				>
 			</div>
 		{:else if tabSet === 3}
-			{#if data}
+			{#if isAdmin}
 				Admin
+				<!-- TODO: Group Settings-->
+			{:else}
+				<!-- TODO: LEAVE BUTTON-->
 			{/if}
 		{/if}
 	</svelte:fragment>

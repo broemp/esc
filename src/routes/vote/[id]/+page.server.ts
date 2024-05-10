@@ -21,7 +21,6 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
 
   if (act[0].act.position) {
     adjacentActs = await getAdjacentActs(act[0].act.position)
-    console.log(adjacentActs)
   }
 
   return {
