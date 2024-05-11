@@ -4,6 +4,7 @@
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { UserCategories } from '$lib/server/db/querys';
 	import axios from 'axios';
+	import { PUBLIC_APP_URL } from '$env/static/public';
 
 	export let data: PageServerData;
 	const toastStore = getToastStore();
@@ -25,12 +26,13 @@
 	let nextAct: any | undefined;
 
 	adjacentActs?.forEach((a) => {
+		console.log(a);
 		if (a.position! < act.position!) {
-			prevAct = a;
+			prevAct = a.id;
 			return;
 		}
 		if (a.position! > act.position!) {
-			nextAct = a;
+			nextAct = a.id;
 		}
 	});
 
@@ -64,7 +66,7 @@
 			})
 			.catch(() => {
 				const t: ToastSettings = {
-					message: 'Error! 🎉',
+					message: 'Error!',
 					background: 'variant-filled-error',
 					hideDismiss: true,
 					timeout: 500
@@ -72,35 +74,54 @@
 				toastStore.trigger(t);
 			});
 	}
+
+	function navigate(actID: string) {
+		if (actID == undefined) {
+			const t: ToastSettings = {
+				message: 'Nothing Here!',
+				background: 'variant-filled-error',
+				hideDismiss: true,
+				timeout: 500
+			};
+			toastStore.trigger(t);
+			return;
+		}
+		window.location.replace(PUBLIC_APP_URL + '/vote/' + actID + '/');
+	}
 </script>
 
 <div>
-	<img src={act.picture_url} alt="act" class="w-full h-48 object-cover" />
-	<div class="grid grid-cols-3 w-full">
-		{#if prevAct}
-			<div>
-				<a href="/vote/{prevAct.id}">
+	<img src={act.picture_url} alt="act" class="w-full h-48 md:h-96 object-cover" />
+	<div class="w-full">
+		<div class="flex justify-center pb-2">
+			<div class="grid grid-cols-5">
+				<button class="col-span-1 col-start-1" on:click={() => navigate(prevAct)}>
 					<i class="fa-regular fa-circle-left"></i>
-				</a>
-			</div>
-		{/if}
-		<p>
-			{act.position} - {country.name} <br />
-			{act.artist} <br />
-			{act.title}
-		</p>
-		{#if nextAct}<div>
-				<a href="/vote/{nextAct.id}">
+				</button>
+				<div class="col-span-3 pt-2">
+					<div class="flex">
+						<img src={country.imageURL} alt="country heart" class="w-12 h-12" />
+						<p>
+							<span class="font-bold">
+								{act.artist}
+							</span> <br />
+							{act.title}
+						</p>
+					</div>
+				</div>
+				<button class="col-span-1" on:click={() => navigate(nextAct)}>
 					<i class="fa-regular fa-circle-right"></i>
-				</a>
+				</button>
 			</div>
-		{/if}
+		</div>
 	</div>
+	<hr class="!border-t-2 pb-2" />
 	<form method="post" action="?/vote">
 		{#each [...categoryMap] as [id, category]}
-			<div>
+			<div class="flex justify-center">
 				<RangeSlider
 					name={id}
+					class="mx-4 max-w-xl w-full"
 					bind:value={category.points}
 					on:change={() => updateVote(category)}
 					{max}

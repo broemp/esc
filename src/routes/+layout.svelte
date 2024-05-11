@@ -38,8 +38,10 @@
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
-	<slot />
-	<div>
-		<Footer></Footer>
+	<div class="mb-14">
+		<slot />
 	</div>
+	<svelte:fragment slot="pageFooter">
+		<Footer></Footer>
+	</svelte:fragment>
 </AppShell>

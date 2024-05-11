@@ -6,6 +6,7 @@ import {
   categoriesInGroup,
   categoriesRelation,
   countries,
+  drinks,
   groups,
   groupsRelations,
   userInGroups,
@@ -14,7 +15,7 @@ import {
 } from './schema';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from "zod";
-import { describe } from 'node:test';
+import type { AwaitedActions } from '@sveltejs/kit';
 
 const UUIDVerifier = z.string().uuid()
 
@@ -55,6 +56,20 @@ export function listActs(limit: number, offset: number) {
 export type CountryList = Awaited<ReturnType<typeof listCountries>>;
 export function listCountries(limit: number, offset: number) {
   return db.select().from(countries).limit(limit).offset(offset);
+}
+
+export async function nextAdminAct() {
+  let votedOn = await db.select().from(acts)
+    .innerJoin(votes, eq(votes.actID, acts.id))
+    .innerJoin(users, and(eq(users.id, votes.userID), eq(users.role, 'admin')))
+    .orderBy(desc(acts.position))
+
+  if (votedOn.length > 0) {
+    let lastVote = votedOn[0].act.position!
+    return db.select().from(acts).where(eq(acts.position, lastVote + 1)).limit(1)
+  }
+
+  return db.select().from(acts).where(eq(acts.position, 1)).limit(1)
 }
 
 export type NewAct = typeof acts.$inferInsert;
@@ -99,12 +114,79 @@ export async function addCategorieToGroup(name: string, groupID: string) {
 
 export type MembersList = Awaited<ReturnType<typeof getMembersOfGroup>>;
 export function getMembersOfGroup(groupID: string) {
+  UUIDVerifier.parse(groupID)
   return db
     .select({ username: users.name, userid: users.id })
     .from(groups)
     .where(eq(groups.id, groupID))
     .leftJoin(userInGroups, eq(groups.id, userInGroups.groupId))
     .leftJoin(users, eq(users.id, userInGroups.userId));
+}
+
+export function getGroupCategories(groupID: string) {
+  UUIDVerifier.parse(groupID)
+  return db
+    .select()
+    .from(categoriesInGroup)
+    .where(eq(categoriesInGroup.groupId, groupID))
+    .leftJoin(categories, eq(categories.id, categoriesInGroup.categoryId))
+    .orderBy(asc(categories.position))
+}
+
+
+export type aRankingCategoryGroup = ReturnType<typeof getRankingCategoryGroup>;
+export type RankingCategoryGroup = Awaited<ReturnType<typeof getRankingCategoryGroup>>;
+export function getRankingCategoryGroup(groupID: string, categoryId: string) {
+  UUIDVerifier.parse(groupID)
+  UUIDVerifier.parse(categoryId)
+  return db
+    .select({
+      actID: acts.id,
+      artist: acts.artist,
+      title: acts.title,
+      categoryId: votes.categories,
+      countryImage: countries.imageURL,
+      score: sql<number>`cast(avg(${votes.points}) AS DECIMAL(10,2))`
+    })
+    .from(votes)
+    .where(and(eq(votes.categories, categoryId), eq(votes.userID, userInGroups.userId)))
+    .leftJoin(userInGroups, eq(userInGroups.groupId, groupID))
+    .leftJoin(acts, eq(acts.id, votes.actID))
+    .leftJoin(countries, eq(countries.id, acts.countryID))
+    .groupBy(acts.id, acts.artist, acts.title, votes.categories, countries.imageURL)
+    .orderBy(sql<number>`avg(${votes.points})`)
+}
+
+export function getGroupSongVotes(groupID: string) {
+  UUIDVerifier.parse(groupID)
+  return db
+    .select({
+      actID: votes.actID,
+      artist: acts.artist,
+      title: acts.title,
+      countryImage: countries.imageURL,
+      score: sql<number>`cast(avg(${votes.points}) AS DECIMAL(10,2))`
+    })
+    .from(groups)
+    .where(and(eq(categories.name, "song"), eq(groups.id, groupID)))
+    .leftJoin(userInGroups, eq(userInGroups.groupId, groups.id))
+    .leftJoin(votes, eq(votes.userID, userInGroups.userId))
+    .leftJoin(acts, eq(acts.id, votes.actID))
+    .leftJoin(categories, eq(categories.id, votes.categories))
+    .leftJoin(countries, eq(countries.id, acts.countryID))
+    .groupBy(votes.actID, acts.artist, acts.title, countries.imageURL)
+    .orderBy(desc(sql<number>`avg(${votes.points})`))
+}
+
+export function getGroupVotesByCategory(groupID: string) {
+  UUIDVerifier.parse(groupID)
+  return db
+    .select()
+    .from(userInGroups)
+    .where(eq(userInGroups.groupId, groupID))
+    .leftJoin(categoriesInGroup, eq(categoriesInGroup.groupId, groupID))
+    .leftJoin(categories, eq(categories.id, categoriesInGroup.categoryId))
+    .leftJoin(votes, and(eq(votes.userID, userInGroups.userId), eq(votes.categories, categories.id)))
 }
 
 export type GroupInfo = Awaited<ReturnType<typeof getGroup>>;
@@ -231,3 +313,22 @@ export function getCurrentTopActs(limit: number, offset: number) {
     .offset(offset)
     .orderBy(desc(sql<number>`avg(${votes.points})`))
 }
+
+// Drinks
+
+export type DrinkList = Awaited<ReturnType<typeof getDrinks>>
+export function getDrinks() {
+  return db.select().from(drinks).leftJoin(countries, eq(countries.id, drinks.countryID))
+}
+
+export type Drink = Awaited<ReturnType<typeof getDrink>>
+export function getDrink(drinkID: string) {
+  UUIDVerifier.parse(drinkID)
+  return db.select().from(drinks).where(eq(drinks.id, drinkID))
+}
+
+export type NewDrink = typeof drinks.$inferInsert
+export function createDrink(newDrink: NewDrink) {
+  return db.insert(drinks).values(newDrink).execute()
+}
+

@@ -49,3 +49,4 @@
 		<Table source={tableData} interactive={true} on:selected={handleSelection} />
 	{/if}
 </div>
+

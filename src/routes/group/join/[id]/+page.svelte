@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 
 	export let data: PageServerData;
-	let groupID = data.slug;
+	let groupID = data.group.group.id;
 	let group = data.group.group;
 
 	async function joinGroup() {

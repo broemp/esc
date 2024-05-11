@@ -58,7 +58,7 @@
 			>
 				{#each acts as act}
 					<img
-						class="snap-center object-contain w-[1024px] rounded-container-token"
+						class="snap-center object-contain w-[1024px] max-h-32 rounded-container-token"
 						src={act.act.picture_url}
 						alt={act.act.id}
 						on:click={() => visitAct(act.act.id)}
@@ -72,23 +72,11 @@
 			</button>
 		</div>
 		<!-- Info Field -->
-		<a href="/vote/{currentAct.country.id}" class="w-full">
+		<div class="w-full">
 			<section class="card variant-filled-primary flex mt-2 mx-2 p-4">
-				<div class="grid grid-cols-2 justify-items-center">
-					<div>
-						<img
-							src={currentAct.country.imageURL}
-							class="aspect-square object-contain w-12 h-12"
-							alt="country icon {currentAct.country.name}"
-						/>
-					</div>
-					<p>
-						<span class="font-bold">{currentAct.act.artist}</span> <br />
-						{currentAct.act.title}
-					</p>
-				</div>
+				<span class="text-center">Swipe through the carousel and click on the artist to vote!</span>
 			</section>
-		</a>
+		</div>
 		<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Groups</p>
 		<div class="flex p-4 gap-4">
 			<a href="/group/new" class="btn bg-secondary-500 w-1/2">Create new Group</a>

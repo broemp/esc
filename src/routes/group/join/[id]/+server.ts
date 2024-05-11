@@ -1,13 +1,18 @@
 import { joinGroup } from '$lib/server/db/querys';
+import { redirect } from '@sveltejs/kit';
+import type { RequestEvent } from './$types';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async (event) => {
-	const user = await event.locals.auth();
-	const userID = user?.user?.id;
-	if (!userID || !event.params.id) {
-		return new Response(JSON.stringify('error'), { status: 400 });
-	}
-	// TODO: Handle already in group
-	joinGroup({ groupId: event.params.id, userId: userID });
-	return new Response(JSON.stringify('success'), { status: 200 });
+export const POST: RequestHandler = async (request: RequestEvent) => {
+  const session = await request.locals.auth();
+
+  const userID = session?.user?.id;
+  if (!userID || !request.params.id) {
+    return new Response(JSON.stringify('error'), { status: 400 });
+  }
+
+  console.log(request)
+  // TODO: Handle already in group
+  joinGroup({ groupId: request.params.id, userId: userID });
+  return redirect(301, "/group/" + request.params.id);
 };

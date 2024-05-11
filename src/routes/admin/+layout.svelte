@@ -3,6 +3,8 @@
 		<div class="grid grid-cols-1 p-4 space-y-2">
 			<a class="btn variant-glass-primary" href="/admin/acts">Acts</a>
 			<a class="btn variant-glass-primary" href="/admin/users">User</a>
+			<a class="btn variant-glass-primary" href="/admin/drinks">Drinks</a>
+			<a class="btn variant-glass-primary" href="/admin/category">Category</a>
 		</div>
 	</div>
 	<div class="col-span-5 h-full">

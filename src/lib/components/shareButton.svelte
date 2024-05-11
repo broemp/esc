@@ -10,11 +10,14 @@
 	async function handleClick() {
 		try {
 			let can = false;
+
 			try {
+				// Errors on firefox
 				can = navigator.canShare();
-			} catch {
+			} catch (e) {
 				can = false;
 			}
+
 			if (can) {
 				await navigator.share({ text, url, title });
 			} else {

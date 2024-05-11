@@ -1,15 +1,21 @@
 <script lang="ts">
-	import type { PageData } from '../$types';
+	import { goto } from '$app/navigation';
+	import type { PageServerData } from './$types';
 
-	export let data: PageData;
+	export let data: PageServerData;
 	let acts = data.acts;
+	let nextAct = data.nextAct[0];
 </script>
 
 <div>
-	<div class="card">
-		Probably newest vote - Next act without vote from person
-		<button class="btn variant-soft-primary">Cast your Vote</button>
-	</div>
+	{#if nextAct}
+		<div class="card" on:click={() => goto('/vote/' + nextAct.id)} role="button">
+			<div class="flex justify-center">
+				<p class="text-xl font-bold">Next Up: {nextAct.artist} - {nextAct.title}</p>
+			</div>
+		</div>
+		<img class="w-full h-48 object-contain" src={nextAct.picture_url} alt="next artist" />
+	{/if}
 	<div class="act-list w-full">
 		{#each acts as act}
 			<a href="/vote/{act.act.id}">
