@@ -1,32 +1,30 @@
 <script lang="ts">
 	import { Table } from '@skeletonlabs/skeleton';
 	import type { TableSource } from '@skeletonlabs/skeleton';
-	import type { DrinkList } from '$lib/server/db/querys';
+	import type { Drink, Country } from '$lib/types';
 
-	export let drinks: DrinkList;
-	type DrinkListElement = DrinkList[0];
+	export let drinks: (Drink & { country: Country })[] | null;
 	export let selectedDrink: string;
 
-	function tableMapper(data: DrinkList | null) {
+	function tableMapper(data: (Drink & { country: Country })[] | null) {
 		if (data == null) {
 			return [[], []];
 		}
-		return data!.map((item: DrinkListElement) => {
-			return [item.drink.name];
+		return data.map((item) => {
+			return [item.name];
 		});
 	}
 
-	function tableMapperMeta(data: DrinkList | null) {
+	function tableMapperMeta(data: (Drink & { country: Country })[] | null) {
 		if (data == null) {
 			return [[], []];
 		}
-		return data!.map((item: DrinkListElement) => {
-			return [item.drink.id];
+		return data.map((item) => {
+			return [item.id];
 		});
 	}
 
 	function handleSelection(meta: any) {
-		console.log(meta.detail[0]);
 		selectedDrink = meta.detail[0];
 	}
 

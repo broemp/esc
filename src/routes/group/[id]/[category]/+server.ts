@@ -1,4 +1,4 @@
-import { getRankingCategoryGroup } from "$lib/server/db/querys";
+import { getRankingCategoryGroup } from "$lib/server/db/queries";
 import { fail, json } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
 

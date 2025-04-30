@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from './$types';
-import { getAct } from '$lib/server/db/querys';
+import { getAct } from '$lib/server/db/queries';
 
 export async function GET(event: RequestEvent) {
   const id = event.params.id;

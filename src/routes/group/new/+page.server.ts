@@ -4,7 +4,7 @@ import {
   createGroup,
   type CreatedGroup,
   type NewGroup
-} from '$lib/server/db/querys';
+} from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from '../../admin/acts/$types';
 

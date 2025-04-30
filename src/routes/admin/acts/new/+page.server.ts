@@ -1,4 +1,4 @@
-import { createAct, createCountry, listCountries, type NewAct } from '$lib/server/db/querys';
+import { createAct, createCountry, listCountries, type NewAct } from '$lib/server/db/queries';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import type { Actions, RequestEvent } from './$types';
@@ -28,7 +28,7 @@ export const actions = {
     const data = await event.request.formData();
     let date = new Date();
     let act: NewAct = {
-      position: data.has("positon") ? +data.get("position")?.toString()! : null,
+      position: data.has("position") ? +data.get("position")?.toString()! : null,
       countryID: data.get('country_id')?.toString()!,
       artist: data.get('artist')?.toString()!,
       title: data.get('title')?.toString()!,

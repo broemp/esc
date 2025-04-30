@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
-import { createVote, type Vote } from "$lib/server/db/querys";
+import { createVote, type Vote } from "$lib/server/db/queries";
 import { fail } from "assert";
 
 export async function POST(request: RequestEvent) {

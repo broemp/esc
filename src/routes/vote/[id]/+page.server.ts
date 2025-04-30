@@ -1,4 +1,4 @@
-import { createVote, getAct, getAdjacentActs, getDefaultCategories, getUserCategories, getVoteForActByUser, type AdjacentActs, type DefaultCategories, type UserCategories, type Vote, type VotesForActByUser } from '$lib/server/db/querys';
+import { createVote, getAct, getAdjacentActs, getDefaultCategories, getUserCategories, getVoteForActByUser, type AdjacentActs, type DefaultCategories, type UserCategories, type Vote, type VotesForActByUser } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { RequestEvent } from './$types';

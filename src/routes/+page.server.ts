@@ -1,4 +1,4 @@
-import { getCurrentTopActs, listActs } from '$lib/server/db/querys';
+import { getCurrentTopActs, listActs } from '$lib/server/db/queries';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

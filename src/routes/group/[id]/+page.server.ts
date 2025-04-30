@@ -1,4 +1,4 @@
-import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, type RankingCategoryGroup, type aRankingCategoryGroup } from '$lib/server/db/querys';
+import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, type RankingCategoryGroup } from '$lib/server/db/queries';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -23,7 +23,6 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
     }
   });
 
-  console.log("yes: ", categoryRanking)
   let isAdmin = false
   if (group[0].group.admin == session.user?.id) {
     isAdmin = true

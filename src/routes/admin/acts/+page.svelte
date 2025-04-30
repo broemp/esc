@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ActEditor from '$lib/components/admin/ActEditor.svelte';
 	import ActList from '$lib/components/admin/ActList.svelte';
-	import type { ActList as ActListDB, CountryList } from '$lib/server/db/querys';
+	import type { ActList as ActListDB, CountryList } from '$lib/server/db/queries';
 	import type { ActionData } from './$types';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 

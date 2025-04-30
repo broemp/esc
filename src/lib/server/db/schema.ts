@@ -178,7 +178,6 @@ export const votes = pgTable('vote', {
   return {
     pk: primaryKey({
       columns: [table.userID, table.actID, table.categories]
-    }),
-    pkWithCustomName: primaryKey({ name: 'vote_pk', columns: [table.userID, table.actID, table.categories] })
+    })
   };
 });

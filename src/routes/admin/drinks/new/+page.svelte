@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CountryAutocomplete from '$lib/components/admin/CountryAutocomplete.svelte';
-	import type { CountryList } from '$lib/server/db/querys';
+	import type { CountryList } from '$lib/server/db/queries';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { ActionData } from './$types';

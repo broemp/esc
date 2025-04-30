@@ -1,4 +1,4 @@
-import { getUser, updateUsername } from '$lib/server/db/querys';
+import { getUser, updateUsername } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad, RequestEvent, Actions } from './$types';
 import { fail } from 'assert';
