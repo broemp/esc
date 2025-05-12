@@ -13,8 +13,8 @@
 		<button on:click={() => goto('/group')}>
 			<i class="fa-solid fa-user-group"></i>
 		</button>
-		<button on:click={() => goto('/settings')}>
-			<i class="fa-solid fa-gear"></i>
+		<button on:click={() => goto('/profile')}>
+			<i class="fa-solid fa-user"></i>
 		</button>
 	</div>
 </div>

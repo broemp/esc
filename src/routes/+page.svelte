@@ -96,7 +96,7 @@
 								/>
 							</div>
 							<p>
-								{act.artist} <br />
+								<span class="font-bold">{act.artist}</span> <br />
 								{act.title}
 							</p>
 							<p class="text-end">

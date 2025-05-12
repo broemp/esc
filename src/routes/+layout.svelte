@@ -39,7 +39,7 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<a href="/">
-					<img src="/logo.png" alt="logo" width="150" />
+					<img src="/logo_esc25.png" alt="logo" width="150" />
 				</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
@@ -55,6 +55,7 @@
 				{/if}
 			</svelte:fragment>
 		</AppBar>
+		<div class="border-b border-white"></div>
 	</svelte:fragment>
 	<div class="mb-14">
 		<slot />

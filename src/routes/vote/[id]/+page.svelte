@@ -127,12 +127,14 @@
 					step={0.5}
 					ticked
 				>
-					<div class="grid grid-cols-3 items-center">
-						<div></div>
-						<div class="font-bold">
+					<div class="flex flex-col gap-1">
+						<div class="text-center font-bold">
 							{category.name.replace('_', ' ').toLocaleUpperCase().trim()}
 						</div>
-						<div class="ml-auto text-xs">{category.points} / {max}</div>
+						<div class="flex justify-between text-xs text-gray-500">
+							<span>0</span>
+							<span>{category.points} / {max}</span>
+						</div>
 					</div>
 				</RangeSlider>
 			</div>

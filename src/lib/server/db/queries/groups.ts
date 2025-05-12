@@ -111,4 +111,13 @@ export function getGroupsFromUser(userId: string) {
   return db.select().from(userInGroups)
     .where(eq(userInGroups.userId, userId))
     .leftJoin(groups, eq(groups.id, userInGroups.groupId))
+}
+
+export function leaveGroup(groupId: string, userId: string) {
+  UUIDVerifier.parse(groupId);
+  UUIDVerifier.parse(userId);
+  return db
+    .delete(userInGroups)
+    .where(and(eq(userInGroups.groupId, groupId), eq(userInGroups.userId, userId)))
+    .execute();
 } 

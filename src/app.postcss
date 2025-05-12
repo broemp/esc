@@ -5,7 +5,12 @@
 
 html,
 body {
-	@apply h-full overflow-hidden;
+	@apply h-full overflow-hidden text-lg;
+	background-image: url('/bg-2025.png');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
 
 /* modern theme */
@@ -13,4 +18,30 @@ body {
 	font-family: 'Quicksand';
 	src: url('/fonts/Quicksand.ttf');
 	font-display: swap;
+}
+
+/* Custom input styling */
+input.input {
+	@apply bg-[#121212] text-white border border-[#0f0f0f] !important;
+}
+
+input.input:focus {
+	@apply bg-[#121212] ring-2 ring-primary-500 border-[#0f0f0f] !important;
+}
+
+input.input::placeholder {
+	@apply text-gray-300 !important;
+}
+
+/* Custom checkbox styling */
+input.checkbox {
+	@apply bg-[#121212] border border-[#0f0f0f] !important;
+}
+
+input.checkbox:checked {
+	@apply bg-primary-500 border-primary-500 !important;
+}
+
+input.checkbox:focus {
+	@apply ring-2 ring-primary-500 !important;
 }
