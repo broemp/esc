@@ -2,23 +2,37 @@
 	import axios from 'axios';
 	import CountryAutocomplete from './CountryAutocomplete.svelte';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
-	import type { CountryList } from '$lib/server/db/querys';
+	import type { CountryList } from '$lib/server/db/queries';
 
 	const toastStore = getToastStore();
 	export let countries: CountryList;
 	export let drinkID: string;
 	let drink: any;
 	let country: any;
-	let years = [2024];
-	$: drink, getDrink(drinkID);
+	const currentYear = new Date().getFullYear();
+	let oldestYear = currentYear;
+	let years: number[] = [];
+
+	async function loadYears() {
+		try {
+			const response = await axios.get('/admin/drinks/oldest-year');
+			oldestYear = response.data.year || currentYear;
+			years = Array.from({ length: currentYear - oldestYear + 1 }, (_, i) => currentYear - i);
+		} catch (error) {
+			// If we can't get the oldest year, just use the last 5 years
+			years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+		}
+	}
 
 	function getDrink(id: string) {
-		console.log('HIER');
 		axios
 			.get('/admin/drinks/' + id)
 			.then(function (response) {
-				console.log(response);
 				drink = response.data[0];
+				country = {
+					id: drink.countryID,
+					name: drink.country?.name || ''
+				};
 			})
 			.catch(function (error) {
 				const t: ToastSettings = {
@@ -28,6 +42,9 @@
 				toastStore.trigger(t);
 			});
 	}
+
+	$: drink, getDrink(drinkID);
+	loadYears();
 </script>
 
 <div class="w-full h-full">

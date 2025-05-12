@@ -1,17 +1,23 @@
 <script lang="ts">
 	import DrinkEditor from '$lib/components/admin/DrinkEditor.svelte';
 	import DrinkList from '$lib/components/admin/DrinkList.svelte';
-	import type { DrinkList as DrinkListType, CountryList } from '$lib/server/db/querys';
+	import type { Drink, Country } from '$lib/types';
 	import type { PageServerData } from './$types';
 
-	export let data: { drinks: DrinkListType | null; countries: CountryList };
+	export let data: { drinks: (Drink & { country: Country })[] | null; countries: Country[] };
 	let drinks = data?.drinks;
 	let drinkID = '';
 </script>
 
 <div class="grid grid-cols-3 gap-4">
 	<div class="col-span-2">
-		<DrinkEditor {drinkID} countries={data.countries}></DrinkEditor>
+		{#if drinkID}
+			<DrinkEditor {drinkID} countries={data.countries}></DrinkEditor>
+		{:else}
+			<div class="card text-xl p-4">
+				<p>Select a drink to edit</p>
+			</div>
+		{/if}
 	</div>
 	<div class="col-span-1">
 		<a href="/admin/drinks/new">

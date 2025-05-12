@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CountryList } from '$lib/server/db/querys';
+	import type { CountryList } from '$lib/server/db/queries';
 	import { Autocomplete } from '@skeletonlabs/skeleton';
 	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Table } from '@skeletonlabs/skeleton';
 	import type { TableSource } from '@skeletonlabs/skeleton';
-	import type { ActList } from '$lib/server/db/querys';
+	import type { ActList } from '$lib/server/db/queries';
 
 	export let acts: ActList | null;
 	type ActListElement = ActList[0];

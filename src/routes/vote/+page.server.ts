@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { listActs, listCountries, nextAdminAct } from '$lib/server/db/querys';
+import { listActs, listCountries, nextAdminAct } from '$lib/server/db/queries';
 
 export const load: PageServerLoad = async () => {
   const acts = listActs(30, 0);

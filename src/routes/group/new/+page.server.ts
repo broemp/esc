@@ -2,9 +2,9 @@ import {
   addCategorieToGroup,
   addUserToGroup,
   createGroup,
-  type CreatedGroup,
+  type createdGroup,
   type NewGroup
-} from '$lib/server/db/querys';
+} from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from '../../admin/acts/$types';
 
@@ -17,8 +17,13 @@ export const actions = {
       return { success: false, error: 'Not logged in' };
     }
 
+    const name = data.get('name')?.toString().trim();
+    if (!name) {
+      return { success: false, error: 'Group name is required' };
+    }
+
     let newGroup: NewGroup = {
-      name: data.get('name')!.valueOf().toString(),
+      name: name,
       admin: session.user.id!,
       public: data.has("public")
     };

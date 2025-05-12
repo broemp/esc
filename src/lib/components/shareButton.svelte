@@ -9,23 +9,32 @@
 
 	async function handleClick() {
 		try {
-			let can = false;
+			const shareData = {
+				title: title,
+				text: text,
+				url: url
+			};
 
-			try {
-				// Errors on firefox
-				can = navigator.canShare();
-			} catch (e) {
-				can = false;
-			}
-
-			if (can) {
-				await navigator.share({ text, url, title });
+			// Check if Web Share API is available and can share the data
+			if (navigator.share && navigator.canShare(shareData)) {
+				await navigator.share(shareData);
 			} else {
+				// Fallback to clipboard
 				await navigator.clipboard.writeText(url);
 				complete = true;
+				// Reset the complete state after 2 seconds
+				setTimeout(() => complete = false, 2000);
 			}
 		} catch (error) {
-			console.error(error);
+			console.error('Error sharing:', error);
+			// If share fails, fallback to clipboard
+			try {
+				await navigator.clipboard.writeText(url);
+				complete = true;
+				setTimeout(() => complete = false, 2000);
+			} catch (clipboardError) {
+				console.error('Error copying to clipboard:', clipboardError);
+			}
 		}
 	}
 </script>

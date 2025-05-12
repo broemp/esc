@@ -92,15 +92,15 @@
 								<img
 									src={act.countryImage}
 									class="aspect-square object-contain w-12 h-12"
-									alt={act.countryName}
+									alt={act.artist}
 								/>
 							</div>
 							<p>
-								{act.artist} <br />
+								<span class="font-bold">{act.artist}</span> <br />
 								{act.title}
 							</p>
 							<p class="text-end">
-								{act.averagePoints}
+								{act.score}
 							</p>
 						</div>
 					</div>

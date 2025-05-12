@@ -1,10 +1,17 @@
-import { getGroup, type GroupInfo } from '$lib/server/db/querys';
+import { getGroup, type GroupInfo } from '$lib/server/db/queries';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }: any) => {
-  const group: GroupInfo = await getGroup(params.id);
+  const result = await getGroup(params.id);
+  const group: GroupInfo = {
+    id: result[0].group.id,
+    name: result[0].group.name,
+    public: result[0].group.public,
+    members: [],
+    categories: []
+  };
 
   return {
-    group: group[0]
+    group: { group }
   };
 };

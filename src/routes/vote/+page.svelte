@@ -19,21 +19,19 @@
 	<div class="act-list w-full">
 		{#each acts as act}
 			<a href="/vote/{act.act.id}">
-				<div class="w-full bg-surface-900 border-black border-t-2 grid grid-cols-2">
+				<div class="w-full border-black border-t-2 grid grid-cols-[1fr_2fr_3fr] h-32">
+					<div class="flex items-center justify-center">
+						<span class="text-4xl font-bold text-primary-500">{act.act.position}</span>
+					</div>
 					<img
-						class="pic aspect-square object-contain w-3/6"
+						class="pic h-full w-full object-contain"
 						src={act.act.picture_url}
 						alt="artist"
 					/>
-					<div class="flex justify-items-center self-center text-center">
-						<p>
-							<span class="text-xl font-bold text-[#ff47df]"
-								>{act.act.position}. {act.country.name}</span
-							>
-							<br />
-							<span class="text-lg font-bold">{act.act.artist}</span> <br />
-							<span class="font-normal">{act.act.title}</span>
-						</p>
+					<div class="flex flex-col justify-center p-4">
+						<span class="text-xl font-bold text-primary-500">{act.country.name}</span>
+						<span class="text-lg font-bold">{act.act.artist}</span>
+						<span class="font-normal">{act.act.title}</span>
 					</div>
 				</div>
 			</a>

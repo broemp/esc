@@ -1,4 +1,4 @@
-import { getPublicGroups, joinGroup } from '$lib/server/db/querys';
+import { getPublicGroups, joinGroup } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './[id]/$types';
 import type { RequestEvent, PageServerLoad } from './$types';

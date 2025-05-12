@@ -1,4 +1,4 @@
-import { deleteAct, listActs, listCountries, updateAct, type UpdateAct } from '$lib/server/db/querys';
+import { deleteAct, listActs, listCountries, updateAct, type UpdateAct } from '$lib/server/db/queries';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import axios from 'axios';
 	import CountryAutocomplete from './CountryAutocomplete.svelte';
-	import type { CountryList } from '$lib/server/db/querys';
+	import type { CountryList } from '$lib/server/db/queries';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
@@ -9,7 +9,7 @@
 	export let actID: string;
 	let act: any;
 	let country: any;
-	let years = [2024];
+	let years = [2024,2025];
 	$: actID, getAct(actID);
 
 	function getAct(id: string) {

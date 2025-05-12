@@ -4,7 +4,7 @@
 		<div class="main-settings space-y-2 mx-4">
 			<div>
 				<span class="ml-2">Name</span>
-				<input class="input" title="Name" name="name" type="text" />
+				<input class="input" title="Name" name="name" type="text" required minlength="1" />
 			</div>
 			<div>
 				<span class="ml-2">Description</span>

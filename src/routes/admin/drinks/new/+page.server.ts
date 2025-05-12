@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
 import { fail } from "@sveltejs/kit";
-import { createDrink, listCountries, type NewDrink } from "$lib/server/db/querys";
+import { createDrink, listCountries, type NewDrink } from "$lib/server/db/queries";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async () => {
@@ -30,12 +30,10 @@ export const actions = {
       alcohol: data.has("alcoholic"),
       year: date.getFullYear()
     };
-    console.log(drink)
 
     try {
       DrinkSchema.parse(drink);
     } catch (e) {
-      console.log(e)
       return fail(400, { success: false, message: 'Invalid Data, ' + e });
     }
     try {

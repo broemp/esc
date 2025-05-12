@@ -37,23 +37,35 @@ const { handle: authenticationHandle } = SvelteKitAuth({
 });
 
 export const authorizationHandle: Handle = async ({ event, resolve }) => {
+  const session = await event.locals.auth();
+  
+  // Set or clear admin cookie based on session
+  if (session?.user?.role === 'admin') {
+    event.cookies.set('is_admin', 'true', {
+      path: '/',
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 7 // 1 week
+    });
+  } else {
+    event.cookies.delete('is_admin', { path: '/' });
+  }
+
   if (event.url.pathname.startsWith('/authenticate')) {
-    const session = await event.locals.auth();
     if (!session) {
       redirect(303, '/auth/signin');
     }
   }
 
   if (event.url.pathname.startsWith('/group') || event.url.pathname.startsWith('/profile') || event.url.pathname.startsWith('/vote')) {
-    const session = await event.locals.auth();
     if (!session) {
       redirect(303, '/auth/signin');
     }
   }
 
   if (event.url.pathname.startsWith('/admin')) {
-    const session = await event.locals.auth();
-    if (session?.user?.role != 'admin') {
+    if (session?.user?.role !== 'admin') {
       redirect(303, '/');
     }
   }
