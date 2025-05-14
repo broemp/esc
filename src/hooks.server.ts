@@ -4,36 +4,41 @@ import { redirect, type Handle } from '@sveltejs/kit';
 import Discord from '@auth/core/providers/discord';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { env } from '$env/dynamic/private';
-import { db } from '$lib/server/db/db';
+import { getDb, runMigrations } from '$lib/server/db/db';
 import { eq } from 'drizzle-orm';
 import { users } from '$lib/server/db/schema';
 import Reddit from '@auth/core/providers/reddit';
 import Google from '@auth/core/providers/google';
 
+// Run migrations when the server starts
+if (process.env.NODE_ENV !== 'production') {
+	runMigrations().catch(console.error);
+}
+
 const { handle: authenticationHandle } = SvelteKitAuth({
-  adapter: DrizzleAdapter(db),
-  providers: [
-    Discord({ clientId: env.DISCORD_ID, clientSecret: env.DISCORD_SECRET }),
-    Reddit({ clientId: env.REDDIT_ID, clientSecret: env.REDDIT_SECRET }),
-    Google({ clientId: env.GOOGLE_ID, clientSecret: env.GOOGLE_SECRET })
-  ],
-  pages: {
-    signIn: '/auth/signIn',
-    signOut: '/auth/signOut',
-    error: '/auth/error'
-  },
-  callbacks: {
-    async session({ session, user }) {
-      const result = await db
-        .select({ role: users.role })
-        .from(users)
-        .where(eq(users.id, user.id))
-        .limit(1);
-      session.user.role = result[0].role;
-      return session;
-    }
-  },
-  trustHost: true
+	adapter: DrizzleAdapter(getDb()),
+	providers: [
+		Discord({ clientId: env.DISCORD_ID, clientSecret: env.DISCORD_SECRET }),
+		Reddit({ clientId: env.REDDIT_ID, clientSecret: env.REDDIT_SECRET }),
+		Google({ clientId: env.GOOGLE_ID, clientSecret: env.GOOGLE_SECRET })
+	],
+	pages: {
+		signIn: '/auth/signIn',
+		signOut: '/auth/signOut',
+		error: '/auth/error'
+	},
+	callbacks: {
+		async session({ session, user }) {
+			const result = await getDb()
+				.select({ role: users.role })
+				.from(users)
+				.where(eq(users.id, user.id))
+				.limit(1);
+			session.user.role = result[0].role;
+			return session;
+		}
+	},
+	trustHost: true
 });
 
 export const authorizationHandle: Handle = async ({ event, resolve }) => {
