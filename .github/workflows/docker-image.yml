@@ -7,25 +7,23 @@ on:
     branches: [ "main" ]
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/esc_app
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Log in to the Container registry
+    - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
@@ -52,9 +50,9 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     strategy:
       matrix:
-        server: [server1, server2] # Add your server identifiers here
-      fail-fast: true # Continue deploying to other servers even if one fails
-    
+        server: [server1, server2]
+      fail-fast: false
+
     steps:
 
     - name: Set up WARP
@@ -71,10 +69,10 @@ jobs:
         protocol: tcp6
         port: 22
         script: |
-          # Login to GitHub Container Registry
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          # Login to Docker Hub
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           
-          # Create .env file with all environment variables
+          # Create .env file
           touch /home/esc/.env
           cat > /home/esc/.env << EOL
           PUBLIC_APP_URL=${{ secrets.PUBLIC_APP_URL }}
@@ -92,10 +90,8 @@ jobs:
           DB_SSL=${{ secrets.DB_SSL }}
           EOL
           
-          # Set proper permissions for .env file
           chmod 600 /home/esc/.env
           
-          # Pull the latest image and restart services
           cd /home/esc
           docker compose pull esc_app
           docker compose up -d
