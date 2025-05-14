@@ -62,5 +62,6 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
           # Pull the latest image and restart services
+          cd /home/broemp/esc
           docker compose pull esc_app
           docker compose up -d
