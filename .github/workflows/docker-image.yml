@@ -75,8 +75,8 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
           # Create .env file with all environment variables
-          touch /home/broemp/esc/.env
-          cat > /home/broemp/esc/.env << EOL
+          touch /home/esc/.env
+          cat > /home/esc/.env << EOL
           PUBLIC_APP_URL=${{ secrets.PUBLIC_APP_URL }}
           PORT=5173
           AUTH_SECRET=${{ secrets.AUTH_SECRET }}
@@ -93,9 +93,9 @@ jobs:
           EOL
           
           # Set proper permissions for .env file
-          chmod 600 /home/broemp/esc/.env
+          chmod 600 /home/esc/.env
           
           # Pull the latest image and restart services
-          cd /home/broemp/esc
+          cd /home/esc
           docker compose pull esc_app
           docker compose up -d
