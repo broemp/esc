@@ -37,14 +37,18 @@
 
 <div class="w-full h-full grid grid-cols-1 content-center justify-items-center">
 	{#if !$page.data.session}
-		<span class="text-center font-extrabold text-5xl pb-4 underline underline-offset-8">
+		<span class="text-center font-extrabold text-5xl pb-4 pt-5 underline underline-offset-8">
 			WELCOME
 		</span>
 		<span class="text-center font-bold text-xl m-4 pb-16">
 			Please log in to take part in a watch party vote for this year's Eurovision Song Contest -
 			create your own group or join an existing one!
 		</span>
-		<a href="/auth/signIn" class="btn btn-md variant-ghost w-48">Join Now</a>
+		<a href="/auth/signIn" class="btn btn-md bg-primary-500 w-48">Join Now</a>
+	{:else if data.groups.length === 0}
+		<span class="text-center font-bold text-xl m-4">
+			Please become a member of a group to vote!
+		</span>
 	{:else}
 		<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
 			<!-- Button: Left -->
@@ -73,14 +77,31 @@
 		</div>
 		<!-- Info Field -->
 		<div class="w-full">
-			<section class="card variant-filled-primary flex mt-2 mx-2 p-4">
+			<section class="card variant-filled-secondary flex mt-2 mx-2 p-4">
 				<span class="text-center">Swipe through the carousel and click on the artist to vote!</span>
 			</section>
 		</div>
 		<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Groups</p>
+		{#if data.groups.length > 0}
+			<div class="m-4">
+				<div class="grid grid-cols-2 gap-4">
+					{#each data.groups as group, i}
+						<a href="/group/{group.group?.id}" class={i === data.groups.length - 1 && data.groups.length % 2 === 1 ? 'col-span-2' : ''}>
+							<div class="card variant-form-material p-4 font-bold grid justify-items-center">
+								{group.group?.name}
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		{:else}
+			<div class="text-center text-gray-300 m-4">
+				No Groups - Create a group or join an existing one
+			</div>
+		{/if}
 		<div class="flex p-4 gap-4">
-			<a href="/group/new" class="btn bg-secondary-500 w-1/2">Create new Group</a>
-			<a href="/group/join" class="btn bg-secondary-500 w-1/2">Join Group</a>
+			<a href="/group/new" class="btn bg-primary-500 w-1/2">Create new Group</a>
+			<a href="/group/join" class="btn bg-primary-500 w-1/2">Join Group</a>
 		</div>
 		<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Top List</p>
 		<div class="mt-2 mb-16 w-full">

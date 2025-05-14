@@ -4,6 +4,7 @@
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { UserCategories, DefaultCategories } from '$lib/server/db/queries';
 	import axios from 'axios';
+	import { goto } from '$app/navigation';
 	import { PUBLIC_APP_URL } from '$env/static/public';
 
 	export let data: PageServerData;
@@ -85,7 +86,7 @@
 			toastStore.trigger(t);
 			return;
 		}
-		window.location.replace(PUBLIC_APP_URL + '/vote/' + actID);
+		goto('/vote/' + actID);
 	}
 </script>
 
@@ -99,7 +100,7 @@
 				</button>
 				<div class="col-span-6 pt-2">
 					<div class="flex justify-center">
-						<img src={country.imageURL} alt="country heart" class="w-12 h-12" />
+						<img src={country.imageURL} alt="country heart" class="w-12 h-12 pr-2" />
 						<p>
 							<span class="font-bold">
 								{act.artist}
