@@ -62,6 +62,8 @@ jobs:
         host: ${{ secrets[format('SERVER_{0}_HOST', matrix.server)] }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
+        protocol: tcp6
+        port: 22
         script: |
           # Login to GitHub Container Registry
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
