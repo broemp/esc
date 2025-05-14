@@ -1,23 +1,12 @@
 services:
-  esc_db:
-    container_name: esc_db
-    image: postgres:latest
-    command: ["postgres", "-c", "log_statement=all"]
-    ports:
-      - 127.0.0.1:${DB_PORT:-5432}:5432
-    environment:
-      POSTGRES_USER: ${DB_USER:-esc}
-      POSTGRES_PASSWORD: ${DB_PASS:-esc}
-      POSTGRES_DB: ${DB_DB:-esc}
-
   esc_app:
     container_name: esc_app
-    image: broemp:esc
+    image:  ghcr.io/broemp/esc:latest
     build:
       dockerfile: Dockerfile
     environment:
       DB_HOST: esc_db
       DB_PORT: 5432
-    ports:
-      - 127.0.0.1:5173:5173
     env_file: .env
+    ports:
+      - 5173

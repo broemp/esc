@@ -50,17 +50,41 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    strategy:
+      matrix:
+        server: [server1, server2] # Add your server identifiers here
+      fail-fast: false # Continue deploying to other servers even if one fails
     
     steps:
-    - name: Deploy to server
+    - name: Deploy to ${{ matrix.server }}
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SERVER_HOST }}
+        host: ${{ secrets[format('SERVER_{0}_HOST', matrix.server)] }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           # Login to GitHub Container Registry
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          
+          # Create .env file with all environment variables
+          cat > /home/broemp/esc/.env << EOL
+          PUBLIC_APP_URL=${{ secrets.PUBLIC_APP_URL }}
+          PORT=5173
+          AUTH_SECRET=${{ secrets.AUTH_SECRET }}
+          DISCORD_ID=${{ secrets.DISCORD_ID }}
+          DISCORD_SECRET=${{ secrets.DISCORD_SECRET }}
+          GOOGLE_ID=${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}
+          DB_HOST=esc_db
+          DB_PORT=5432
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASS=${{ secrets.DB_PASS }}
+          DB_DB=${{ secrets.DB_DB }}
+          DB_SSL=${{ secrets.DB_SSL }}
+          EOL
+          
+          # Set proper permissions for .env file
+          chmod 600 /home/broemp/esc/.env
           
           # Pull the latest image and restart services
           cd /home/broemp/esc
