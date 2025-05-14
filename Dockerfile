@@ -1,4 +1,4 @@
-FROM node:22 AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm
@@ -26,7 +26,7 @@ ENV DB_SSL=false
 COPY . .
 RUN pnpm vite build && pnpm prune --production
 
-FROM node:22-slim
+FROM node:22-alpine
 WORKDIR /app
 
 COPY --from=builder /app/build ./build
