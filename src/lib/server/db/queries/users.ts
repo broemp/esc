@@ -4,10 +4,10 @@ import { users } from '../schema';
 import { z } from "zod";
 import type { UpdateUsername } from '../../../types';
 
-const UUIDVerifier = z.string().uuid();
+const UUIDVerifier = z.string();
 const UpdateUsernameSchema = z.object({
   username: z.string().max(64).min(3),
-  userID: z.string().uuid()
+  userID: z.string()
 })
 
 export function getUser(userId: string) {
@@ -24,7 +24,7 @@ export function updateUsername(update: UpdateUsername) {
 }
 
 export function getAllUsers(limit: number = 10, offset: number = 0) {
-  return db.select().from(users).orderBy(users.createdAt).limit(limit).offset(offset);
+  return db.select().from(users).limit(limit).offset(offset);
 }
 
 export function updateUserRole(userId: string, role: string) {

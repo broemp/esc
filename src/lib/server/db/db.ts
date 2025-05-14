@@ -37,12 +37,4 @@ export function getDb() {
 }
 
 // For backward compatibility
-export const db = {
-	...getDb(),
-	// Add any methods that need to be called directly on the db object
-	select: (...args: Parameters<ReturnType<typeof drizzle>['select']>) => getDb().select(...args),
-	insert: (...args: Parameters<ReturnType<typeof drizzle>['insert']>) => getDb().insert(...args),
-	update: (...args: Parameters<ReturnType<typeof drizzle>['update']>) => getDb().update(...args),
-	delete: (...args: Parameters<ReturnType<typeof drizzle>['delete']>) => getDb().delete(...args),
-	execute: (...args: Parameters<ReturnType<typeof drizzle>['execute']>) => getDb().execute(...args)
-};
+export const db = getDb();
