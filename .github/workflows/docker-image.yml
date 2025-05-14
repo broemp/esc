@@ -53,7 +53,7 @@ jobs:
     strategy:
       matrix:
         server: [server1, server2] # Add your server identifiers here
-      fail-fast: false # Continue deploying to other servers even if one fails
+      fail-fast: true # Continue deploying to other servers even if one fails
     
     steps:
 
