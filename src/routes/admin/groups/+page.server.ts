@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db/db';
-import { groups } from '$lib/server/db/schema';
+import { groups, userInGroups, categoriesInGroup } from '$lib/server/db/schema';
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { eq } from 'drizzle-orm';
@@ -30,7 +30,18 @@ export const actions: Actions = {
       throw error(400, 'Group ID is required');
     }
 
-    await db.delete(groups).where(eq(groups.id, groupId)).execute();
-    return { success: true };
+    try {
+      // Delete related records first
+      await db.delete(userInGroups).where(eq(userInGroups.groupId, groupId)).execute();
+      await db.delete(categoriesInGroup).where(eq(categoriesInGroup.groupId, groupId)).execute();
+      
+      // Finally delete the group
+      await db.delete(groups).where(eq(groups.id, groupId)).execute();
+      
+      return { success: true };
+    } catch (err) {
+      console.error('Error deleting group:', err);
+      throw error(500, 'Failed to delete group');
+    }
   }
 }; 
