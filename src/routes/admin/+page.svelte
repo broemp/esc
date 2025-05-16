@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import type { PageData } from './$types';
 
+	export let data: PageData;
 	const toastStore = getToastStore();
 
 	async function deleteAllVotes() {
@@ -38,6 +40,78 @@
 
 <div class="container mx-auto p-4">
 	<h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+
+	<!-- Overview Panel -->
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+		<!-- Users Stats -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="text-lg font-semibold">Users</h3>
+					<p class="text-3xl font-bold">{data.stats.totalUsers}</p>
+					<p class="text-sm text-surface-500">+{data.stats.newUsersToday} today</p>
+				</div>
+				<div class="text-4xl text-primary-500">
+					<i class="fa-solid fa-users"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Votes Stats -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="text-lg font-semibold">Votes</h3>
+					<p class="text-3xl font-bold">{data.stats.totalVotes}</p>
+					<p class="text-sm text-surface-500">+{data.stats.votesToday} today</p>
+				</div>
+				<div class="text-4xl text-primary-500">
+					<i class="fa-solid fa-check-to-slot"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Groups Stats -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="text-lg font-semibold">Groups</h3>
+					<p class="text-3xl font-bold">{data.stats.totalGroups}</p>
+				</div>
+				<div class="text-4xl text-primary-500">
+					<i class="fa-solid fa-user-group"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Acts Stats -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="text-lg font-semibold">Acts</h3>
+					<p class="text-3xl font-bold">{data.stats.totalActs}</p>
+				</div>
+				<div class="text-4xl text-primary-500">
+					<i class="fa-solid fa-music"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Categories Stats -->
+		<div class="card p-4">
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="text-lg font-semibold">Categories</h3>
+					<p class="text-3xl font-bold">{data.stats.totalCategories}</p>
+				</div>
+				<div class="text-4xl text-primary-500">
+					<i class="fa-solid fa-tags"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Danger Zone -->
 	<div class="card p-4">
 		<h2 class="text-xl font-semibold mb-4">Danger Zone</h2>
 		<button
