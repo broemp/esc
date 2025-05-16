@@ -5,16 +5,22 @@
 	export let data: PageServerData;
 	let acts = data.acts;
 	let nextAct = data.nextAct[0];
+
+	function handleNextActClick() {
+		if (nextAct) {
+			goto(`/vote/${nextAct.id}`);
+		}
+	}
 </script>
 
 <div>
 	{#if nextAct}
-		<div class="card" on:click={() => goto('/vote/' + nextAct.id)} role="button">
+		<div class="card cursor-pointer" on:click={handleNextActClick} role="button">
 			<div class="flex justify-center">
 				<p class="text-xl font-bold">Next Up: {nextAct.artist} - {nextAct.title}</p>
 			</div>
 		</div>
-		<img class="w-full h-48 object-contain" src={nextAct.picture_url} alt="next artist" />
+		<img class="w-full h-48 object-contain cursor-pointer" src={nextAct.picture_url} alt="next artist" on:click={handleNextActClick} />
 	{/if}
 	<div class="act-list w-full">
 		{#each acts as act}
