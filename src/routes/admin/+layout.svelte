@@ -31,6 +31,12 @@
 				>
 					<span class="text-white">Categories</span>
 				</a>
+				<a 
+					class="flex items-center p-3 rounded-lg transition-all duration-200 hover:bg-surface-700 whitespace-nowrap {($page.url.pathname === '/admin/groups') ? 'bg-surface-700' : ''}" 
+					href="/admin/groups"
+				>
+					<span class="text-white">Groups</span>
+				</a>
 			</div>
 		</div>
 	</div>
