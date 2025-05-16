@@ -10,7 +10,7 @@
   }
 
   function viewUserProfile(userId: string) {
-    goto(`/profile/${userId}`);
+    goto(`/user/${userId}`);
   }
 </script>
 
@@ -36,7 +36,7 @@
                 {#if vote.user}
                   <button 
                     class="btn btn-sm variant-ghost-primary"
-                    on:click={() => viewUserProfile(vote.user?.id)}
+                    on:click={() => vote.user?.id && viewUserProfile(vote.user.id)}
                   >
                     {vote.user?.name || vote.user?.email}
                   </button>
