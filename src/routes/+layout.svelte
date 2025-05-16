@@ -33,6 +33,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{$page.data.title}</title>
+</svelte:head>
+
 <Toast />
 <AppShell>
 	<svelte:fragment slot="header">
