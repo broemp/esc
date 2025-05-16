@@ -36,15 +36,15 @@
 </script>
 
 <div class="w-full h-full grid grid-cols-1 content-center justify-items-center">
-	<div class="w-full md:w-2/3 mx-auto">
+	<div class="w-full md:w-2/3 mx-auto flex flex-col items-center">
 		{#if !$page.data.session}
-			<span class="text-center font-extrabold text-5xl pb-4 pt-5 underline underline-offset-8">
+			<h1 class="text-center font-extrabold text-5xl pb-4 pt-5 underline underline-offset-8">
 				WELCOME
-			</span>
-			<span class="text-center font-bold text-xl m-4 pb-16">
+			</h1>
+			<p class="text-center font-bold text-xl m-4 pb-16 max-w-2xl">
 				Please log in to take part in a watch party vote for this year's Eurovision Song Contest -
 				create your own group or join an existing one!
-			</span>
+			</p>
 			<a href="/auth/signIn" class="btn btn-md bg-primary-500 w-48">Join Now</a>
 		{:else}
 			{#if data.groups.length === 0}
