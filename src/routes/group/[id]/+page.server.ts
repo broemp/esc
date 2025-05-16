@@ -1,5 +1,5 @@
 import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, type RankingCategoryGroup } from '$lib/server/db/queries';
-import { redirect, type RequestEvent } from '@sveltejs/kit';
+import { redirect, error, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event: RequestEvent) => {
@@ -11,7 +11,19 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
   const groupID = event.params.id!
 
   const group = await getGroup(groupID)
+  if (!group[0]) {
+    throw error(404, 'Group not found');
+  }
+
+  // Check if user has access to the group
   const members = await getMembersOfGroup(groupID)
+  const isMember = members.some(member => member.userid === session.user?.id);
+  const isPublic = group[0].group.public;
+
+  if (!isMember && !isPublic) {
+    throw error(403, 'Not authorized to access this group');
+  }
+
   const categories = await getGroupCategories(groupID)
   const songVotes = await getGroupSongVotes(groupID)
   const categoryRanking: RankingCategoryGroup[] = [];
