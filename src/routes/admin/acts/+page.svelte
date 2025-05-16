@@ -31,11 +31,11 @@
 	}
 </script>
 
-<div class="grid grid-cols-3 m-4">
-	<div class="col-span-2">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 m-4">
+	<div class="md:col-span-2">
 		<ActEditor {actID} countries={data.countries} />
 	</div>
-	<div class="col-span-1">
+	<div class="md:col-span-1">
 		<a href="/admin/acts/new">
 			<button class="btn variant-glass-primary w-full mb-2">New Act</button>
 		</a>

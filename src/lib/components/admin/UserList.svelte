@@ -81,21 +81,21 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Role</th>
-					<th>Created At</th>
-					<th>Actions</th>
+					<th class="px-4 md:px-6">Name</th>
+					<th class="px-4 md:px-6">Email</th>
+					<th class="px-4 md:px-6">Role</th>
+					<th class="px-4 md:px-6">Created At</th>
+					<th class="px-4 md:px-6">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each users as user}
 					<tr>
-						<td>{user.name || 'N/A'}</td>
-						<td>{user.email}</td>
-						<td>{user.role}</td>
-						<td>{new Date(user.createdAt).toLocaleDateString()}</td>
-						<td class="flex gap-2">
+						<td class="px-4 md:px-6">{user.name || 'N/A'}</td>
+						<td class="px-4 md:px-6">{user.email}</td>
+						<td class="px-4 md:px-6">{user.role}</td>
+						<td class="px-4 md:px-6">{new Date(user.createdAt).toLocaleDateString()}</td>
+						<td class="px-4 md:px-6 flex flex-col md:flex-row gap-2">
 							<button
 								class="btn btn-sm {user.role === 'admin' ? 'variant-filled-error' : 'variant-filled-primary'}"
 								on:click={() => toggleAdmin(user)}

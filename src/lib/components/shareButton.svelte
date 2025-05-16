@@ -15,16 +15,22 @@
 				url: url
 			};
 
-			// Check if Web Share API is available and can share the data
-			if (navigator.share && navigator.canShare(shareData)) {
-				await navigator.share(shareData);
-			} else {
-				// Fallback to clipboard
-				await navigator.clipboard.writeText(url);
-				complete = true;
-				// Reset the complete state after 2 seconds
-				setTimeout(() => complete = false, 2000);
+			// Check if Web Share API is available
+			if (navigator.share) {
+				try {
+					await navigator.share(shareData);
+					return; // Exit if share was successful
+				} catch (shareError) {
+					console.error('Share failed:', shareError);
+					// Continue to clipboard fallback if share fails
+				}
 			}
+
+			// Fallback to clipboard
+			await navigator.clipboard.writeText(url);
+			complete = true;
+			// Reset the complete state after 2 seconds
+			setTimeout(() => complete = false, 2000);
 		} catch (error) {
 			console.error('Error sharing:', error);
 			// If share fails, fallback to clipboard

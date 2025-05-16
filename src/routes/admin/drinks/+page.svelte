@@ -9,8 +9,8 @@
 	let drinkID = '';
 </script>
 
-<div class="grid grid-cols-3 gap-4">
-	<div class="col-span-2">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+	<div class="md:col-span-2">
 		{#if drinkID}
 			<DrinkEditor {drinkID} countries={data.countries}></DrinkEditor>
 		{:else}
@@ -19,7 +19,7 @@
 			</div>
 		{/if}
 	</div>
-	<div class="col-span-1">
+	<div class="md:col-span-1">
 		<a href="/admin/drinks/new">
 			<button class="btn variant-filled-primary w-full">Add Drink</button>
 		</a>

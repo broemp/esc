@@ -4,7 +4,7 @@
 	export let data: PageServerData;
 </script>
 
-<div>
+<div class="w-full md:w-2/3 mx-auto">
 	<p class="flex justify-center pt-2 text-xl underline font-bold">Your Groups</p>
 	<div class="flex p-4 gap-4">
 		<a href="/group/new" class="btn bg-primary-500 w-1/2">Create new Group</a>

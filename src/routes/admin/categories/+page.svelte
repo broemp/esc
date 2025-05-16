@@ -71,7 +71,7 @@
   <h1 class="text-2xl font-bold mb-6">Category Management</h1>
 
   <!-- Create New Category Form -->
-  <div class="bg-surface-800 p-6 rounded-lg shadow-md mb-8">
+  <div class="bg-surface-800 p-4 md:p-6 rounded-lg shadow-md mb-8">
     <h2 class="text-xl font-semibold mb-4">Create New Category</h2>
     <form on:submit|preventDefault={handleCreate} class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -124,42 +124,42 @@
   </div>
 
   <!-- Categories List -->
-  <div class="rounded-lg shadow-md overflow-hidden">
+  <div class="rounded-lg shadow-md overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
-      <thead class="">
+      <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Default</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+          <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Default</th>
+          <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-200">
+      <tbody class="bg-white divide-y divide-gray-200">
         {#each categories as category}
           <tr>
             {#if editingCategory?.id === category.id}
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                 <input
                   type="text"
                   bind:value={editingCategory.name}
                   class="block w-full rounded-md border-gray-300 shadow-sm text-black focus:border-indigo-500 focus:ring-indigo-500"
                 />
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                 <input
                   type="number"
                   bind:value={editingCategory.position}
                   class="block w-full rounded-md border-gray-300 shadow-sm text-black focus:border-indigo-500 focus:ring-indigo-500"
                 />
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                 <input
                   type="checkbox"
                   bind:checked={editingCategory.default}
                   class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
                   on:click={handleSave}
                   class="text-indigo-600 hover:text-indigo-900 mr-4"
@@ -174,9 +174,9 @@
                 </button>
               </td>
             {:else}
-              <td class="px-6 py-4 whitespace-nowrap">{category.name}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{category.position}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">{category.name}</td>
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">{category.position}</td>
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
                 {#if category.default}
                   <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                     Yes
@@ -187,7 +187,7 @@
                   </span>
                 {/if}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
                   on:click={() => handleEdit(category)}
                   class="text-indigo-600 hover:text-indigo-900 mr-4"

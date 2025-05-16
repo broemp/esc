@@ -89,8 +89,8 @@
 	}
 </script>
 
-<div>
-	<img src={act.picture_url} alt="act" class="w-full h-48 md:h-96 object-cover" />
+<div class="w-full md:w-2/3 mx-auto">
+	<img src={act.picture_url} alt="act" class="w-full h-48 md:h-96 object-contain bg-black" />
 	<div class="w-full">
 		<div class="flex justify-center pb-2">
 			<div class="grid grid-cols-12 w-full max-w-4xl">
