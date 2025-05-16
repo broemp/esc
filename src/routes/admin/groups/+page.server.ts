@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth();
-  if (!session?.user?.isAdmin) {
+  if (!session?.user || session.user.role !== 'admin') {
     throw error(403, 'Not authorized');
   }
 
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   delete: async ({ request, locals }) => {
     const session = await locals.auth();
-    if (!session?.user?.isAdmin) {
+    if (!session?.user || session.user.role !== 'admin') {
       throw error(403, 'Not authorized');
     }
 
