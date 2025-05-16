@@ -134,12 +134,14 @@
 			</div>
 		{:else if tabSet === 2}
 			<div class="flex justify-center">
-				<svg
-					use:qr={{
-						data: ShareURL,
-						shape: 'circle'
-					}}
-				/>
+				<div class="w-48 md:w-32 p">
+					<svg
+						use:qr={{
+							data: ShareURL,
+							shape: 'circle',
+						}}
+					/>
+				</div>
 			</div>
 			<div class="flex justify-center">
 				<ShareButton url={ShareURL} title="Join my ESC Group" design="btn variant-glass-primary"
