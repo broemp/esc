@@ -49,6 +49,23 @@
 		<span class="text-center font-bold text-xl m-4">
 			Please become a member of a group to vote!
 		</span>
+		<div class="w-full max-w-2xl mx-auto">
+			<p class="text-center text-lg mb-4">Join one of these popular groups:</p>
+			<div class="grid grid-cols-2 gap-4 mb-6">
+				{#each data.publicGroups.slice(0, 4) as group}
+					<a href="/group/{group.id}">
+						<div class="card variant-form-material p-4 font-bold grid justify-items-center">
+							<div>{group.name}</div>
+							<div class="text-sm text-gray-400">{group.memberCount} members</div>
+						</div>
+					</a>
+				{/each}
+			</div>
+			<div class="flex gap-4 justify-center">
+				<a href="/group/new" class="btn bg-primary-500 w-48">Create New Group</a>
+				<a href="/group/join" class="btn bg-primary-500 w-48">View All Groups</a>
+			</div>
+		</div>
 	{:else}
 		<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
 			<!-- Button: Left -->
