@@ -134,7 +134,7 @@
 			</div>
 		{:else if tabSet === 2}
 			<div class="flex justify-center">
-				<div class="w-48 md:w-32 p">
+				<div class="w-48 md:w-48 pb-2">
 					<svg
 						use:qr={{
 							data: ShareURL,
