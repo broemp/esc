@@ -25,7 +25,7 @@
 	<div class="act-list w-full">
 		{#each acts as act}
 			<a href="/vote/{act.act.id}">
-				<div class="w-full border-black border-t-2 grid grid-cols-[1fr_2fr_3fr] h-32">
+				<div class="w-full border-black border-t-2 grid grid-cols-[1fr_2fr_3fr] min-h-32 py-4">
 					<div class="flex items-center justify-center">
 						<span class="text-4xl font-bold text-primary-500">{act.act.position}</span>
 					</div>
@@ -36,11 +36,11 @@
 					/>
 					<div class="flex flex-col justify-center p-4">
 						<div class="flex items-center gap-2">
-							<img src={act.country.imageURL} alt="country flag" class="w-6 h-6 object-contain" />
+							<img src={act.country.imageURL} alt="country flag" class="w-6 h-6 object-contain flex-shrink-0" />
 							<span class="text-xl font-bold text-primary-500">{act.country.name}</span>
 						</div>
-						<span class="text-lg font-bold">{act.act.artist}</span>
-						<span class="font-normal">{act.act.title}</span>
+						<span class="text-lg font-bold break-words">{act.act.artist}</span>
+						<span class="font-normal break-words">{act.act.title}</span>
 					</div>
 				</div>
 			</a>
