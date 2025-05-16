@@ -48,7 +48,7 @@
 			<a href="/auth/signIn" class="btn btn-md bg-primary-500 w-48">Join Now</a>
 		{:else}
 			{#if data.groups.length === 0}
-				<span class="text-center font-bold text-xl m-4">
+				<span class="text-center font-bold text-xl m-4 block">
 					Please become a member of a group to vote!
 				</span>
 				<div class="w-full max-w-2xl mx-auto">

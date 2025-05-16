@@ -67,18 +67,12 @@ jobs:
 
     steps:
 
-    - name: Set up WARP
-      uses: fscarmen/warp-on-actions@v1.1
-      with:
-        stack: dual
-
     - name: Deploy to ${{ matrix.server }}
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets[format('SERVER_{0}_HOST', matrix.server)] }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
-        protocol: tcp6
         port: 22
         script: |
           # Login to Docker Hub
