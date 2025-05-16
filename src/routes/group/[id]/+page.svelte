@@ -14,7 +14,7 @@
 	const isAdmin = data.isAdmin;
 	const groupCategories = data.categories;
 	let ranking = data.songVotes;
-	let selectedCategory: string;
+	let selectedCategory: string = 'overall';
 	let groupName = group.group.name || '';
 	let isPublic = group.group.public;
 	let allCategories: { id: string; name: string; default: boolean }[] = [];
@@ -35,15 +35,21 @@
 			}));
 			// Initialize selected categories with active ones
 			selectedCategories = new Set(activeCategories);
+			// Set initial ranking to overall
+			ranking = data.overallRanking;
 		} catch (error) {
 			console.error('Failed to fetch categories:', error);
 		}
 	});
 
 	function onCategoryChange() {
-		axios.get('/group/' + group.group.id + '/' + selectedCategory).then(function (response) {
-			ranking = response.data.ranking;
-		});
+		if (selectedCategory === 'overall') {
+			ranking = data.overallRanking;
+		} else {
+			axios.get('/group/' + group.group.id + '/' + selectedCategory).then(function (response) {
+				ranking = response.data.ranking;
+			});
+		}
 	}
 
 	function onActClick(actID: string) {
@@ -101,10 +107,13 @@
 		{#if tabSet === 0}
 			<div class="m-2">
 				<select class="select" bind:value={selectedCategory} on:change={onCategoryChange}>
+					<option value="overall">OVERALL</option>
 					{#each groupCategories as category}
-						<option value={category.category?.id}
-							>{category.category?.name.replace('_', ' ').toUpperCase()}</option
-						>
+						{#if category.category?.id && category.category?.name}
+							<option value={category.category.id}
+								>{category.category.name.replace('_', ' ').toUpperCase()}</option
+							>
+						{/if}
 					{/each}
 				</select>
 			</div>

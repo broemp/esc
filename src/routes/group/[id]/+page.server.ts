@@ -1,4 +1,4 @@
-import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, type RankingCategoryGroup } from '$lib/server/db/queries';
+import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, getOverallRankingGroup, type RankingCategoryGroup } from '$lib/server/db/queries';
 import { redirect, error, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -26,6 +26,7 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
 
   const categories = await getGroupCategories(groupID)
   const songVotes = await getGroupSongVotes(groupID)
+  const overallRanking = await getOverallRankingGroup(groupID)
   const categoryRanking: RankingCategoryGroup[] = [];
 
   categories.forEach(async (cat) => {
@@ -45,6 +46,7 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
     categories: categories,
     songVotes: songVotes,
     categoryRanking: categoryRanking,
+    overallRanking: overallRanking,
     isAdmin: isAdmin,
   };
 };

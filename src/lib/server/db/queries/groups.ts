@@ -127,4 +127,23 @@ export function leaveGroup(groupId: string, userId: string) {
     .delete(userInGroups)
     .where(and(eq(userInGroups.groupId, groupId), eq(userInGroups.userId, userId)))
     .execute();
+}
+
+export function getOverallRankingGroup(groupID: string) {
+  UUIDVerifier.parse(groupID)
+  return db
+    .select({
+      actID: acts.id,
+      artist: acts.artist,
+      title: acts.title,
+      countryImage: countries.imageURL,
+      score: sql<number>`cast(avg(${votes.points}) AS DECIMAL(10,2))`
+    })
+    .from(votes)
+    .where(eq(votes.userID, userInGroups.userId))
+    .leftJoin(userInGroups, eq(userInGroups.groupId, groupID))
+    .leftJoin(acts, eq(acts.id, votes.actID))
+    .leftJoin(countries, eq(countries.id, acts.countryID))
+    .groupBy(acts.id, acts.artist, acts.title, countries.imageURL)
+    .orderBy(desc(sql<number>`avg(${votes.points})`))
 } 
