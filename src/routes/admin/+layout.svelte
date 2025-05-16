@@ -20,6 +20,12 @@
 					<span class="text-white">Users</span>
 				</a>
 				<a 
+					class="flex items-center p-3 rounded-lg transition-all duration-200 hover:bg-surface-700 whitespace-nowrap {($page.url.pathname === '/admin/votes') ? 'bg-surface-700' : ''}" 
+					href="/admin/votes"
+				>
+					<span class="text-white">Votes</span>
+				</a>
+				<a 
 					class="flex items-center p-3 rounded-lg transition-all duration-200 hover:bg-surface-700 whitespace-nowrap {($page.url.pathname === '/admin/drinks') ? 'bg-surface-700' : ''}" 
 					href="/admin/drinks"
 				>

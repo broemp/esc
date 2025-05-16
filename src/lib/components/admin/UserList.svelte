@@ -3,6 +3,7 @@
 	import type { User } from '$lib/types';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 	export let users: User[];
@@ -74,6 +75,10 @@
 			toastStore.trigger(t);
 		}
 	}
+
+	function viewUserProfile(userId: string) {
+		goto(`/user/${userId}`);
+	}
 </script>
 
 <div class="card">
@@ -96,6 +101,12 @@
 						<td class="px-4 md:px-6">{user.role}</td>
 						<td class="px-4 md:px-6">{new Date(user.createdAt).toLocaleDateString()}</td>
 						<td class="px-4 md:px-6 flex flex-col md:flex-row gap-2">
+							<button
+								class="btn btn-sm variant-ghost-primary"
+								on:click={() => viewUserProfile(user.id)}
+							>
+								View Profile
+							</button>
 							<button
 								class="btn btn-sm {user.role === 'admin' ? 'variant-filled-error' : 'variant-filled-primary'}"
 								on:click={() => toggleAdmin(user)}
