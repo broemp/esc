@@ -4,8 +4,7 @@
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { UserCategories, DefaultCategories } from '$lib/server/db/queries';
 	import axios from 'axios';
-	import { goto } from '$app/navigation';
-	import { PUBLIC_APP_URL } from '$env/static/public';
+
 
 	export let data: PageServerData;
 	const toastStore = getToastStore();
@@ -86,7 +85,7 @@
 			toastStore.trigger(t);
 			return;
 		}
-		goto('/vote/' + actID);
+		window.location.href = '/vote/' + actID;
 	}
 </script>
 

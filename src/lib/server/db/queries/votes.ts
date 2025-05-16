@@ -38,4 +38,8 @@ export function getUserVotes(userId: string) {
     .leftJoin(countries, eq(acts.countryID, countries.id))
     .leftJoin(categories, eq(votes.categories, categories.id))
     .orderBy(desc(votes.points));
+}
+
+export function deleteAllVotes() {
+  return db.delete(votes).execute();
 } 

@@ -29,7 +29,10 @@
 						alt="artist"
 					/>
 					<div class="flex flex-col justify-center p-4">
-						<span class="text-xl font-bold text-primary-500">{act.country.name}</span>
+						<div class="flex items-center gap-2">
+							<img src={act.country.imageURL} alt="country flag" class="w-6 h-6 object-contain" />
+							<span class="text-xl font-bold text-primary-500">{act.country.name}</span>
+						</div>
 						<span class="text-lg font-bold">{act.act.artist}</span>
 						<span class="font-normal">{act.act.title}</span>
 					</div>

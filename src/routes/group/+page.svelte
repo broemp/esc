@@ -22,7 +22,5 @@
 		</div>
 	{:else}
 		No Groups Create group or join group
-		<a href="/group/new" class="btn bg-primary-500 w-1/2">Create new Group</a>
-		<a href="/group/join" class="btn bg-primary-500 w-1/2">Join Group</a>
 	{/if}
 </div>

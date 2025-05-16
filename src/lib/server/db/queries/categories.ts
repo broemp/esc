@@ -36,11 +36,9 @@ export function getDefaultCategories() {
   return db.select().from(categories).where(eq(categories.default, true));
 }
 
-export function getAllCategories(limit: number = 10, offset: number = 0) {
+export function getAllCategories() {
   return db.select().from(categories)
-    .orderBy(asc(categories.position))
-    .limit(limit)
-    .offset(offset);
+    .orderBy(asc(categories.position));
 }
 
 export function updateCategory(category: Category) {
