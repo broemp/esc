@@ -9,8 +9,6 @@ export async function getAdminStats() {
     totalGroups,
     totalActs,
     totalCategories,
-    votesToday,
-    newUsersToday
   ] = await Promise.all([
     // Total users
     db.select({ count: sql<number>`count(*)` }).from(users),
@@ -26,16 +24,6 @@ export async function getAdminStats() {
     
     // Total categories
     db.select({ count: sql<number>`count(*)` }).from(categories),
-    
-    // Votes today
-    db.select({ count: sql<number>`count(*)` })
-      .from(votes)
-      .where(sql`date_trunc('day', ${votes.created_at}) = date_trunc('day', now())`),
-    
-    // New users today
-    db.select({ count: sql<number>`count(*)` })
-      .from(users)
-      .where(sql`date_trunc('day', ${users.created_at}) = date_trunc('day', now())`)
   ]);
 
   return {
@@ -44,7 +32,5 @@ export async function getAdminStats() {
     totalGroups: totalGroups[0].count,
     totalActs: totalActs[0].count,
     totalCategories: totalCategories[0].count,
-    votesToday: votesToday[0].count,
-    newUsersToday: newUsersToday[0].count
   };
 } 

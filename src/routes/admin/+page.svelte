@@ -49,24 +49,9 @@
 				<div>
 					<h3 class="text-lg font-semibold">Users</h3>
 					<p class="text-3xl font-bold">{data.stats.totalUsers}</p>
-					<p class="text-sm text-surface-500">+{data.stats.newUsersToday} today</p>
 				</div>
 				<div class="text-4xl text-primary-500">
 					<i class="fa-solid fa-users"></i>
-				</div>
-			</div>
-		</div>
-
-		<!-- Votes Stats -->
-		<div class="card p-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<h3 class="text-lg font-semibold">Votes</h3>
-					<p class="text-3xl font-bold">{data.stats.totalVotes}</p>
-					<p class="text-sm text-surface-500">+{data.stats.votesToday} today</p>
-				</div>
-				<div class="text-4xl text-primary-500">
-					<i class="fa-solid fa-check-to-slot"></i>
 				</div>
 			</div>
 		</div>
