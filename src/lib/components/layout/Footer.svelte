@@ -20,7 +20,7 @@
 		<button on:click={() => goto('/group')}>
 			<i class="fa-solid fa-user-group"></i>
 		</button>
-		<button on:click={() => goto('/profile')}>
+		<button on:click={() => goto('/user/' + $page.data.session?.user?.id)}>
 			<i class="fa-solid fa-user"></i>
 		</button>
 	</div>

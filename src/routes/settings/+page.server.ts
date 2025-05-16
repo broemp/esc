@@ -1,6 +1,7 @@
 import { getUser, updateUsername } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad, RequestEvent, Actions } from './$types';
+import { fail } from 'assert';
 
 export const load: PageServerLoad = async (event: RequestEvent) => {
   let session = await event.locals.auth()
@@ -21,7 +22,7 @@ export const actions = {
     const data = await event.request.formData();
     let session = await event.locals.auth()
     if (!session) {
-      return { success: false }
+      return fail('Not logged in')
     }
 
     let user = await updateUsername({
@@ -31,7 +32,7 @@ export const actions = {
 
     return {
       success: true,
-      user: user[0]
+      user: user
     }
   }
-} satisfies Actions; 
+} satisfies Actions;

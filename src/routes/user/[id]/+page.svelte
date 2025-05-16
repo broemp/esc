@@ -1,5 +1,7 @@
 <script lang="ts">
     import type { PageData } from './$types';
+    import { page } from '$app/stores';
+    import { goto } from '$app/navigation';
     export let data: PageData;
 
     let selectedCategory = 'song';
@@ -15,28 +17,41 @@
     function capitalize(str: string): string {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+
+    $: isOwnProfile = $page.data.session?.user?.id === data.user.id;
 </script>
 
 <div class="container mx-auto px-4 py-8">
-    <div class="bg-gradient-to-br from-purple-900 to-blue-900 rounded-lg shadow-lg p-6 text-white">
-        <div class="flex items-center space-x-4 mb-8">
-            {#if data.user.image}
-                <img
-                    src={data.user.image}
-                    alt={data.user.name || 'User avatar'}
-                    class="w-24 h-24 rounded-full object-cover border-4 border-white"
-                />
-            {:else}
-                <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-white">
-                    <span class="text-4xl text-gray-500">
-                        {data.user.name?.[0]?.toUpperCase() || '?'}
-                    </span>
+    <div class="bg-gradient-to-br from-red-900 to-black rounded-lg shadow-lg p-6 text-white">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-4">
+                {#if data.user.image}
+                    <img
+                        src={data.user.image}
+                        alt={data.user.name || 'User avatar'}
+                        class="w-24 h-24 rounded-full object-cover border-4 border-white"
+                    />
+                {:else}
+                    <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-white">
+                        <span class="text-4xl text-gray-500">
+                            {data.user.name?.[0]?.toUpperCase() || '?'}
+                        </span>
+                    </div>
+                {/if}
+                <div>
+                    <h1 class="text-3xl font-bold text-white">{data.user.name || 'Anonymous User'}</h1>
+                    <p class="text-gray-300">Member since {new Date(data.user.createdAt).toLocaleDateString()}</p>
                 </div>
-            {/if}
-            <div>
-                <h1 class="text-3xl font-bold text-white">{data.user.name || 'Anonymous User'}</h1>
-                <p class="text-gray-300">Member since {new Date(data.user.createdAt).toLocaleDateString()}</p>
             </div>
+            {#if isOwnProfile}
+                <button 
+                    class="btn variant-soft-primary p-2" 
+                    on:click={() => goto('/settings')}
+                    title="Settings"
+                >
+                    <i class="fa-solid fa-gear text-2xl"></i>
+                </button>
+            {/if}
         </div>
 
         <div class="mt-8">
@@ -45,7 +60,7 @@
                 <!-- Mobile Dropdown -->
                 <div class="sm:hidden">
                     <select
-                        class="w-full p-2 rounded-lg bg-purple-800 text-white border-2 border-purple-700 focus:outline-none focus:border-white"
+                        class="w-full p-2 rounded-lg bg-red-800 text-white border-2 border-red-700 focus:outline-none focus:border-white"
                         bind:value={selectedCategory}
                     >
                         {#each categories as category}
@@ -57,7 +72,7 @@
                 <div class="hidden sm:flex space-x-2">
                     {#each categories as category}
                         <button
-                            class="px-4 py-2 rounded-full transition-colors {selectedCategory === category ? 'bg-white text-purple-900' : 'bg-purple-800 text-white hover:bg-purple-700'}"
+                            class="px-4 py-2 rounded-full transition-colors {selectedCategory === category ? 'bg-white text-red-900' : 'bg-red-800 text-white hover:bg-red-700'}"
                             on:click={() => selectedCategory = category}
                         >
                             {capitalize(category)}
@@ -71,7 +86,7 @@
             {:else}
                 <div class="space-y-4">
                     {#each filteredVotes as vote}
-                        <div class="flex items-center space-x-4 p-4 bg-purple-800/50 rounded-lg backdrop-blur-sm">
+                        <div class="flex items-center space-x-4 p-4 bg-red-800/50 rounded-lg backdrop-blur-sm">
                             {#if vote.act?.picture_url}
                                 <img
                                     src={vote.act.picture_url}
@@ -109,7 +124,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {#each data.publicGroups as group}
                         <a href="/group/{group.group?.id}">
-                            <div class="p-4 bg-purple-800/50 rounded-lg backdrop-blur-sm hover:bg-purple-700/50 transition-colors">
+                            <div class="p-4 bg-red-800/50 rounded-lg backdrop-blur-sm hover:bg-red-700/50 transition-colors">
                                 <h3 class="font-semibold text-white">{group.group?.name}</h3>
                             </div>
                         </a>

@@ -81,8 +81,8 @@
 				<span class="text-center">Swipe through the carousel and click on the artist to vote!</span>
 			</section>
 		</div>
-		<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Groups</p>
 		{#if data.groups.length > 0}
+			<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Your Groups</p>
 			<div class="m-4">
 				<div class="grid grid-cols-2 gap-4">
 					{#each data.groups as group, i}
@@ -94,15 +94,30 @@
 					{/each}
 				</div>
 			</div>
-		{:else}
-			<div class="text-center text-gray-300 m-4">
-				No Groups - Create a group or join an existing one
+			<div class="flex p-4 gap-4">
+				<a href="/group/new" class="btn bg-primary-500 w-1/2">Create new Group</a>
+				<a href="/group/join" class="btn bg-primary-500 w-1/2">Join Group</a>
 			</div>
 		{/if}
-		<div class="flex p-4 gap-4">
-			<a href="/group/new" class="btn bg-primary-500 w-1/2">Create new Group</a>
-			<a href="/group/join" class="btn bg-primary-500 w-1/2">Join Group</a>
-		</div>
+		<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Top Public Groups</p>
+		{#if data.publicGroups.length > 0}
+			<div class="m-4">
+				<div class="grid grid-cols-2 gap-4">
+					{#each data.publicGroups as group}
+						<a href="/group/{group.id}">
+							<div class="card variant-form-material p-4 font-bold grid justify-items-center">
+								<div>{group.name}</div>
+								<div class="text-sm text-gray-400">{group.memberCount} members</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		{:else}
+			<div class="text-center text-gray-300 m-4">
+				No public groups available
+			</div>
+		{/if}
 		<p class="pt-2 text-2xl underline decoration-2 underline-offset-2">Top List</p>
 		<div class="mt-2 mb-16 w-full">
 			{#each topActs as act}

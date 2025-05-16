@@ -13,11 +13,18 @@ export function createGroup(group: NewGroup) {
 }
 
 export function getPublicGroups(limit: number, offset: number) {
-  return db.select()
+  return db.select({
+    id: groups.id,
+    name: groups.name,
+    public: groups.public,
+    memberCount: sql<number>`count(${userInGroups.userId})`
+  })
     .from(groups)
     .where(eq(groups.public, true))
-    .offset(offset)
-    .limit(limit)
+    .leftJoin(userInGroups, eq(groups.id, userInGroups.groupId))
+    .groupBy(groups.id, groups.name, groups.public)
+    .orderBy(desc(sql<number>`count(${userInGroups.userId})`))
+    .limit(4)
 }
 
 export function addUserToGroup(groupID: string, userID: string) {
