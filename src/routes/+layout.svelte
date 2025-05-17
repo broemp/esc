@@ -6,7 +6,7 @@
 	import Footer from '$lib/components/layout/Footer.svelte';
 
 	//Toast
-	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+	import { initializeStores, Toast, getToastStore } from '@skeletonlabs/skeleton';
 	initializeStores();
 
 	// Floating UI for Popups
@@ -17,6 +17,8 @@
 	// Check admin status from cookie
 	import { browser } from '$app/environment';
 	let isAdmin = false;
+
+	const toastStore = getToastStore();
 
 	// Function to get cookie value
 	function getCookie(name: string): string | null {
@@ -50,6 +52,31 @@
 				{#if !$page.data.session}
 					<a class="btn btn-sm variant-ghost-surface" href="/auth/signIn"> Sign In </a>
 				{:else}
+					{#if !isAdmin}
+						<button 
+							class="btn btn-sm variant-ghost-surface" 
+							on:click={() => {
+								toastStore.trigger({
+									message: `
+										<div class="space-y-2">
+											<h3 class="font-bold">How to Vote</h3>
+											<ul class="list-disc list-inside space-y-1">
+												<li>To vote you have to join a group</li>
+												<li>Groups determine on what categories you vote</li>
+												<li>You can create your own group with the categories of your choice</li>
+												<li>You can join multiple groups</li>
+												<li>You can invite others to groups</li>
+											</ul>
+										</div>
+									`,
+									background: 'variant-filled-surface',
+									timeout: 10000
+								});
+							}}
+						>
+							<i class="fa-solid fa-circle-question"></i>
+						</button>
+					{/if}
 					{#if isAdmin}
 						<a href="/admin" class="btn btn-sm variant-ghost-surface"> Admin </a>
 					{/if}
