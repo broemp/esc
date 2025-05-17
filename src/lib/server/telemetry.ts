@@ -5,6 +5,7 @@ import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { metrics, trace } from '@opentelemetry/api';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 
 // Create a resource that identifies your service
 const resource = new Resource({
@@ -20,6 +21,13 @@ const sdk = new NodeSDK({
     traceExporter: new OTLPTraceExporter({
         url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces',
         headers: process.env.OTEL_EXPORTER_OTLP_HEADERS ? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS) : {}
+    }),
+    metricReader: new PeriodicExportingMetricReader({
+        exporter: new OTLPMetricExporter({
+            url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/metrics',
+            headers: process.env.OTEL_EXPORTER_OTLP_HEADERS ? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS) : {}
+        }),
+        exportIntervalMillis: 1000, // Export metrics every second
     }),
     instrumentations: [getNodeAutoInstrumentations()]
 });
