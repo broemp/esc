@@ -98,6 +98,7 @@ jobs:
           DB_PASS=${{ secrets.DB_PASS }}
           DB_DB=${{ secrets.DB_DB }}
           DB_SSL=${{ secrets.DB_SSL }}
+          OTEL_EXPORTER_OTLP_ENDPOINT=${{ secrets.OTEL_ENDPOINT }}
           EOL
           
           chmod 600 /home/esc/.env

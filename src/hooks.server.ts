@@ -9,6 +9,11 @@ import { eq } from 'drizzle-orm';
 import { users } from '$lib/server/db/schema';
 import Reddit from '@auth/core/providers/reddit';
 import Google from '@auth/core/providers/google';
+import { trace } from '@opentelemetry/api';
+import { apiLatency, apiErrors, authAttempts, authFailures } from '$lib/server/metrics';
+
+// Initialize OpenTelemetry
+import './lib/server/telemetry';
 
 // Run migrations when the server starts
 if (process.env.NODE_ENV !== 'production') {
@@ -42,39 +47,70 @@ const { handle: authenticationHandle } = SvelteKitAuth({
 });
 
 export const authorizationHandle: Handle = async ({ event, resolve }) => {
-  const session = await event.locals.auth();
+  const tracer = trace.getTracer('esc-app');
+  const startTime = performance.now();
   
-  // Set or clear admin cookie based on session
-  if (session?.user?.role === 'admin') {
-    event.cookies.set('is_admin', 'true', {
-      path: '/',
-      httpOnly: false,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7 // 1 week
+  try {
+    const session = await event.locals.auth();
+    
+    // Track authentication attempts
+    authAttempts.add(1);
+    
+    // Set or clear admin cookie based on session
+    if (session?.user?.role === 'admin') {
+      event.cookies.set('is_admin', 'true', {
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7 // 1 week
+      });
+    } else {
+      event.cookies.delete('is_admin', { path: '/' });
+    }
+
+    if (event.url.pathname.startsWith('/authenticate')) {
+      if (!session) {
+        redirect(303, '/auth/signin');
+      }
+    }
+
+    if (event.url.pathname.startsWith('/group') || event.url.pathname.startsWith('/profile') || event.url.pathname.startsWith('/vote')) {
+      if (!session) {
+        redirect(303, '/auth/signin');
+      }
+    }
+
+    if (event.url.pathname.startsWith('/admin')) {
+      if (session?.user?.role !== 'admin') {
+        redirect(303, '/');
+      }
+    }
+
+    const response = await resolve(event);
+    
+    // Record API latency
+    const endTime = performance.now();
+    apiLatency.record(endTime - startTime, {
+      path: event.url.pathname,
+      method: event.request.method
     });
-  } else {
-    event.cookies.delete('is_admin', { path: '/' });
-  }
 
-  if (event.url.pathname.startsWith('/authenticate')) {
-    if (!session) {
-      redirect(303, '/auth/signin');
+    return response;
+  } catch (error) {
+    // Record errors
+    apiErrors.add(1, {
+      path: event.url.pathname,
+      method: event.request.method,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+    
+    if (error instanceof Error && error.message.includes('auth')) {
+      authFailures.add(1);
     }
+    
+    throw error;
   }
-
-  if (event.url.pathname.startsWith('/group') || event.url.pathname.startsWith('/profile') || event.url.pathname.startsWith('/vote')) {
-    if (!session) {
-      redirect(303, '/auth/signin');
-    }
-  }
-
-  if (event.url.pathname.startsWith('/admin')) {
-    if (session?.user?.role !== 'admin') {
-      redirect(303, '/');
-    }
-  }
-  return resolve(event);
 };
 
 export const handle = sequence(authenticationHandle, authorizationHandle);
