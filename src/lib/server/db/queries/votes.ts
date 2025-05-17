@@ -8,7 +8,13 @@ const insertVoteSchema = createInsertSchema(votes);
 
 export function createVote(newVote: NewVote) {
   insertVoteSchema.parse(newVote);
-  return db.insert(votes).values(newVote).onConflictDoNothing().execute();
+  return db.insert(votes)
+    .values(newVote)
+    .onConflictDoUpdate({
+      target: [votes.userID, votes.actID, votes.categories],
+      set: { points: newVote.points }
+    })
+    .execute();
 }
 
 export function getVoteForActByUser(userId: string, actId: string) {
