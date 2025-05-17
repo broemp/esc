@@ -4,6 +4,7 @@
 	import { signOut } from '@auth/sveltekit/client';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import Footer from '$lib/components/layout/Footer.svelte';
+	import ResponsiveLogo from '$lib/components/ResponsiveLogo.svelte';
 
 	//Toast
 	import { initializeStores, Toast, getToastStore } from '@skeletonlabs/skeleton';
@@ -45,7 +46,7 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<a href="/">
-					<img src="/logo_esc25.png" alt="logo" width="150" />
+					<ResponsiveLogo />
 				</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">

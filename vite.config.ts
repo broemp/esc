@@ -3,12 +3,22 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { imagetools } from 'vite-imagetools';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-	plugins: [sveltekit(), purgeCss()],
+	plugins: [
+		sveltekit(),
+		purgeCss(),
+		imagetools({
+			defaultDirectives: new URLSearchParams([
+				['format', 'webp'],
+				['quality', '80']
+			])
+		})
+	],
 	server: {
 		fs: {
 			allow: [
