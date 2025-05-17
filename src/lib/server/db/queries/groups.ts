@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, sql, asc } from 'drizzle-orm';
 import { db } from '../db';
 import { groups, userInGroups, categoriesInGroup, votes, acts, countries, categories, users } from '../schema';
 import { createInsertSchema } from 'drizzle-zod';
@@ -80,7 +80,7 @@ export function getGroupSongVotes(groupID: string) {
     .leftJoin(categories, eq(categories.id, votes.categories))
     .leftJoin(countries, eq(countries.id, acts.countryID))
     .groupBy(votes.actID, acts.artist, acts.title, countries.imageURL)
-    .orderBy(desc(sql<number>`avg(${votes.points})`))
+    .orderBy(asc(sql<number>`avg(${votes.points})`))
 }
 
 export function getGroupVotesByCategory(groupID: string) {
