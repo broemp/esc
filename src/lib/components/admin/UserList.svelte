@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { User } from '$lib/types';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();

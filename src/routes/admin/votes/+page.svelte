@@ -4,6 +4,7 @@
 
   export let data: PageData;
   let votes = data.votes;
+  let pagination = data.pagination;
 
   function formatDate(date: string) {
     return new Date(date).toLocaleString();
@@ -11,6 +12,11 @@
 
   function viewUserProfile(userId: string) {
     goto(`/user/${userId}`);
+  }
+
+  function goToPage(pageNum: number) {
+    if (pageNum < 1 || pageNum > pagination.totalPages) return;
+    goto(`?page=${pageNum}`);
   }
 </script>
 
@@ -64,6 +70,37 @@
           {/each}
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex justify-between items-center mt-4">
+      <div class="text-sm text-surface-500">
+        Showing {((pagination.currentPage - 1) * pagination.pageSize) + 1} to {Math.min(pagination.currentPage * pagination.pageSize, pagination.totalCount)} of {pagination.totalCount} votes
+      </div>
+      <div class="flex gap-2">
+        <button 
+          class="btn btn-sm variant-ghost-primary" 
+          disabled={pagination.currentPage === 1}
+          on:click={() => goToPage(pagination.currentPage - 1)}
+        >
+          Previous
+        </button>
+        {#each Array(pagination.totalPages) as _, i}
+          <button 
+            class="btn btn-sm {pagination.currentPage === i + 1 ? 'variant-filled-primary' : 'variant-ghost-primary'}"
+            on:click={() => goToPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        {/each}
+        <button 
+          class="btn btn-sm variant-ghost-primary" 
+          disabled={pagination.currentPage === pagination.totalPages}
+          on:click={() => goToPage(pagination.currentPage + 1)}
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 </div> 
