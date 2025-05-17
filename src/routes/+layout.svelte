@@ -5,6 +5,7 @@
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import ResponsiveLogo from '$lib/components/ResponsiveLogo.svelte';
+	import ResponsiveBackground from '$lib/components/ResponsiveBackground.svelte';
 
 	//Toast
 	import { initializeStores, Toast, getToastStore } from '@skeletonlabs/skeleton';
@@ -41,6 +42,7 @@
 </svelte:head>
 
 <Toast />
+<ResponsiveBackground />
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar>
