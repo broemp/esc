@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/themes/cerberus';
+
+@font-face {
+	font-family: 'Quicksand';
+	src: url('/fonts/Quicksand.ttf');
+	font-display: swap;
+}
+
+html,
+body {
+	font-family: 'Quicksand', system-ui, sans-serif;
+	@apply h-full;
+}
+
+/* Skeleton v2 → v4 class aliases */
+.variant-filled-primary { @apply preset-filled-primary-500; }
+.variant-filled-secondary { @apply preset-filled-secondary-500; }
+.variant-filled-success { @apply preset-filled-success-500; }
+.variant-filled-warning { @apply preset-filled-warning-500; }
+.variant-filled-error { @apply preset-filled-error-500; }
+.variant-filled-surface { @apply preset-tonal-surface; }
+.variant-ghost-surface { @apply preset-tonal-surface; }
+.variant-ghost-primary { @apply preset-tonal-primary; }
+.variant-glass-primary { @apply preset-tonal-primary; }
+.variant-glass-surface { @apply preset-tonal-surface; }
+
+/* Custom input styling */
+input.input {
+	background-color: #1c1c1c;
+	color: white;
+	border: 1px solid #0f0f0f;
+}
+input.input:focus {
+	background-color: #121212;
+	border-color: #0f0f0f;
+	outline: 2px solid var(--color-primary-500);
+	outline-offset: 0;
+}
+input.input::placeholder {
+	color: #d1d5db;
+}
+
+/* Custom checkbox styling */
+input.checkbox {
+	background-color: #121212;
+	border: 1px solid #0f0f0f;
+}
+input.checkbox:checked {
+	background-color: var(--color-primary-500);
+	border-color: var(--color-primary-500);
+}
+input.checkbox:focus {
+	outline: 2px solid var(--color-primary-500);
+}

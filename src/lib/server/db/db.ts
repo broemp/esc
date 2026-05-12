@@ -10,7 +10,7 @@ if (env.DB_SSL && env.DB_SSL.toLowerCase() == 'true') {
 
 const dbOptions: postgres.Options<any> = {
 	host: env.DB_HOST,
-	port: +env.DB_PORT,
+	port: +(env.DB_PORT ?? '5432'),
 	user: env.DB_USER,
 	password: env.DB_PASS,
 	database: env.DB_DB,

@@ -1,24 +1,28 @@
 <script lang="ts">
 	import type { CountryList } from '$lib/server/db/queries';
-	import { Autocomplete } from '@skeletonlabs/skeleton';
-	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
 
-	export let countries: CountryList;
-	export let countryName = '';
-	export let countryID = '';
+	let {
+		countries,
+		countryName = $bindable(''),
+		countryID = $bindable('')
+	}: {
+		countries: CountryList[];
+		countryName?: string;
+		countryID?: string;
+	} = $props();
 
-	let countryOptions: AutocompleteOption<string>[] = [];
-	countries.forEach((country) => {
-		let option: AutocompleteOption<string> = {
-			label: country.name,
-			value: country.id
-		};
-		countryOptions.push(option);
-	});
+	let showSuggestions = $state(false);
 
-	function onFlavorSelection(event: CustomEvent<AutocompleteOption<string>>): void {
-		countryName = event.detail.label;
-		countryID = event.detail.value;
+	const filtered = $derived(
+		countryName.length > 0
+			? countries.filter((c) => c.name.toLowerCase().includes(countryName.toLowerCase()))
+			: countries
+	);
+
+	function select(name: string, id: string) {
+		countryName = name;
+		countryID = id;
+		showSuggestions = false;
 	}
 </script>
 
@@ -26,17 +30,25 @@
 	Country
 	<input
 		class="input"
-		type="input"
+		type="text"
 		name="country"
 		bind:value={countryName}
 		placeholder="Search..."
+		onfocus={() => (showSuggestions = true)}
+		onblur={() => setTimeout(() => (showSuggestions = false), 150)}
 	/>
 	<input class="hidden" type="hidden" name="country_id" bind:value={countryID} />
-	<div class="card w-full mt-2 max-h-48 overflow-y-auto variant-filled-secondary" tabindex="-1">
-		<Autocomplete
-			bind:input={countryName}
-			options={countryOptions}
-			on:selection={onFlavorSelection}
-		/>
-	</div>
+	{#if showSuggestions && filtered.length > 0}
+		<div class="card w-full mt-1 max-h-48 overflow-y-auto preset-tonal-surface">
+			{#each filtered as c}
+				<button
+					type="button"
+					class="w-full text-left px-3 py-1.5 hover:preset-filled-primary-500 text-sm"
+					onmousedown={() => select(c.name, c.id)}
+				>
+					{c.name}
+				</button>
+			{/each}
+		</div>
+	{/if}
 </label>

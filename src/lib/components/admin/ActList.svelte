@@ -1,52 +1,41 @@
 <script lang="ts">
-	import { Table } from '@skeletonlabs/skeleton';
-	import type { TableSource } from '@skeletonlabs/skeleton';
 	import type { ActList } from '$lib/server/db/queries';
 
-	export let acts: ActList | null;
-	type ActListElement = ActList[0];
-	export let selectedAct: string;
-
-	function tableMapper(data: ActList | null) {
-		if (data == null) {
-			return [[], []];
-		}
-		return data!.map((item: ActListElement) => {
-			return [
-				String(item.act.position) || 'TBD',
-				item.country.name,
-				item.act.artist,
-				item.act.title
-			];
-		});
-	}
-
-	function tableMapperMeta(data: ActList | null) {
-		if (data == null) {
-			return [[], []];
-		}
-		return data!.map((item: ActListElement) => {
-			let act = item.act;
-			return [act.id];
-		});
-	}
-
-	function handleSelection(meta: any) {
-		selectedAct = meta.detail[0];
-	}
-
-	let tableData: TableSource = {
-		head: ['Position', 'Country', 'Artist', 'Song'],
-		body: tableMapper(acts),
-		meta: tableMapperMeta(acts)
-	};
+	let {
+		acts,
+		selectedAct = $bindable('')
+	}: {
+		acts: ActList[] | null;
+		selectedAct: string;
+	} = $props();
 </script>
 
-<div class="w-full h-full">
-	{#if !acts}
-		<div class="text-xl content-center">EMPTY</div>
+<div class="w-full h-full overflow-y-auto max-h-96">
+	{#if !acts || acts.length === 0}
+		<div class="text-xl text-center py-4">EMPTY</div>
 	{:else}
-		<Table source={tableData} interactive={true} on:selected={handleSelection} />
+		<table class="w-full text-sm">
+			<thead class="sticky top-0 preset-tonal-surface">
+				<tr>
+					<th class="px-2 py-1 text-left">#</th>
+					<th class="px-2 py-1 text-left">Country</th>
+					<th class="px-2 py-1 text-left">Artist</th>
+					<th class="px-2 py-1 text-left">Song</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each acts as item}
+					<tr
+						class="cursor-pointer hover:preset-tonal-primary {selectedAct === item.act.id ? 'preset-filled-primary-500' : ''}"
+						onclick={() => (selectedAct = item.act.id)}
+					>
+						<td class="px-2 py-1">{item.act.position ?? 'TBD'}</td>
+						<td class="px-2 py-1">{item.country.name}</td>
+						<td class="px-2 py-1">{item.act.artist}</td>
+						<td class="px-2 py-1">{item.act.title}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 	{/if}
 </div>
-

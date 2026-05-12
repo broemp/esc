@@ -4,15 +4,16 @@
 	import type { Drink, Country } from '$lib/types';
 	import type { PageServerData } from './$types';
 
-	export let data: { drinks: (Drink & { country: Country })[] | null; countries: Country[] };
-	let drinks = data?.drinks;
-	let drinkID = '';
+	let { data }: { data: { drinks: (Drink & { country: Country })[] | null; countries: Country[] } } =
+		$props();
+
+	let drinkID = $state('');
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 	<div class="md:col-span-2">
 		{#if drinkID}
-			<DrinkEditor {drinkID} countries={data.countries}></DrinkEditor>
+			<DrinkEditor {drinkID} countries={data.countries} />
 		{:else}
 			<div class="card text-xl p-4">
 				<p>Select a drink to edit</p>
@@ -23,6 +24,6 @@
 		<a href="/admin/drinks/new">
 			<button class="btn variant-filled-primary w-full">Add Drink</button>
 		</a>
-		<DrinkList {drinks} bind:selectedDrink={drinkID}></DrinkList>
+		<DrinkList drinks={data.drinks} bind:selectedDrink={drinkID} />
 	</div>
 </div>

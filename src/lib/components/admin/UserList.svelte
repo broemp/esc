@@ -1,81 +1,54 @@
 <script lang="ts">
 	import type { User } from '$lib/types';
-	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { toastStore } from '$lib/stores/toast.svelte';
 	import { goto } from '$app/navigation';
 
-	const toastStore = getToastStore();
-	export let users: User[];
-	export let totalUsers: number;
-	export let currentPage: number;
-	export let limit: number;
+	let {
+		users = $bindable<User[]>([]),
+		totalUsers,
+		currentPage,
+		limit
+	}: {
+		users: User[];
+		totalUsers: number;
+		currentPage: number;
+		limit: number;
+	} = $props();
 
-	const totalPages = Math.ceil(totalUsers / limit);
+	const totalPages = $derived(Math.ceil(totalUsers / limit));
 
 	async function handleDelete(userId: string) {
 		if (!confirm('Are you sure you want to delete this user?')) return;
-
 		try {
-			const response = await fetch(`/admin/users/${userId}`, {
-				method: 'DELETE'
-			});
-
-			if (response.ok) {
-				users = users.filter((user) => user.id !== userId);
-				const t: ToastSettings = {
-					message: 'User deleted successfully',
-					background: 'variant-filled-success'
-				};
-				toastStore.trigger(t);
+			const res = await fetch(`/admin/users/${userId}`, { method: 'DELETE' });
+			if (res.ok) {
+				users = users.filter((u) => u.id !== userId);
+				toastStore.trigger('User deleted successfully', 'success');
 			} else {
-				const t: ToastSettings = {
-					message: 'Failed to delete user',
-					background: 'variant-filled-error'
-				};
-				toastStore.trigger(t);
+				toastStore.trigger('Failed to delete user', 'error');
 			}
-		} catch (error) {
-			const t: ToastSettings = {
-				message: 'Error deleting user',
-				background: 'variant-filled-error'
-			};
-			toastStore.trigger(t);
+		} catch {
+			toastStore.trigger('Error deleting user', 'error');
 		}
 	}
 
 	async function toggleAdmin(user: User) {
 		const newRole = user.role === 'admin' ? 'user' : 'admin';
 		try {
-			const response = await fetch(`/admin/users/${user.id}`, {
+			const res = await fetch(`/admin/users/${user.id}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ role: newRole })
 			});
-
-			if (response.ok) {
-				user.role = newRole;
-				const t: ToastSettings = {
-					message: `User role updated to ${newRole}`,
-					background: 'variant-filled-success'
-				};
-				toastStore.trigger(t);
+			if (res.ok) {
+				users = users.map((u) => (u.id === user.id ? { ...u, role: newRole } : u));
+				toastStore.trigger(`User role updated to ${newRole}`, 'success');
 			} else {
-				const t: ToastSettings = {
-					message: 'Failed to update user role',
-					background: 'variant-filled-error'
-				};
-				toastStore.trigger(t);
+				toastStore.trigger('Failed to update user role', 'error');
 			}
-		} catch (error) {
-			const t: ToastSettings = {
-				message: 'Error updating user role',
-				background: 'variant-filled-error'
-			};
-			toastStore.trigger(t);
+		} catch {
+			toastStore.trigger('Error updating user role', 'error');
 		}
-	}
-
-	function viewUserProfile(userId: string) {
-		goto(`/user/${userId}`);
 	}
 </script>
 
@@ -100,21 +73,18 @@
 						<td class="px-4 md:px-6">{new Date(user.createdAt).toLocaleDateString()}</td>
 						<td class="px-4 md:px-6 flex flex-col md:flex-row gap-2">
 							<button
-								class="btn btn-sm variant-ghost-primary"
-								on:click={() => viewUserProfile(user.id)}
+								class="btn btn-sm preset-tonal-primary"
+								onclick={() => goto(`/user/${user.id}`)}
 							>
 								View Profile
 							</button>
 							<button
 								class="btn btn-sm {user.role === 'admin' ? 'variant-filled-error' : 'variant-filled-primary'}"
-								on:click={() => toggleAdmin(user)}
+								onclick={() => toggleAdmin(user)}
 							>
 								{user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
 							</button>
-							<button
-								class="btn btn-sm variant-filled-error"
-								on:click={() => handleDelete(user.id)}
-							>
+							<button class="btn btn-sm variant-filled-error" onclick={() => handleDelete(user.id)}>
 								Delete
 							</button>
 						</td>
@@ -132,4 +102,4 @@
 			<a href="?page={currentPage + 1}" class="btn btn-sm">Next</a>
 		{/if}
 	</div>
-</div> 
+</div>

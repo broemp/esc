@@ -3,32 +3,21 @@
 	import ActList from '$lib/components/admin/ActList.svelte';
 	import type { ActList as ActListDB, CountryList } from '$lib/server/db/queries';
 	import type { ActionData } from './$types';
-	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { toastStore } from '$lib/stores/toast.svelte';
 
-	const toastStore = getToastStore();
-	export let data: { acts: ActListDB | null; countries: CountryList };
-	let actID = '';
+	let { data, form }: { data: { acts: ActListDB[] | null; countries: CountryList[] }; form: ActionData } =
+		$props();
 
-	export let form: ActionData;
+	let actID = $state('');
 
-	if (form?.success) {
-		const t: ToastSettings = {
-			message: 'Success! 🎉',
-			background: 'variant-filled-success'
-		};
-
-		if (form.act?.id != undefined) {
-			actID = form.act.id;
+	$effect(() => {
+		if (form?.success) {
+			if (form.act?.[0]?.id) actID = form.act[0].id;
+			toastStore.trigger('Success! 🎉', 'success');
+		} else if (form !== null && form !== undefined && !form?.success) {
+			toastStore.trigger('Error!', 'error');
 		}
-
-		toastStore.trigger(t);
-	} else {
-		const t: ToastSettings = {
-			message: 'Error!',
-			background: 'variant-filled-error'
-		};
-		toastStore.trigger(t);
-	}
+	});
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 m-4">
@@ -39,6 +28,6 @@
 		<a href="/admin/acts/new">
 			<button class="btn variant-glass-primary w-full mb-2">New Act</button>
 		</a>
-		<ActList acts={data.acts} bind:selectedAct={actID}></ActList>
+		<ActList acts={data.acts} bind:selectedAct={actID} />
 	</div>
 </div>

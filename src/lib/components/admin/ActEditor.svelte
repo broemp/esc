@@ -2,42 +2,38 @@
 	import axios from 'axios';
 	import CountryAutocomplete from './CountryAutocomplete.svelte';
 	import type { CountryList } from '$lib/server/db/queries';
-	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { toastStore } from '$lib/stores/toast.svelte';
 
-	const toastStore = getToastStore();
-	export let countries: CountryList;
-	export let actID: string;
-	let act: any;
-	let country: any;
-	let years = [2024,2025];
-	$: actID, getAct(actID);
+	let { countries, actID }: { countries: CountryList[]; actID: string } = $props();
+
+	const years = [2024, 2025];
+	let act = $state<Record<string, unknown> | null>(null);
+	let country = $state<{ id: string; name: string } | null>(null);
+
+	$effect(() => {
+		if (actID) getAct(actID);
+	});
 
 	function getAct(id: string) {
 		axios
 			.get('/admin/acts/' + id)
-			.then(function (response) {
-				act = response.data[0].act;
-				country = response.data[0].country;
+			.then((res) => {
+				act = res.data[0].act;
+				country = res.data[0].country;
 			})
-			.catch(function (error) {
-				const t: ToastSettings = {
-					message: 'OOPS! Something went wrong 😕',
-					background: 'variant-filled-error'
-				};
-				toastStore.trigger(t);
-			});
+			.catch(() => toastStore.trigger('OOPS! Something went wrong', 'error'));
 	}
 </script>
 
 <div class="w-full h-full">
 	<div class="card text-xl p-4">
-		{#if act}
+		{#if act && country}
 			<form method="POST" action="?/update">
 				<div class="grid grid-cols-5 space-x-2 space-y-2">
 					<label class="label col-span-full">
 						Act ID
-						<input class="input" type="text " name="act_id" bind:value={act.id} readonly /></label
-					>
+						<input class="input" type="text" name="act_id" bind:value={act.id} readonly />
+					</label>
 					<label class="label col-span-4">
 						<span>Artist</span>
 						<input class="input" name="artist" type="text" bind:value={act.artist} />
@@ -62,8 +58,7 @@
 						<input class="input" type="number" name="position" bind:value={act.position} />
 					</label>
 				</div>
-				<CountryAutocomplete {countries} countryID={country.id} countryName={country.name}
-				></CountryAutocomplete>
+				<CountryAutocomplete {countries} bind:countryID={country.id} bind:countryName={country.name} />
 				<label class="label">
 					<span>Endpoints</span>
 					<input class="input" type="number" name="endpoints" bind:value={act.endpoints} />

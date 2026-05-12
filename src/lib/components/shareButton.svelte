@@ -1,54 +1,45 @@
-<script>
+<script lang="ts">
 	import { env } from '$env/dynamic/public';
-	export let text = 'Check out this page!';
-	export let url = env.PUBLIC_APP_URL;
-	export let design = 'btn';
-	export let title = url.split('/').splice(-1)[0]; // default to end of url
 
-	let complete = false;
+	let {
+		text = 'Check out this page!',
+		url = env.PUBLIC_APP_URL,
+		design = 'btn',
+		title = url.split('/').splice(-1)[0],
+		children
+	} = $props();
+
+	let complete = $state(false);
 
 	async function handleClick() {
 		try {
-			const shareData = {
-				title: title,
-				text: text,
-				url: url
-			};
-
-			// Check if Web Share API is available
 			if (navigator.share) {
 				try {
-					await navigator.share(shareData);
-					return; // Exit if share was successful
-				} catch (shareError) {
-					console.error('Share failed:', shareError);
-					// Continue to clipboard fallback if share fails
+					await navigator.share({ title, text, url });
+					return;
+				} catch {
+					// fall through to clipboard
 				}
 			}
-
-			// Fallback to clipboard
 			await navigator.clipboard.writeText(url);
 			complete = true;
-			// Reset the complete state after 2 seconds
-			setTimeout(() => complete = false, 2000);
-		} catch (error) {
-			console.error('Error sharing:', error);
-			// If share fails, fallback to clipboard
+			setTimeout(() => (complete = false), 2000);
+		} catch {
 			try {
 				await navigator.clipboard.writeText(url);
 				complete = true;
-				setTimeout(() => complete = false, 2000);
-			} catch (clipboardError) {
-				console.error('Error copying to clipboard:', clipboardError);
+				setTimeout(() => (complete = false), 2000);
+			} catch {
+				// ignore
 			}
 		}
 	}
 </script>
 
-<button on:click={handleClick} class={design}>
+<button onclick={handleClick} class={design}>
 	{#if complete}
-		<slot name="complete">Copied!</slot>
+		Copied!
 	{:else}
-		<slot>Share</slot>
+		{@render children?.()}
 	{/if}
 </button>

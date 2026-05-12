@@ -11,21 +11,29 @@ import type {
 } from '../../../types';
 
 export type ActList = {
-  id: string;
-  artist: string;
-  title: string;
-  position: number;
+  act: {
+    id: string;
+    artist: string;
+    title: string;
+    year: number;
+    picture_url: string | null;
+    position: number | null;
+    endpoints: number | null;
+    eliminated: boolean | null;
+    countryID: string;
+  };
   country: {
     id: string;
     name: string;
-    imageURL: string;
+    code: string;
+    imageURL: string | null;
   };
 };
 
 export type CountryList = {
   id: string;
   name: string;
-  imageURL: string;
+  imageURL: string | null;
 };
 
 export type GroupInfo = {
