@@ -1,27 +1,27 @@
-import { json } from "@sveltejs/kit";
+import { json, error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
 import { createVote, type Vote } from "$lib/server/db/queries";
-import { fail } from "assert";
-import { error } from "@sveltejs/kit";
 
 export async function POST(request: RequestEvent) {
-  const session = await request.locals.auth()
-  const { data } = await request.request.json()
+	const session = await request.locals.auth();
+	const { data } = await request.request.json();
 
-  if (!session?.user) {
-    throw error(403, 'Not authorized');
-  }
-  let newVote: Vote = {
-    userID: session.user.id!,
-    actID: request.params.id,
-    categories: data["category"],
-    points: data["points"] + ''
-  }
-  try {
-    createVote(newVote)
-  } catch (e) {
-    return fail("500")
-  }
+	if (!session?.user) {
+		throw error(403, 'Not authorized');
+	}
 
-  return json({ status: 200 })
+	const newVote: Vote = {
+		userID: session.user.id!,
+		actID: request.params.id,
+		categories: data["category"],
+		points: data["points"] + ''
+	};
+
+	try {
+		await createVote(newVote);
+	} catch {
+		throw error(500, 'Vote failed');
+	}
+
+	return json({ status: 200 });
 }

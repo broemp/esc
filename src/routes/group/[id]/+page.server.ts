@@ -27,14 +27,12 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
   const categories = await getGroupCategories(groupID)
   const songVotes = await getGroupSongVotes(groupID)
   const overallRanking = await getOverallRankingGroup(groupID)
-  const categoryRanking: RankingCategoryGroup[] = [];
-
-  categories.forEach(async (cat) => {
-    let ranking = await getRankingCategoryGroup(groupID, cat.category?.id!)
-    if (ranking.length > 0) {
-      categoryRanking.push(ranking)
-    }
-  });
+  const categoryRankingResults = await Promise.all(
+    categories.map((cat) => getRankingCategoryGroup(groupID, cat.category?.id!))
+  );
+  const categoryRanking: RankingCategoryGroup[] = categoryRankingResults.filter(
+    (r) => r.length > 0
+  );
 
   let isAdmin = false
   if (group[0].group.admin == session.user?.id) {
