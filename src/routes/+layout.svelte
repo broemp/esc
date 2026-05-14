@@ -41,21 +41,21 @@
 </script>
 
 <svelte:head>
-	<title>{$page.data.title ?? 'ESC'}</title>
+	<title>{$page.data.title ?? 'ESC 2026'}</title>
 </svelte:head>
 
-<div data-theme="cerberus" class="flex flex-col min-h-screen">
+<div data-theme="cerberus" class="flex flex-col min-h-screen text-white">
 	<Toast />
 	<ResponsiveBackground />
 
-	<AppBar>
-		<AppBar.Toolbar>
-			<AppBar.Lead>
-				<a href="/">
-					<ResponsiveLogo />
+	<AppBar class="bg-[oklch(0.09_0_0)]">
+		<AppBar.Toolbar class="flex items-center justify-between px-4 py-2">
+			<AppBar.Lead class="flex items-center">
+				<a href="/" class="flex items-center gap-3">
+					<ResponsiveLogo class="h-8 w-auto" />
 				</a>
 			</AppBar.Lead>
-			<AppBar.Trail>
+			<AppBar.Trail class="flex items-center gap-2">
 				{#if !$page.data.session}
 					<a class="btn btn-sm variant-ghost-surface" href="/auth/signIn">Sign In</a>
 				{:else}
@@ -73,7 +73,11 @@
 		</AppBar.Toolbar>
 	</AppBar>
 
-	<div class="border-b border-white"></div>
+	<!-- Gold accent line -->
+	<div
+		class="h-px shrink-0"
+		style="background: linear-gradient(90deg, transparent 0%, #D4AF37 25%, #D4AF37 75%, transparent 100%); opacity: 0.45;"
+	></div>
 
 	<main class="flex-1 mb-14">
 		{@render children()}

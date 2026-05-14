@@ -82,7 +82,7 @@
 </script>
 
 <div>
-	<div class="flex justify-center gap-2 p-2 border-b border-white/20">
+	<div class="flex justify-center gap-2 p-2" style="border-bottom: 1px solid oklch(0.22 0.04 82 / 0.3);">
 		{#each tabs as tab, i}
 			<button
 				class="btn btn-sm {activeTab === i ? 'variant-filled-primary' : 'variant-ghost-surface'}"

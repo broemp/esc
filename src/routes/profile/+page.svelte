@@ -24,7 +24,7 @@
 </script>
 
 <div class="container mx-auto px-4 py-8">
-	<div class="bg-gradient-to-br from-red-900 to-black rounded-lg shadow-lg p-6 text-white">
+	<div class="rounded-2xl p-6 text-white" style="background: oklch(0.10 0 0); border: 1px solid oklch(0.22 0.04 82 / 0.35);">
 		<div class="flex items-center justify-between mb-8">
 			<h1 class="text-3xl font-bold">Settings</h1>
 			<button

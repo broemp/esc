@@ -31,7 +31,7 @@
 	<div class="act-list w-full">
 		{#each acts as act}
 			<a href="/vote/{act.act.id}">
-				<div class="w-full border-black border-t-2 grid grid-cols-[1fr_2fr_3fr] min-h-32 py-4">
+				<div class="w-full grid grid-cols-[1fr_2fr_3fr] min-h-32 py-4" style="border-top: 1px solid oklch(0.22 0.04 82 / 0.25);">
 					<div class="flex items-center justify-center">
 						<span class="text-4xl font-bold text-[var(--color-primary-500)]"
 							>{act.act.position}</span

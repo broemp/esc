@@ -9,14 +9,17 @@ export interface ToastMessage {
 
 function createToastStore() {
 	let toasts = $state<ToastMessage[]>([]);
+	const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
 	function trigger(message: string, type: ToastType = 'info', timeout = 2000) {
 		const id = crypto.randomUUID();
 		toasts = [...toasts, { id, message, type, timeout }];
-		setTimeout(() => dismiss(id), timeout);
+		timers.set(id, setTimeout(() => dismiss(id), timeout));
 	}
 
 	function dismiss(id: string) {
+		clearTimeout(timers.get(id));
+		timers.delete(id);
 		toasts = toasts.filter((t) => t.id !== id);
 	}
 

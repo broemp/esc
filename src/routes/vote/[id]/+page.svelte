@@ -83,7 +83,7 @@
 			</div>
 		</div>
 	</div>
-	<hr class="border-t-2 pb-2" />
+	<hr class="pb-2" style="border-top: 1px solid oklch(0.22 0.04 82 / 0.3);" />
 	<form method="post" action="?/vote">
 		{#each categoryMap as [id, category]}
 			<div class="flex justify-center">

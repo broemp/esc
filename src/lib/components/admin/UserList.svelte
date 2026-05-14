@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 
 	let {
-		users = $bindable<User[]>([]),
+		users = $bindable<User[]>(),
 		totalUsers,
 		currentPage,
 		limit
@@ -79,12 +79,12 @@
 								View Profile
 							</button>
 							<button
-								class="btn btn-sm {user.role === 'admin' ? 'variant-filled-error' : 'variant-filled-primary'}"
+								class="btn btn-sm {user.role === 'admin' ? 'preset-filled-error-500' : 'preset-filled-primary-500'}"
 								onclick={() => toggleAdmin(user)}
 							>
 								{user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
 							</button>
-							<button class="btn btn-sm variant-filled-error" onclick={() => handleDelete(user.id)}>
+							<button class="btn btn-sm preset-filled-error-500" onclick={() => handleDelete(user.id)}>
 								Delete
 							</button>
 						</td>

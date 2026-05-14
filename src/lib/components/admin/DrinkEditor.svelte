@@ -73,8 +73,8 @@
 						<input class="checkbox" type="checkbox" name="alcohol" bind:value={drink.alcohol} />
 						<p>Alcoholic</p>
 					</label>
-					<button formaction="?/delete" class="btn variant-filled-error">Delete</button>
-					<button class="btn variant-filled-primary" type="submit">Save</button>
+					<button formaction="?/delete" class="btn preset-filled-error-500">Delete</button>
+					<button class="btn preset-filled-primary-500" type="submit">Save</button>
 				</div>
 			</form>
 		{/if}

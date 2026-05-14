@@ -14,7 +14,7 @@
 		<div
 			class="px-4 py-3 rounded shadow-lg text-sm flex justify-between items-center gap-4 {colorMap[toast.type]}"
 		>
-			<span>{@html toast.message}</span>
+			<span>{toast.message}</span>
 			<button onclick={() => toastStore.dismiss(toast.id)} class="shrink-0 opacity-70 hover:opacity-100">✕</button>
 		</div>
 	{/each}
