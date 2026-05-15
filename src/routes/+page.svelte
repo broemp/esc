@@ -13,6 +13,8 @@
 	let actIndex = $state(0);
 	let currentAct = $state(data.acts[0]);
 
+	let touchStartX = 0;
+
 	function carouselLeft() {
 		const x =
 			elemCarousel.scrollLeft === 0
@@ -31,6 +33,18 @@
 		elemCarousel.scroll(x, 0);
 		actIndex = (actIndex + 1) % data.acts.length;
 		currentAct = data.acts[actIndex];
+	}
+
+	function handleTouchStart(e: TouchEvent) {
+		touchStartX = e.touches[0].clientX;
+	}
+
+	function handleTouchEnd(e: TouchEvent) {
+		const delta = e.changedTouches[0].clientX - touchStartX;
+		if (Math.abs(delta) > 40) {
+			if (delta < 0) carouselRight();
+			else carouselLeft();
+		}
 	}
 </script>
 
@@ -99,49 +113,56 @@
 			<!-- Carousel -->
 			{#if acts.length > 0}
 				<div>
-					<div class="card-esc overflow-hidden">
-						<div class="grid grid-cols-[44px_1fr_44px] items-center">
-							<button
-								type="button"
-								class="btn-ghost h-full flex items-center justify-center"
-								onclick={carouselLeft}
-								aria-label="Previous act"
-							>
-								<i class="fa-solid fa-chevron-left text-sm"></i>
-							</button>
+					<div
+						class="overflow-hidden rounded-2xl"
+						style="border: 1px solid oklch(0.22 0 0); background: oklch(0.07 0 0);"
+					>
+						<!-- Image with swipe -->
+						<div
+							bind:this={elemCarousel}
+							class="snap-x snap-mandatory scroll-smooth flex overflow-x-hidden"
+							style="mask-image: linear-gradient(to top, transparent 0%, black 25%); -webkit-mask-image: linear-gradient(to top, transparent 0%, black 25%);"
+							ontouchstart={handleTouchStart}
+							ontouchend={handleTouchEnd}
+						>
+							{#each acts as act}
+								<button
+									type="button"
+									class="snap-center shrink-0 w-full cursor-pointer block leading-none"
+									onclick={() => goto('/vote/' + act.act.id)}
+									aria-label="Vote for {act.act.artist}"
+								>
+									<ActImage
+										src={act.act.picture_url}
+										alt={act.act.artist}
+										class="object-cover w-full h-52 block"
+										style="background: oklch(0.07 0 0);"
+									/>
+								</button>
+							{/each}
+						</div>
 
-							<div
-								bind:this={elemCarousel}
-								class="snap-x snap-mandatory scroll-smooth flex overflow-x-hidden"
-							>
-								{#each acts as act}
-									<button
-										type="button"
-										class="snap-center shrink-0 w-full cursor-pointer"
-										onclick={() => goto('/vote/' + act.act.id)}
-										aria-label="Vote for {act.act.artist}"
-									>
-										<ActImage
-											src={act.act.picture_url}
-											alt={act.act.artist}
-											class="object-contain w-full max-h-40 rounded"
-											style="background: oklch(0.07 0 0);"
-										/>
-									</button>
-								{/each}
+						<!-- Info bar below the image -->
+						<div class="px-4 py-2.5">
+							<div class="flex items-center gap-2 mb-1">
+								<img
+									src={currentAct.country.imageURL}
+									class="w-5 h-5 object-contain rounded-sm shrink-0"
+									alt={currentAct.country.name}
+								/>
+								<span class="text-xs font-medium" style="color: oklch(0.58 0 0);">
+									{currentAct.country.name}
+								</span>
 							</div>
-
-							<button
-								type="button"
-								class="btn-ghost h-full flex items-center justify-center"
-								onclick={carouselRight}
-								aria-label="Next act"
-							>
-								<i class="fa-solid fa-chevron-right text-sm"></i>
-							</button>
+							<p class="text-sm truncate">
+								<span class="font-bold">{currentAct.act.artist}</span>
+								<span style="color: oklch(0.52 0 0);"> · {currentAct.act.title}</span>
+							</p>
 						</div>
 					</div>
-					<p class="text-center text-xs mt-2" style="color: oklch(0.40 0 0);">Tap an act to vote</p>
+					<p class="text-center text-xs mt-2" style="color: oklch(0.38 0 0);">
+						Tap to vote · {actIndex + 1} / {acts.length}
+					</p>
 				</div>
 			{/if}
 

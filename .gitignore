@@ -8,3 +8,5 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+/ESC Datenbank - Tabellenblatt1.csv
+/scripts/download-images.mjs
