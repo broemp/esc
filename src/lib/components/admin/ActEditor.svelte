@@ -25,53 +25,57 @@
 	}
 </script>
 
-<div class="w-full h-full">
-	<div class="card text-xl p-4">
+<div class="w-full">
+	<div class="card-esc p-4">
 		{#if act && country}
-			<form method="POST" action="?/update">
-				<div class="grid grid-cols-5 space-x-2 space-y-2">
-					<label class="label col-span-full">
-						Act ID
-						<input class="input" type="text" name="act_id" bind:value={act.id} readonly />
-					</label>
-					<label class="label col-span-4">
-						<span>Artist</span>
-						<input class="input" name="artist" type="text" bind:value={act.artist} />
-					</label>
-					<label class="label col-span-1">
-						<span>Year</span>
-						<select class="select" bind:value={act.year} name="year">
-							<option value={null}>NULL</option>
+			<form method="POST" action="?/update" class="space-y-3">
+				<div>
+					<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Act ID</label>
+					<input class="input-box" type="text" name="act_id" bind:value={act.id} readonly style="opacity: 0.5;" />
+				</div>
+				<div class="grid grid-cols-5 gap-2">
+					<div class="col-span-4">
+						<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Artist</label>
+						<input class="input-box" name="artist" type="text" bind:value={act.artist} />
+					</div>
+					<div class="col-span-1">
+						<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Year</label>
+						<select class="select-esc" bind:value={act.year} name="year">
+							<option value={null}>–</option>
 							{#each years as year}
 								<option value={year}>{year}</option>
 							{/each}
 						</select>
-					</label>
+					</div>
 				</div>
-				<div class="grid grid-cols-5 space-x-2">
-					<label class="label col-span-4">
-						<span>Title</span>
-						<input class="input" type="text" name="title" bind:value={act.title} />
-					</label>
-					<label class="label col-span-1">
-						<span>Position</span>
-						<input class="input" type="number" name="position" bind:value={act.position} />
-					</label>
+				<div class="grid grid-cols-5 gap-2">
+					<div class="col-span-4">
+						<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Title</label>
+						<input class="input-box" type="text" name="title" bind:value={act.title} />
+					</div>
+					<div class="col-span-1">
+						<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Position</label>
+						<input class="input-box" type="number" name="position" bind:value={act.position} />
+					</div>
 				</div>
 				<CountryAutocomplete {countries} bind:countryID={country.id} bind:countryName={country.name} />
-				<label class="label">
-					<span>Endpoints</span>
-					<input class="input" type="number" name="endpoints" bind:value={act.endpoints} />
-				</label>
-				<div class="flex justify-between m-4">
-					<label class="flex items-center space-x-2">
-						<input class="checkbox" type="checkbox" name="eliminated" bind:value={act.eliminated} />
-						<p>Eliminated</p>
+				<div>
+					<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Endpoints</label>
+					<input class="input-box" type="number" name="endpoints" bind:value={act.endpoints} />
+				</div>
+				<div class="flex justify-between items-center pt-2">
+					<label class="flex items-center gap-2 cursor-pointer">
+						<input class="checkbox-esc" type="checkbox" name="eliminated" bind:value={act.eliminated} />
+						<span class="text-sm">Eliminated</span>
 					</label>
-					<button formaction="?/delete" class="btn preset-filled-error-500">Delete</button>
-					<button class="btn preset-filled-primary-500" type="submit">Save</button>
+					<div class="flex gap-2">
+						<button formaction="?/delete" class="px-3 py-1.5 rounded text-xs font-semibold text-white" style="background: oklch(0.38 0.22 20);">Delete</button>
+						<button class="btn-brand px-4 py-1.5 rounded text-xs font-semibold" type="submit">Save</button>
+					</div>
 				</div>
 			</form>
+		{:else}
+			<p class="text-sm" style="color: oklch(0.45 0 0);">Select an act to edit</p>
 		{/if}
 	</div>
 </div>

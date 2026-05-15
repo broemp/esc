@@ -52,54 +52,71 @@
 	}
 </script>
 
-<div class="card">
-	<div class="overflow-x-auto">
-		<table class="table">
-			<thead>
+<div class="card-esc overflow-x-auto">
+	<table class="table-esc">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Role</th>
+				<th>Created</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each users as user}
 				<tr>
-					<th class="px-4 md:px-6">Name</th>
-					<th class="px-4 md:px-6">Email</th>
-					<th class="px-4 md:px-6">Role</th>
-					<th class="px-4 md:px-6">Created At</th>
-					<th class="px-4 md:px-6">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each users as user}
-					<tr>
-						<td class="px-4 md:px-6">{user.name || 'N/A'}</td>
-						<td class="px-4 md:px-6">{user.email}</td>
-						<td class="px-4 md:px-6">{user.role}</td>
-						<td class="px-4 md:px-6">{new Date(user.createdAt).toLocaleDateString()}</td>
-						<td class="px-4 md:px-6 flex flex-col md:flex-row gap-2">
+					<td class="font-medium">{user.name || 'N/A'}</td>
+					<td style="color: oklch(0.60 0 0);">{user.email}</td>
+					<td>
+						<span class="text-xs px-2 py-0.5 rounded font-semibold"
+							style={user.role === 'admin'
+								? 'background: oklch(0.62 0.28 0 / 0.15); color: oklch(0.75 0.22 0);'
+								: 'background: oklch(0.15 0 0); color: oklch(0.50 0 0);'}>
+							{user.role}
+						</span>
+					</td>
+					<td style="color: oklch(0.55 0 0);">{new Date(user.createdAt).toLocaleDateString()}</td>
+					<td>
+						<div class="flex flex-wrap gap-1.5">
 							<button
-								class="btn btn-sm preset-tonal-primary"
+								class="btn-ghost text-xs px-2 py-1 rounded"
 								onclick={() => goto(`/user/${user.id}`)}
 							>
-								View Profile
+								View
 							</button>
 							<button
-								class="btn btn-sm {user.role === 'admin' ? 'preset-filled-error-500' : 'preset-filled-primary-500'}"
+								class="text-xs px-2 py-1 rounded font-semibold"
+								style={user.role === 'admin'
+									? 'background: oklch(0.38 0.22 20 / 0.3); color: oklch(0.70 0.20 20);'
+									: 'background: oklch(0.62 0.28 0 / 0.15); color: oklch(0.75 0.22 0);'}
 								onclick={() => toggleAdmin(user)}
 							>
 								{user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
 							</button>
-							<button class="btn btn-sm preset-filled-error-500" onclick={() => handleDelete(user.id)}>
+							<button
+								class="text-xs px-2 py-1 rounded font-semibold text-white"
+								style="background: oklch(0.38 0.22 20);"
+								onclick={() => handleDelete(user.id)}
+							>
 								Delete
 							</button>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-	<div class="flex justify-center gap-2 mt-4">
-		{#if currentPage > 1}
-			<a href="?page={currentPage - 1}" class="btn btn-sm">Previous</a>
-		{/if}
-		<span class="btn btn-sm">Page {currentPage} of {totalPages}</span>
-		{#if currentPage < totalPages}
-			<a href="?page={currentPage + 1}" class="btn btn-sm">Next</a>
-		{/if}
-	</div>
+						</div>
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
+
+<div class="flex justify-center gap-2 mt-4 text-sm">
+	{#if currentPage > 1}
+		<a href="?page={currentPage - 1}" class="btn-ghost px-3 py-1.5 rounded">Previous</a>
+	{/if}
+	<span class="px-3 py-1.5 rounded" style="color: oklch(0.55 0 0);">
+		Page {currentPage} of {totalPages}
+	</span>
+	{#if currentPage < totalPages}
+		<a href="?page={currentPage + 1}" class="btn-ghost px-3 py-1.5 rounded">Next</a>
+	{/if}
 </div>

@@ -55,60 +55,72 @@
 	}
 </script>
 
-<div class="w-full md:w-2/3 mx-auto">
-	<img src={act.picture_url} alt="act" class="w-full h-48 md:h-96 object-contain bg-black" />
-	<div class="w-full">
-		<div class="flex justify-center pb-2">
-			<div class="grid grid-cols-12 w-full max-w-4xl">
-				<button
-					class="col-span-3 flex items-center justify-center text-2xl h-full hover:bg-gray-100/10 transition-colors"
-					onclick={() => navigate(prevAct)}
-				>
-					<i class="fa-regular fa-circle-left"></i>
-				</button>
-				<div class="col-span-6 pt-2">
-					<div class="flex justify-center">
-						<img src={country.imageURL} alt="country" class="w-12 h-12 pr-2" />
-						<p>
-							<span class="font-bold">{act.artist}</span><br />{act.title}
-						</p>
-					</div>
-				</div>
-				<button
-					class="col-span-3 flex items-center justify-center text-2xl h-full hover:bg-gray-100/10 transition-colors"
-					onclick={() => navigate(nextAct)}
-				>
-					<i class="fa-regular fa-circle-right"></i>
-				</button>
-			</div>
-		</div>
+<div class="max-w-lg mx-auto pb-6">
+	<!-- Hero image -->
+	<div class="w-full" style="background: oklch(0.04 0 0); height: 14rem;">
+		<img
+			src={act.picture_url}
+			alt={act.artist}
+			class="w-full h-full object-contain"
+		/>
 	</div>
-	<hr class="pb-2" style="border-top: 1px solid oklch(0.22 0.04 82 / 0.3);" />
+
+	<!-- Navigation row -->
+	<div class="grid items-center py-3 px-4" style="grid-template-columns: 48px 1fr 48px;">
+		<button
+			class="btn-ghost h-12 w-12 rounded-lg flex items-center justify-center"
+			onclick={() => navigate(prevAct)}
+			aria-label="Previous act"
+		>
+			<i class="fa-solid fa-chevron-left"></i>
+		</button>
+
+		<div class="flex flex-col items-center gap-1">
+			<img src={country.imageURL} alt={country.name} class="w-8 h-8 object-contain" />
+			<p class="font-bold text-sm text-center leading-tight">{act.artist}</p>
+			<p class="text-xs text-center" style="color: oklch(0.55 0 0);">{act.title}</p>
+		</div>
+
+		<button
+			class="btn-ghost h-12 w-12 rounded-lg flex items-center justify-center"
+			onclick={() => navigate(nextAct)}
+			aria-label="Next act"
+		>
+			<i class="fa-solid fa-chevron-right"></i>
+		</button>
+	</div>
+
+	<div class="gradient-line mx-4"></div>
+
+	<!-- Voting sliders -->
 	<form method="post" action="?/vote">
 		{#each categoryMap as [id, category]}
-			<div class="flex justify-center">
-				<div class="mx-4 max-w-xl w-full py-2">
-					<div class="flex flex-col gap-1 mb-2">
-						<div class="text-center font-bold">
-							{category.name.replace('_', ' ').toLocaleUpperCase().trim()}
-						</div>
-						<div class="flex justify-between text-xs text-gray-400">
-							<span>0</span>
-							<span>{category.points} / {max}</span>
-						</div>
-					</div>
-					<input
-						type="range"
-						name={id}
-						class="w-full"
-						bind:value={category.points}
-						onchange={() => updateVote(category)}
-						min={0}
-						{max}
-						step={0.5}
-					/>
+			<div class="px-4 py-5">
+				<div class="flex justify-between items-baseline mb-3">
+					<span class="text-xs font-semibold uppercase tracking-widest" style="color: oklch(0.50 0 0);">
+						{category.name.replace('_', ' ').trim()}
+					</span>
+					<span class="text-gradient font-bold text-lg">{category.points}</span>
+				</div>
+
+				<input
+					type="range"
+					name={id}
+					class="slider-esc"
+					bind:value={category.points}
+					onchange={() => updateVote(category)}
+					min={0}
+					{max}
+					step={0.5}
+					style="background: linear-gradient(to right, #ff2d78, #7a00cc {(category.points / max * 100)}%, oklch(0.18 0 0) {(category.points / max * 100)}%);"
+				/>
+
+				<div class="flex justify-between text-[10px] mt-1.5" style="color: oklch(0.32 0 0);">
+					<span>0</span>
+					<span>{max}</span>
 				</div>
 			</div>
+			<div class="gradient-line mx-4" style="opacity: 0.15;"></div>
 		{/each}
 	</form>
 </div>

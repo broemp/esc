@@ -81,11 +81,15 @@
 	const tabs = ['Ranking', 'Members', 'Invite', 'Settings'];
 </script>
 
-<div>
-	<div class="flex justify-center gap-2 p-2" style="border-bottom: 1px solid oklch(0.22 0.04 82 / 0.3);">
+<div class="max-w-lg mx-auto">
+	<!-- Tab bar -->
+	<div
+		class="flex overflow-x-auto"
+		style="border-bottom: 1px solid oklch(0.14 0 0);"
+	>
 		{#each tabs as tab, i}
 			<button
-				class="btn btn-sm {activeTab === i ? 'variant-filled-primary' : 'variant-ghost-surface'}"
+				class="tab-esc {activeTab === i ? 'active' : ''}"
 				onclick={() => (activeTab = i)}
 			>
 				{tab}
@@ -93,101 +97,129 @@
 		{/each}
 	</div>
 
+	<!-- Ranking tab -->
 	{#if activeTab === 0}
-		<div class="m-2">
-			<select class="select" bind:value={selectedCategory} onchange={onCategoryChange}>
-				<option value="overall">OVERALL</option>
+		<div class="p-4 space-y-3">
+			<select class="select-esc" bind:value={selectedCategory} onchange={onCategoryChange}>
+				<option value="overall">Overall</option>
 				{#each groupCategories as category}
 					{#if category.category?.id && category.category?.name}
-						<option value={category.category.id}
-							>{category.category.name.replace('_', ' ').toUpperCase()}</option
-						>
+						<option value={category.category.id}>
+							{category.category.name.replace('_', ' ')}
+						</option>
 					{/if}
 				{/each}
 			</select>
+
+			<div class="space-y-1.5">
+				{#each ranking as act}
+					<button
+						type="button"
+						class="card-esc p-3 w-full flex items-center gap-3 cursor-pointer hover:border-[oklch(0.30_0_0)] transition-colors text-left"
+						onclick={() => goto('/vote/' + act.actID)}
+						onkeypress={(e) => e.key === 'Enter' && goto('/vote/' + act.actID)}
+					>
+						<img src={act.countryImage} alt="country" class="w-6 h-6 object-contain shrink-0" />
+						<div class="flex-1 min-w-0">
+							<p class="font-semibold text-sm truncate">{act.artist}</p>
+							<p class="text-xs truncate" style="color: oklch(0.50 0 0);">{act.title}</p>
+						</div>
+						<span class="text-gradient font-bold text-base shrink-0">{act.score}</span>
+					</button>
+				{/each}
+			</div>
 		</div>
-		<div class="grid grid-cols-1 m-2 space-y-2">
-			{#each ranking as act}
-				<div
-					class="card p-4 variant-filled-primary cursor-pointer"
-					onclick={() => goto('/vote/' + act.actID)}
-					role="button"
-					tabindex="0"
-					onkeypress={(e) => e.key === 'Enter' && goto('/vote/' + act.actID)}
-				>
-					<div class="flex justify-between">
-						<p class="flex">
-							<img src={act.countryImage} alt="country" class="w-6 h-6 mr-2" />
-							<span class="font-bold">{act.artist}</span> - {act.title}
-						</p>
-						<p>{act.score}</p>
-					</div>
-				</div>
-			{/each}
-		</div>
+
+	<!-- Members tab -->
 	{:else if activeTab === 1}
-		<div class="grid grid-cols-1 justify-center space-y-4 px-4 pt-4">
+		<div class="p-4 space-y-2">
 			{#each members as member}
-				<a href={'/user/' + member.userid} class="btn variant-glass-primary">
-					{member.username}
+				<a
+					href={'/user/' + member.userid}
+					class="card-esc px-4 py-3 flex items-center gap-3 hover:border-[oklch(0.30_0_0)] transition-colors block"
+				>
+					<i class="fa-solid fa-user text-sm" style="color: oklch(0.45 0 0);"></i>
+					<span class="font-medium text-sm flex-1">{member.username}</span>
+					<i class="fa-solid fa-chevron-right text-xs" style="color: oklch(0.35 0 0);"></i>
 				</a>
 			{/each}
 		</div>
+
+	<!-- Invite tab -->
 	{:else if activeTab === 2}
-		<div class="flex justify-center pt-4">
-			<div class="w-48 pb-2">
-				<svg use:qr={{ data: ShareURL, shape: 'circle' }} />
+		<div class="p-8 flex flex-col items-center space-y-6">
+			<div class="gradient-border p-1 rounded-xl inline-block" style="background: oklch(0.09 0 0);">
+				<div class="p-3" style="background: white; border-radius: 0.5rem;">
+					<svg use:qr={{ data: ShareURL, shape: 'circle' }} class="w-40 h-40" />
+				</div>
 			</div>
-		</div>
-		<div class="flex justify-center">
-			<ShareButton url={ShareURL} title="Join my ESC Group" design="btn variant-glass-primary">
-				{#snippet children()}Share{/snippet}
+
+			<ShareButton url={ShareURL} title="Join my ESC Group" design="btn-brand px-8 py-3 rounded-xl text-sm font-semibold">
+				{#snippet children()}
+					<i class="fa-solid fa-share-nodes mr-2"></i>Share Link
+				{/snippet}
 			</ShareButton>
+
+			<p class="text-xs text-center break-all" style="color: oklch(0.40 0 0);">{ShareURL}</p>
 		</div>
+
+	<!-- Settings tab -->
 	{:else if activeTab === 3}
 		{#if isAdmin}
-			<div class="p-4 space-y-4">
-				<h2 class="text-xl font-bold">Group Settings</h2>
+			<div class="p-4 space-y-6">
+				<!-- Basic Settings -->
 				<div class="space-y-4">
-					<div class="space-y-2">
-						<h3 class="font-semibold">Basic Settings</h3>
-						<label class="label font-bold">
-							<p>Group Name</p>
-							<input class="input" type="text" bind:value={groupName} />
-						</label>
-						<label class="flex items-center space-x-2">
-							<input type="checkbox" class="checkbox" bind:checked={isPublic} />
-							<span>Public Group</span>
-						</label>
-						<button class="btn variant-filled-primary w-full" onclick={updateGroupSettings}>
-							Save Basic Settings
-						</button>
+					<p class="text-xs uppercase tracking-widest" style="color: oklch(0.42 0 0);">Basic Settings</p>
+					<div>
+						<label for="groupName" class="block text-xs mb-2" style="color: oklch(0.55 0 0);">Group Name</label>
+						<input
+							id="groupName"
+							class="input-esc"
+							type="text"
+							bind:value={groupName}
+						/>
 					</div>
-					<hr class="border-t-2" />
-					<div class="space-y-2">
-						<h3 class="font-semibold">Categories</h3>
-						<div class="grid grid-cols-2 gap-2">
-							{#each allCategories as category}
-								<label class="flex items-center space-x-2 p-2 rounded hover:preset-tonal-surface">
-									<input
-										type="checkbox"
-										class="checkbox"
-										checked={selectedCategories.has(category.name)}
-										onchange={() => toggleCategory(category.name)}
-									/>
-									<span>{category.name.replace('_', ' ').toUpperCase()}</span>
-								</label>
-							{/each}
-						</div>
-						<button class="btn variant-filled-primary w-full" onclick={updateCategories}>
-							Save Categories
-						</button>
+					<div class="card-esc p-3 flex items-center justify-between">
+						<span class="text-sm font-medium">Public Group</span>
+						<input type="checkbox" class="checkbox-esc" bind:checked={isPublic} />
 					</div>
+					<button class="btn-brand w-full h-11 rounded-xl text-sm font-semibold" onclick={updateGroupSettings}>
+						Save Settings
+					</button>
+				</div>
+
+				<div class="gradient-line"></div>
+
+				<!-- Categories -->
+				<div class="space-y-3">
+					<p class="text-xs uppercase tracking-widest" style="color: oklch(0.42 0 0);">Categories</p>
+					<div class="grid grid-cols-2 gap-2">
+						{#each allCategories as category}
+							<label class="card-esc p-3 flex items-center gap-3 cursor-pointer hover:border-[oklch(0.28_0_0)] transition-colors">
+								<input
+									type="checkbox"
+									class="checkbox-esc"
+									checked={selectedCategories.has(category.name)}
+									onchange={() => toggleCategory(category.name)}
+								/>
+								<span class="text-sm">{category.name.replace('_', ' ')}</span>
+							</label>
+						{/each}
+					</div>
+					<button class="btn-brand w-full h-11 rounded-xl text-sm font-semibold" onclick={updateCategories}>
+						Save Categories
+					</button>
 				</div>
 			</div>
 		{:else}
 			<div class="p-4">
-				<button class="btn variant-filled-warning w-full" onclick={leaveGroup}>Leave Group</button>
+				<button
+					class="w-full h-12 rounded-xl text-sm font-semibold text-white"
+					style="background: oklch(0.40 0.22 20);"
+					onclick={leaveGroup}
+				>
+					Leave Group
+				</button>
 			</div>
 		{/if}
 	{/if}

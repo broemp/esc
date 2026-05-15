@@ -18,129 +18,123 @@
 	}
 </script>
 
-<div class="container mx-auto px-4 py-8">
-	<div class="rounded-2xl p-6 text-white" style="background: oklch(0.10 0 0); border: 1px solid oklch(0.22 0.04 82 / 0.35);">
-		<div class="flex items-center justify-between mb-8">
-			<div class="flex items-center space-x-4">
-				{#if data.user.image}
+<div class="max-w-2xl mx-auto px-4 pt-6 pb-6">
+	<!-- Profile header -->
+	<div class="flex items-center gap-4 mb-5">
+		{#if data.user.image}
+			<div class="relative shrink-0">
+				<div class="w-18 h-18 rounded-full p-[2px]" style="background: var(--gradient-brand);">
 					<img
 						src={data.user.image}
 						alt={data.user.name || 'User avatar'}
-						class="w-24 h-24 rounded-full object-cover border-4"
-						style="border-color: #D4AF37;"
+						class="w-16 h-16 rounded-full object-cover block"
 					/>
-				{:else}
+				</div>
+			</div>
+		{:else}
+			<div class="relative shrink-0">
+				<div class="w-18 h-18 rounded-full p-[2px]" style="background: var(--gradient-brand);">
 					<div
-						class="w-24 h-24 rounded-full flex items-center justify-center border-4"
-						style="background: oklch(0.15 0 0); border-color: #D4AF37;"
+						class="w-16 h-16 rounded-full flex items-center justify-center"
+						style="background: oklch(0.09 0 0);"
 					>
-						<span class="text-4xl" style="color: #D4AF37;">
+						<span class="text-gradient text-2xl font-bold">
 							{data.user.name?.[0]?.toUpperCase() || '?'}
 						</span>
 					</div>
-				{/if}
-				<div>
-					<h1 class="text-3xl font-bold">{data.user.name || 'Anonymous User'}</h1>
-					<p style="color: oklch(0.55 0 0);">
-						Member since {new Date(data.user.createdAt).toLocaleDateString()}
-					</p>
 				</div>
 			</div>
-			{#if isOwnProfile}
-				<button class="btn preset-tonal p-2" onclick={() => goto('/settings')} title="Settings">
-					<i class="fa-solid fa-gear text-2xl"></i>
-				</button>
-			{/if}
+		{/if}
+
+		<div class="flex-1 min-w-0">
+			<h1 class="font-bold text-xl truncate">{data.user.name || 'Anonymous User'}</h1>
+			<p class="text-xs mt-0.5" style="color: oklch(0.50 0 0);">
+				Member since {new Date(data.user.createdAt).toLocaleDateString()}
+			</p>
 		</div>
 
-		<div class="mt-8">
-			<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
-				<h2 class="text-2xl font-semibold">Votes</h2>
-				<div class="sm:hidden">
-					<select
-						class="w-full p-2 rounded-lg text-white"
-						style="background: oklch(0.14 0 0); border: 1px solid oklch(0.22 0.04 82 / 0.4);"
-						bind:value={selectedCategory}
-					>
-						{#each categories as category}
-							<option value={category}>{capitalize(category)}</option>
-						{/each}
-					</select>
-				</div>
-				<div class="hidden sm:flex space-x-2">
-					{#each categories as category}
-						<button
-							class="px-4 py-2 rounded-full transition-colors font-semibold"
-							style={selectedCategory === category
-								? 'background: #D4AF37; color: oklch(0.15 0.05 82);'
-								: 'background: oklch(0.15 0 0); color: oklch(0.65 0 0);'}
-							onclick={() => (selectedCategory = category)}
-						>
-							{capitalize(category)}
-						</button>
-					{/each}
-				</div>
-			</div>
-
-			{#if filteredVotes.length === 0}
-				<p style="color: oklch(0.55 0 0);">No votes in this category yet</p>
-			{:else}
-				<div class="space-y-4">
-					{#each filteredVotes as vote}
-						<div
-							class="flex items-center space-x-4 p-4 rounded-xl"
-							style="background: oklch(0.13 0 0); border: 1px solid oklch(0.20 0.04 82 / 0.25);"
-						>
-							{#if vote.act?.picture_url}
-								<img
-									src={vote.act.picture_url}
-									alt={vote.act.title}
-									class="w-16 h-16 object-cover rounded border-2"
-									style="border-color: oklch(0.22 0.04 82 / 0.5);"
-								/>
-							{:else if vote.country?.imageURL}
-								<img
-									src={vote.country.imageURL}
-									alt={vote.act?.title}
-									class="w-16 h-16 object-cover rounded border-2"
-									style="border-color: oklch(0.22 0.04 82 / 0.5);"
-								/>
-							{:else}
-								<div
-									class="w-16 h-16 rounded flex items-center justify-center border-2"
-									style="background: oklch(0.15 0 0); border-color: oklch(0.22 0.04 82 / 0.5);"
-								>
-									<span style="color: oklch(0.55 0 0);">—</span>
-								</div>
-							{/if}
-							<div class="flex-1">
-								<h3 class="font-semibold">{vote.act?.artist} - {vote.act?.title}</h3>
-							</div>
-							<div class="text-xl font-bold" style="color: #D4AF37;">{vote.points} pts</div>
-						</div>
-					{/each}
-				</div>
-			{/if}
-		</div>
-
-		<div class="mt-8">
-			<h2 class="text-2xl font-semibold mb-4">Public Groups</h2>
-			{#if data.publicGroups.length === 0}
-				<p style="color: oklch(0.55 0 0);">No public groups yet</p>
-			{:else}
-				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					{#each data.publicGroups as group}
-						<a href="/group/{group.group?.id}">
-							<div
-								class="p-4 rounded-xl transition-colors hover:brightness-110"
-								style="background: oklch(0.13 0 0); border: 1px solid oklch(0.20 0.04 82 / 0.3);"
-							>
-								<h3 class="font-semibold">{group.group?.name}</h3>
-							</div>
-						</a>
-					{/each}
-				</div>
-			{/if}
-		</div>
+		{#if isOwnProfile}
+			<button class="btn-ghost p-2 rounded-lg" onclick={() => goto('/settings')} title="Settings">
+				<i class="fa-solid fa-gear text-lg"></i>
+			</button>
+		{/if}
 	</div>
+
+	<div class="gradient-line mb-5"></div>
+
+	<!-- Votes section -->
+	<div class="mb-6">
+		<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Votes</p>
+
+		<!-- Category filter: select on mobile, pills on desktop -->
+		<div class="sm:hidden mb-4">
+			<select class="select-esc" bind:value={selectedCategory}>
+				{#each categories as category}
+					<option value={category}>{capitalize(category)}</option>
+				{/each}
+			</select>
+		</div>
+		<div class="hidden sm:flex flex-wrap gap-2 mb-4">
+			{#each categories as category}
+				<button
+					class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+					onclick={() => (selectedCategory = category)}
+					style={selectedCategory === category
+						? 'background: var(--gradient-brand); color: white;'
+						: 'background: oklch(0.09 0 0); border: 1px solid oklch(0.20 0 0 / 0.7); color: oklch(0.55 0 0);'}
+				>
+					{capitalize(category)}
+				</button>
+			{/each}
+		</div>
+
+		{#if filteredVotes.length === 0}
+			<p class="text-sm" style="color: oklch(0.48 0 0);">No votes in this category yet</p>
+		{:else}
+			<div class="space-y-1.5">
+				{#each filteredVotes as vote}
+					<div class="card-esc p-3 flex items-center gap-3">
+						{#if vote.act?.picture_url}
+							<img
+								src={vote.act.picture_url}
+								alt={vote.act.title}
+								class="w-12 h-12 object-contain rounded-lg shrink-0"
+								style="background: oklch(0.07 0 0);"
+							/>
+						{:else if vote.country?.imageURL}
+							<img
+								src={vote.country.imageURL}
+								alt={vote.act?.title}
+								class="w-12 h-12 object-contain rounded-lg shrink-0"
+							/>
+						{:else}
+							<div class="w-12 h-12 rounded-lg shrink-0 flex items-center justify-center" style="background: oklch(0.12 0 0);">
+								<i class="fa-solid fa-music text-sm" style="color: oklch(0.35 0 0);"></i>
+							</div>
+						{/if}
+						<div class="flex-1 min-w-0">
+							<p class="font-semibold text-sm truncate">{vote.act?.artist}</p>
+							<p class="text-xs truncate" style="color: oklch(0.50 0 0);">{vote.act?.title}</p>
+						</div>
+						<span class="text-gradient font-bold text-base shrink-0">{vote.points}</span>
+					</div>
+				{/each}
+			</div>
+		{/if}
+	</div>
+
+	<!-- Public Groups section -->
+	{#if data.publicGroups.length > 0}
+		<div class="gradient-line mb-5"></div>
+		<div>
+			<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Public Groups</p>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+				{#each data.publicGroups as group}
+					<a href="/group/{group.group?.id}" class="card-esc p-4 block hover:border-[oklch(0.30_0_0)] transition-colors">
+						<h3 class="font-semibold text-sm">{group.group?.name}</h3>
+					</a>
+				{/each}
+			</div>
+		</div>
+	{/if}
 </div>

@@ -8,51 +8,59 @@
 	const nextAct = data.nextAct[0];
 </script>
 
-<div>
+<div class="max-w-lg mx-auto pb-6">
 	{#if nextAct}
-		<div
-			class="card cursor-pointer"
+		<button
+			type="button"
+			class="w-full card-esc-featured p-4 flex items-center gap-4 mb-1 cursor-pointer"
 			onclick={() => goto(`/vote/${nextAct.id}`)}
-			role="button"
-			tabindex="0"
 			onkeypress={(e) => e.key === 'Enter' && goto(`/vote/${nextAct.id}`)}
 		>
-			<div class="flex justify-center">
-				<p class="text-xl font-bold">Next Up: {nextAct.artist} - {nextAct.title}</p>
+			<img
+				src={nextAct.picture_url}
+				alt={nextAct.artist}
+				class="w-16 h-16 rounded-lg object-contain shrink-0"
+				style="background: oklch(0.07 0 0);"
+			/>
+			<div class="flex-1 text-left min-w-0">
+				<span class="text-[10px] uppercase tracking-widest font-semibold" style="color: oklch(0.50 0 0);">Up Next</span>
+				<p class="font-bold text-sm truncate">{nextAct.artist}</p>
+				<p class="text-xs truncate" style="color: oklch(0.55 0 0);">{nextAct.title}</p>
 			</div>
-		</div>
-		<img
-			class="w-full h-48 object-contain cursor-pointer"
-			src={nextAct.picture_url}
-			alt="next artist"
-			onclick={() => goto(`/vote/${nextAct.id}`)}
-		/>
+			<i class="fa-solid fa-arrow-right shrink-0" style="color: oklch(0.45 0 0);"></i>
+		</button>
 	{/if}
-	<div class="act-list w-full">
+
+	<div class="act-list">
 		{#each acts as act}
-			<a href="/vote/{act.act.id}">
-				<div class="w-full grid grid-cols-[1fr_2fr_3fr] min-h-32 py-4" style="border-top: 1px solid oklch(0.22 0.04 82 / 0.25);">
-					<div class="flex items-center justify-center">
-						<span class="text-4xl font-bold text-[var(--color-primary-500)]"
-							>{act.act.position}</span
-						>
+			<a
+				href="/vote/{act.act.id}"
+				class="flex items-center gap-3 px-4 py-4 transition-colors hover:bg-[oklch(0.10_0_0)] block"
+				style="border-bottom: 1px solid oklch(0.13 0 0);"
+			>
+				<span class="text-gradient font-bold text-2xl w-10 text-center shrink-0">
+					{act.act.position}
+				</span>
+				<img
+					class="w-14 h-14 object-contain rounded-lg shrink-0"
+					style="background: oklch(0.08 0 0);"
+					src={act.act.picture_url}
+					alt={act.act.artist}
+					loading="lazy"
+				/>
+				<div class="flex-1 min-w-0">
+					<div class="flex items-center gap-1.5 mb-0.5">
+						<img
+							src={act.country.imageURL}
+							alt={act.country.name}
+							class="w-4 h-4 object-contain shrink-0"
+						/>
+						<span class="text-xs" style="color: oklch(0.50 0 0);">{act.country.name}</span>
 					</div>
-					<img class="h-full w-full object-contain" src={act.act.picture_url} alt="artist" />
-					<div class="flex flex-col justify-center p-4">
-						<div class="flex items-center gap-2">
-							<img
-								src={act.country.imageURL}
-								alt="country flag"
-								class="w-6 h-6 object-contain flex-shrink-0"
-							/>
-							<span class="text-xl font-bold text-[var(--color-primary-500)]"
-								>{act.country.name}</span
-							>
-						</div>
-						<span class="text-lg font-bold break-words">{act.act.artist}</span>
-						<span class="font-normal break-words">{act.act.title}</span>
-					</div>
+					<p class="font-semibold text-sm truncate">{act.act.artist}</p>
+					<p class="text-xs truncate" style="color: oklch(0.50 0 0);">{act.act.title}</p>
 				</div>
+				<i class="fa-solid fa-chevron-right text-xs shrink-0" style="color: oklch(0.35 0 0);"></i>
 			</a>
 		{/each}
 	</div>

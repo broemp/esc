@@ -8,29 +8,29 @@
 	} = $props();
 </script>
 
-<div class="w-full h-full p-2 overflow-y-auto max-h-96">
+<div class="w-full overflow-y-auto max-h-96">
 	{#if !groups || groups.length === 0}
-		<div class="text-xl text-center py-4">EMPTY</div>
+		<div class="text-center py-4 text-sm" style="color: oklch(0.45 0 0);">No acts</div>
 	{:else}
-		<table class="w-full text-sm">
-			<thead class="sticky top-0 preset-tonal-surface">
-				<tr>
-					<th class="px-2 py-1 text-left">#</th>
-					<th class="px-2 py-1 text-left">Country</th>
-					<th class="px-2 py-1 text-left">Artist</th>
-					<th class="px-2 py-1 text-left">Song</th>
+		<table class="table-esc">
+			<thead>
+				<tr style="position: sticky; top: 0; background: oklch(0.09 0 0);">
+					<th>#</th>
+					<th>Country</th>
+					<th>Artist</th>
+					<th>Song</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each groups as item}
 					<tr
-						class="cursor-pointer hover:preset-tonal-primary {selectedAct === item.act.id ? 'preset-filled-primary-500' : ''}"
+						class="cursor-pointer {selectedAct === item.act.id ? 'selected' : ''}"
 						onclick={() => (selectedAct = item.act.id)}
 					>
-						<td class="px-2 py-1">{item.act.position ?? 'TBD'}</td>
-						<td class="px-2 py-1">{item.country.name}</td>
-						<td class="px-2 py-1">{item.act.artist}</td>
-						<td class="px-2 py-1">{item.act.title}</td>
+						<td>{item.act.position ?? '–'}</td>
+						<td>{item.country.name}</td>
+						<td>{item.act.artist}</td>
+						<td>{item.act.title}</td>
 					</tr>
 				{/each}
 			</tbody>

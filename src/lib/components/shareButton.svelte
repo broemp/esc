@@ -4,7 +4,7 @@
 	let {
 		text = 'Check out this page!',
 		url = env.PUBLIC_APP_URL,
-		design = 'btn',
+		design = 'btn-brand px-6 py-2.5 rounded-xl text-sm font-semibold',
 		title = url.split('/').splice(-1)[0],
 		children
 	} = $props();
@@ -38,7 +38,7 @@
 
 <button onclick={handleClick} class={design}>
 	{#if complete}
-		Copied!
+		<i class="fa-solid fa-check mr-2"></i>Copied!
 	{:else}
 		{@render children?.()}
 	{/if}
