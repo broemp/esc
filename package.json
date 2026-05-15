@@ -40,6 +40,9 @@
 		"vite": "^6.4.2",
 		"vite-imagetools": "^7.1.0"
 	},
+	"pnpm": {
+		"onlyBuiltDependencies": ["esbuild", "sharp"]
+	},
 	"type": "module",
 	"dependencies": {
 		"@auth/core": "^0.41.2",

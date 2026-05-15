@@ -5,13 +5,14 @@ import Discord from '@auth/core/providers/discord';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { env } from '$env/dynamic/private';
 import { getDb, runMigrations } from '$lib/server/db/db';
+import { seedDevData } from '$lib/server/db/seed';
 import { eq } from 'drizzle-orm';
 import { users } from '$lib/server/db/schema';
 import Reddit from '@auth/core/providers/reddit';
 import Google from '@auth/core/providers/google';
 
 if (process.env.NODE_ENV !== 'production') {
-	runMigrations().catch(console.error);
+	runMigrations().then(seedDevData).catch(console.error);
 }
 
 const { handle: authenticationHandle } = SvelteKitAuth({
