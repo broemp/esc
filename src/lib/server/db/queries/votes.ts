@@ -1,13 +1,9 @@
 import { and, desc, eq } from 'drizzle-orm';
 import { db } from '../db';
 import { votes, acts, countries, categories } from '../schema';
-import { createInsertSchema } from 'drizzle-zod';
 import type { Vote, NewVote } from '../../../types';
 
-const insertVoteSchema = createInsertSchema(votes);
-
 export function createVote(newVote: NewVote) {
-  insertVoteSchema.parse(newVote);
   return db.insert(votes)
     .values(newVote)
     .onConflictDoUpdate({

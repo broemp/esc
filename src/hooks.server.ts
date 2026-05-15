@@ -11,9 +11,7 @@ import { users, groups, userInGroups } from '$lib/server/db/schema';
 import Reddit from '@auth/core/providers/reddit';
 import Google from '@auth/core/providers/google';
 
-if (process.env.NODE_ENV !== 'production') {
-	runMigrations().then(seedDevData).catch(console.error);
-}
+runMigrations().then(seedDevData).catch(console.error);
 
 const { handle: authenticationHandle } = SvelteKitAuth({
 	adapter: DrizzleAdapter(getDb()),

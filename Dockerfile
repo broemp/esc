@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm
@@ -7,13 +7,6 @@ RUN pnpm install --frozen-lockfile
 
 ENV PUBLIC_APP_URL=localhost:5173
 ENV PORT=5173
-ENV AUTH_SECRET=
-ENV DISCORD_ID=
-ENV DISCORD_SECRET=
-ENV REDDIT_ID=
-ENV REDDIT_SECRET=
-ENV GOOGLE_ID=
-ENV GOOGLE_SECRET=
 
 # DB for Build
 ENV DB_HOST=172.18.0.2
@@ -26,7 +19,7 @@ ENV DB_SSL=false
 COPY . .
 RUN pnpm vite build && pnpm prune --production
 
-FROM node:22-alpine
+FROM node:24-alpine
 WORKDIR /app
 
 COPY --from=builder /app/build ./build
@@ -36,13 +29,7 @@ COPY --from=builder /app/drizzle ./drizzle
 
 ENV PUBLIC_APP_URL=localhost:5173
 ENV PORT=5173
-ENV AUTH_SECRET=
-ENV DISCORD_ID=
-ENV DISCORD_SECRET=
-ENV REDDIT_ID=
-ENV REDDIT_SECRET=
-ENV GOOGLE_ID=
-ENV GOOGLE_SECRET=
+
 
 # DB for Runtime
 ENV DB_HOST=172.18.0.2

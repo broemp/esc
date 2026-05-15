@@ -1,3 +1,5 @@
+import { untrack } from 'svelte';
+
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface ToastMessage {
@@ -13,7 +15,8 @@ function createToastStore() {
 
 	function trigger(message: string, type: ToastType = 'info', timeout = 2000) {
 		const id = crypto.randomUUID();
-		toasts = [...toasts, { id, message, type, timeout }];
+		const current = untrack(() => toasts);
+		toasts = [...current, { id, message, type, timeout }];
 		timers.set(id, setTimeout(() => dismiss(id), timeout));
 	}
 

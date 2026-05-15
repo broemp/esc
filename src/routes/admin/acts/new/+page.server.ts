@@ -1,5 +1,5 @@
 import { createAct, createCountry, listCountries, type NewAct } from '$lib/server/db/queries';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import type { Actions, RequestEvent } from './$types';
 import { z } from 'zod';
@@ -46,7 +46,7 @@ export const actions = {
     } catch (e) {
       return fail(500, { message: 'Could not create database entry, ' + e });
     }
-    return { success: true, message: "" };
+    redirect(303, '/admin/acts');
   },
   country: async (event: RequestEvent) => {
     const data = await event.request.formData();
@@ -65,6 +65,6 @@ export const actions = {
     } catch (e) {
       return fail(500, { message: 'Could not create database entry, ' + e });
     }
-    return { success: true, message: "" };
+    redirect(303, '/admin/acts/new');
   }
 } satisfies Actions;

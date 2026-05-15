@@ -5,6 +5,7 @@
 	import ShareButton from '$lib/components/shareButton.svelte';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
+	import { toastStore } from '$lib/stores/toast.svelte';
 
 	let { data }: { data: PageServerData } = $props();
 
@@ -50,10 +51,16 @@
 	}
 
 	async function updateGroupSettings() {
-		await axios.post('/group/' + group.group.id + '/settings', {
-			name: groupName,
-			public: isPublic
-		});
+		try {
+			await axios.post('/group/' + group.group.id + '/settings', {
+				name: groupName,
+				public: isPublic
+			});
+			toastStore.trigger('Settings saved', 'success');
+		} catch (e: any) {
+			const msg = e?.response?.data?.message || 'Failed to save settings';
+			toastStore.trigger(msg, 'error');
+		}
 	}
 
 	async function updateCategories() {
@@ -84,7 +91,7 @@
 <div class="max-w-lg mx-auto">
 	<!-- Tab bar -->
 	<div
-		class="flex overflow-x-auto"
+		class="flex overflow-x-auto justify-center"
 		style="border-bottom: 1px solid oklch(0.14 0 0);"
 	>
 		{#each tabs as tab, i}
@@ -149,8 +156,8 @@
 	{:else if activeTab === 2}
 		<div class="p-8 flex flex-col items-center space-y-6">
 			<div class="gradient-border p-1 rounded-xl inline-block" style="background: oklch(0.09 0 0);">
-				<div class="p-3" style="background: white; border-radius: 0.5rem;">
-					<svg use:qr={{ data: ShareURL, shape: 'circle' }} class="w-40 h-40" />
+				<div class="p-3" style="background: black; border-radius: 0.5rem;">
+					<svg use:qr={{ data: ShareURL, shape: 'circle', moduleFill: '#ffffff', anchorOuterFill: '#ffffff', anchorInnerFill: '#ffffff' }} class="w-40 h-40" />
 				</div>
 			</div>
 

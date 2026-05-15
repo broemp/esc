@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { RequestEvent } from "./$types";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import { createDrink, listCountries, type NewDrink } from "$lib/server/db/queries";
 import type { PageServerLoad } from "./$types";
 
@@ -41,7 +41,7 @@ export const actions = {
     } catch (e) {
       return fail(500, { message: 'Could not create database entry, ' + e });
     }
-    return { success: true, message: "" };
+    redirect(303, '/admin/drinks');
 
   }
 }

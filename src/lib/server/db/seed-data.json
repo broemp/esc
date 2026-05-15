@@ -1,57 +1,444 @@
 {
   "countries": [
-    { "id": "10000000-0000-0000-0000-000000000001", "name": "Sweden", "code": "SE", "imageURL": "https://flagcdn.com/se.svg" },
-    { "id": "10000000-0000-0000-0000-000000000002", "name": "Norway", "code": "NO", "imageURL": "https://flagcdn.com/no.svg" },
-    { "id": "10000000-0000-0000-0000-000000000003", "name": "Germany", "code": "DE", "imageURL": "https://flagcdn.com/de.svg" },
-    { "id": "10000000-0000-0000-0000-000000000004", "name": "France", "code": "FR", "imageURL": "https://flagcdn.com/fr.svg" },
-    { "id": "10000000-0000-0000-0000-000000000005", "name": "Italy", "code": "IT", "imageURL": "https://flagcdn.com/it.svg" },
-    { "id": "10000000-0000-0000-0000-000000000006", "name": "Spain", "code": "ES", "imageURL": "https://flagcdn.com/es.svg" },
-    { "id": "10000000-0000-0000-0000-000000000007", "name": "United Kingdom", "code": "GB", "imageURL": "https://flagcdn.com/gb.svg" },
-    { "id": "10000000-0000-0000-0000-000000000008", "name": "Netherlands", "code": "NL", "imageURL": "https://flagcdn.com/nl.svg" },
-    { "id": "10000000-0000-0000-0000-000000000009", "name": "Portugal", "code": "PT", "imageURL": "https://flagcdn.com/pt.svg" },
-    { "id": "10000000-0000-0000-0000-000000000010", "name": "Finland", "code": "FI", "imageURL": "https://flagcdn.com/fi.svg" },
-    { "id": "10000000-0000-0000-0000-000000000011", "name": "Switzerland", "code": "CH", "imageURL": "https://flagcdn.com/ch.svg" },
-    { "id": "10000000-0000-0000-0000-000000000012", "name": "Iceland", "code": "IS", "imageURL": "https://flagcdn.com/is.svg" },
-    { "id": "10000000-0000-0000-0000-000000000013", "name": "Denmark", "code": "DK", "imageURL": "https://flagcdn.com/dk.svg" },
-    { "id": "10000000-0000-0000-0000-000000000014", "name": "Belgium", "code": "BE", "imageURL": "https://flagcdn.com/be.svg" },
-    { "id": "10000000-0000-0000-0000-000000000015", "name": "Austria", "code": "AT", "imageURL": "https://flagcdn.com/at.svg" }
+    {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "name": "Denmark",
+      "code": "DK",
+      "imageURL": "https://flagcdn.com/dk.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "name": "Germany",
+      "code": "DE",
+      "imageURL": "https://flagcdn.com/de.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000003",
+      "name": "Israel",
+      "code": "IL",
+      "imageURL": "https://flagcdn.com/il.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000004",
+      "name": "Belgium",
+      "code": "BE",
+      "imageURL": "https://flagcdn.com/be.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000005",
+      "name": "Albania",
+      "code": "AL",
+      "imageURL": "https://flagcdn.com/al.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000006",
+      "name": "Greece",
+      "code": "GR",
+      "imageURL": "https://flagcdn.com/gr.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000007",
+      "name": "Ukraine",
+      "code": "UA",
+      "imageURL": "https://flagcdn.com/ua.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000008",
+      "name": "Australia",
+      "code": "AU",
+      "imageURL": "https://flagcdn.com/au.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000009",
+      "name": "Serbia",
+      "code": "RS",
+      "imageURL": "https://flagcdn.com/rs.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000010",
+      "name": "Malta",
+      "code": "MT",
+      "imageURL": "https://flagcdn.com/mt.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000011",
+      "name": "Czechia",
+      "code": "CZ",
+      "imageURL": "https://flagcdn.com/cz.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000012",
+      "name": "Bulgaria",
+      "code": "BG",
+      "imageURL": "https://flagcdn.com/bg.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000013",
+      "name": "Croatia",
+      "code": "HR",
+      "imageURL": "https://flagcdn.com/hr.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000014",
+      "name": "United Kingdom",
+      "code": "GB",
+      "imageURL": "https://flagcdn.com/gb.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000015",
+      "name": "France",
+      "code": "FR",
+      "imageURL": "https://flagcdn.com/fr.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000016",
+      "name": "Moldova",
+      "code": "MD",
+      "imageURL": "https://flagcdn.com/md.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000017",
+      "name": "Finland",
+      "code": "FI",
+      "imageURL": "https://flagcdn.com/fi.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000018",
+      "name": "Poland",
+      "code": "PL",
+      "imageURL": "https://flagcdn.com/pl.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000019",
+      "name": "Lithuania",
+      "code": "LT",
+      "imageURL": "https://flagcdn.com/lt.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000020",
+      "name": "Sweden",
+      "code": "SE",
+      "imageURL": "https://flagcdn.com/se.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000021",
+      "name": "Cyprus",
+      "code": "CY",
+      "imageURL": "https://flagcdn.com/cy.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000022",
+      "name": "Italy",
+      "code": "IT",
+      "imageURL": "https://flagcdn.com/it.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000023",
+      "name": "Norway",
+      "code": "NO",
+      "imageURL": "https://flagcdn.com/no.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000024",
+      "name": "Romania",
+      "code": "RO",
+      "imageURL": "https://flagcdn.com/ro.svg"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000025",
+      "name": "Austria",
+      "code": "AT",
+      "imageURL": "https://flagcdn.com/at.svg"
+    }
   ],
   "acts": [
-    { "id": "20000000-0000-0000-0000-000000000001", "countryID": "10000000-0000-0000-0000-000000000001", "artist": "Stellan Ljung", "title": "Northern Lights", "year": 2025, "position": 1, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000002", "countryID": "10000000-0000-0000-0000-000000000002", "artist": "Astrid Haug", "title": "Fjordland", "year": 2025, "position": 2, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000003", "countryID": "10000000-0000-0000-0000-000000000003", "artist": "Marlene Stark", "title": "Feuer und Eis", "year": 2025, "position": 3, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000004", "countryID": "10000000-0000-0000-0000-000000000004", "artist": "Élodie Moreau", "title": "Lumière", "year": 2025, "position": 4, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000005", "countryID": "10000000-0000-0000-0000-000000000005", "artist": "Marco Ferretti", "title": "Cuore di Pietra", "year": 2025, "position": 5, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000006", "countryID": "10000000-0000-0000-0000-000000000006", "artist": "Valentina Cruz", "title": "Sol y Sombra", "year": 2025, "position": 6, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000007", "countryID": "10000000-0000-0000-0000-000000000007", "artist": "The Harbour Lights", "title": "Keep the Faith", "year": 2025, "position": 7, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000008", "countryID": "10000000-0000-0000-0000-000000000008", "artist": "Daan van der Berg", "title": "Tulip Season", "year": 2025, "position": 8, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000009", "countryID": "10000000-0000-0000-0000-000000000009", "artist": "Sofia Cardoso", "title": "Saudade", "year": 2025, "position": 9, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000010", "countryID": "10000000-0000-0000-0000-000000000010", "artist": "Kaamos", "title": "Polar Night", "year": 2025, "position": 10, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000011", "countryID": "10000000-0000-0000-0000-000000000011", "artist": "Lena Baumann", "title": "Alpine Rose", "year": 2025, "position": 11, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000012", "countryID": "10000000-0000-0000-0000-000000000012", "artist": "Björn Sigurðsson", "title": "Eldur og Ís", "year": 2025, "position": 12, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000013", "countryID": "10000000-0000-0000-0000-000000000013", "artist": "Freja Holm", "title": "Hyggelig", "year": 2025, "position": 13, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000014", "countryID": "10000000-0000-0000-0000-000000000014", "artist": "Axelle Dubois", "title": "Diamant Brut", "year": 2025, "position": 14, "eliminated": false },
-    { "id": "20000000-0000-0000-0000-000000000015", "countryID": "10000000-0000-0000-0000-000000000015", "artist": "Ernst Huber", "title": "Wien bleibt Wien", "year": 2025, "position": 15, "eliminated": false }
+    {
+      "id": "20000000-0000-0000-0000-000000000001",
+      "countryID": "10000000-0000-0000-0000-000000000001",
+      "artist": "Søren Torpegaard Lund",
+      "title": "Før Vi Går Hjem",
+      "year": 2026,
+      "position": 1,
+      "picture_url": "/2026/artists/dk.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000002",
+      "countryID": "10000000-0000-0000-0000-000000000002",
+      "artist": "Sarah Engels",
+      "title": "Fire",
+      "year": 2026,
+      "position": 2,
+      "picture_url": "/2026/artists/de.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000003",
+      "countryID": "10000000-0000-0000-0000-000000000003",
+      "artist": "Noam Bettan",
+      "title": "Michelle",
+      "year": 2026,
+      "position": 3,
+      "picture_url": "/2026/artists/il.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000004",
+      "countryID": "10000000-0000-0000-0000-000000000004",
+      "artist": "ESSYLA",
+      "title": "Dancing on the Ice",
+      "year": 2026,
+      "position": 4,
+      "picture_url": "/2026/artists/be.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000005",
+      "countryID": "10000000-0000-0000-0000-000000000005",
+      "artist": "Alis",
+      "title": "Nân",
+      "year": 2026,
+      "position": 5,
+      "picture_url": "/2026/artists/al.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000006",
+      "countryID": "10000000-0000-0000-0000-000000000006",
+      "artist": "Akylas",
+      "title": "Ferto",
+      "year": 2026,
+      "position": 6,
+      "picture_url": "/2026/artists/gr.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000007",
+      "countryID": "10000000-0000-0000-0000-000000000007",
+      "artist": "LELÉKA",
+      "title": "Ridnym",
+      "year": 2026,
+      "position": 7,
+      "picture_url": "/2026/artists/ua.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000008",
+      "countryID": "10000000-0000-0000-0000-000000000008",
+      "artist": "Delta Goodrem",
+      "title": "Eclipse",
+      "year": 2026,
+      "position": 8,
+      "picture_url": "/2026/artists/au.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000009",
+      "countryID": "10000000-0000-0000-0000-000000000009",
+      "artist": "LAVINA",
+      "title": "Kraj Mene",
+      "year": 2026,
+      "position": 9,
+      "picture_url": "/2026/artists/rs.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000010",
+      "countryID": "10000000-0000-0000-0000-000000000010",
+      "artist": "AIDAN",
+      "title": "Bella",
+      "year": 2026,
+      "position": 10,
+      "picture_url": "/2026/artists/mt.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000011",
+      "countryID": "10000000-0000-0000-0000-000000000011",
+      "artist": "Daniel Zizka",
+      "title": "CROSSROADS",
+      "year": 2026,
+      "position": 11,
+      "picture_url": "/2026/artists/cz.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000012",
+      "countryID": "10000000-0000-0000-0000-000000000012",
+      "artist": "DARA",
+      "title": "Bangaranga",
+      "year": 2026,
+      "position": 12,
+      "picture_url": "/2026/artists/bg.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000013",
+      "countryID": "10000000-0000-0000-0000-000000000013",
+      "artist": "LELEK",
+      "title": "Andromeda",
+      "year": 2026,
+      "position": 13,
+      "picture_url": "/2026/artists/hr.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000014",
+      "countryID": "10000000-0000-0000-0000-000000000014",
+      "artist": "LOOK MOM NO COMPUTER",
+      "title": "Eins, Zwei, Drei",
+      "year": 2026,
+      "position": 14,
+      "picture_url": "/2026/artists/gb.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000015",
+      "countryID": "10000000-0000-0000-0000-000000000015",
+      "artist": "Monroe",
+      "title": "Regarde !",
+      "year": 2026,
+      "position": 15,
+      "picture_url": "/2026/artists/fr.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000016",
+      "countryID": "10000000-0000-0000-0000-000000000016",
+      "artist": "Satoshi",
+      "title": "Viva, Moldova!",
+      "year": 2026,
+      "position": 16,
+      "picture_url": "/2026/artists/md.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000017",
+      "countryID": "10000000-0000-0000-0000-000000000017",
+      "artist": "Linda Lampenius x Pete Parkkonen",
+      "title": "Liekinheitin",
+      "year": 2026,
+      "position": 17,
+      "picture_url": "/2026/artists/fi.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000018",
+      "countryID": "10000000-0000-0000-0000-000000000018",
+      "artist": "ALICJA",
+      "title": "Pray",
+      "year": 2026,
+      "position": 18,
+      "picture_url": "/2026/artists/pl.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000019",
+      "countryID": "10000000-0000-0000-0000-000000000019",
+      "artist": "Lion Ceccah",
+      "title": "Sólo Quiero Más",
+      "year": 2026,
+      "position": 19,
+      "picture_url": "/2026/artists/lt.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000020",
+      "countryID": "10000000-0000-0000-0000-000000000020",
+      "artist": "FELICIA",
+      "title": "My System",
+      "year": 2026,
+      "position": 20,
+      "picture_url": "/2026/artists/se.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000021",
+      "countryID": "10000000-0000-0000-0000-000000000021",
+      "artist": "Antigoni",
+      "title": "JALLA",
+      "year": 2026,
+      "position": 21,
+      "picture_url": "/2026/artists/cy.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000022",
+      "countryID": "10000000-0000-0000-0000-000000000022",
+      "artist": "Sal Da Vinci",
+      "title": "Per Sempre Sì",
+      "year": 2026,
+      "position": 22,
+      "picture_url": "/2026/artists/it.png",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000023",
+      "countryID": "10000000-0000-0000-0000-000000000023",
+      "artist": "JONAS LOVV",
+      "title": "YA YA YA",
+      "year": 2026,
+      "position": 23,
+      "picture_url": "/2026/artists/no.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000024",
+      "countryID": "10000000-0000-0000-0000-000000000024",
+      "artist": "Alexandra Căpitănescu",
+      "title": "Choke Me",
+      "year": 2026,
+      "position": 24,
+      "picture_url": "/2026/artists/ro.jpg",
+      "eliminated": false
+    },
+    {
+      "id": "20000000-0000-0000-0000-000000000025",
+      "countryID": "10000000-0000-0000-0000-000000000025",
+      "artist": "COSMÓ",
+      "title": "Tanzschein",
+      "year": 2026,
+      "position": 25,
+      "picture_url": "/2026/artists/at.png",
+      "eliminated": false
+    }
   ],
   "categories": [
-    { "id": "30000000-0000-0000-0000-000000000001", "name": "Song", "default": true, "position": 1, "description": "Quality of the song itself — melody, lyrics, and composition" },
-    { "id": "30000000-0000-0000-0000-000000000002", "name": "Performance", "default": true, "position": 2, "description": "Stage presence, vocal delivery, and overall performance quality" },
-    { "id": "30000000-0000-0000-0000-000000000003", "name": "Staging", "default": true, "position": 3, "description": "Set design, lighting, visual effects, and use of the stage" },
-    { "id": "30000000-0000-0000-0000-000000000004", "name": "Costume", "default": true, "position": 4, "description": "Outfit design, styling, and how well it fits the act's theme" },
-    { "id": "30000000-0000-0000-0000-000000000005", "name": "Eurovision Vibes", "default": true, "position": 5, "description": "How well the entry captures the spirit of Eurovision" }
+    {
+      "id": "30000000-0000-0000-0000-000000000001",
+      "name": "Song",
+      "default": true,
+      "position": 1,
+      "description": "Quality of the song itself — melody, lyrics, and composition"
+    },
+    {
+      "id": "30000000-0000-0000-0000-000000000002",
+      "name": "Performance",
+      "default": true,
+      "position": 2,
+      "description": "Stage presence, vocal delivery, and overall performance quality"
+    },
+    {
+      "id": "30000000-0000-0000-0000-000000000003",
+      "name": "Staging",
+      "default": true,
+      "position": 3,
+      "description": "Set design, lighting, visual effects, and use of the stage"
+    },
+    {
+      "id": "30000000-0000-0000-0000-000000000004",
+      "name": "Costume",
+      "default": true,
+      "position": 4,
+      "description": "Outfit design, styling, and how well it fits the act's theme"
+    },
+    {
+      "id": "30000000-0000-0000-0000-000000000005",
+      "name": "Eurovision Vibes",
+      "default": true,
+      "position": 5,
+      "description": "How well the entry captures the spirit of Eurovision"
+    }
   ],
-  "drinks": [
-    { "id": "40000000-0000-0000-0000-000000000001", "countryID": "10000000-0000-0000-0000-000000000001", "name": "Swedish Cider", "year": 2023, "alcohol": true, "percentage": 5 },
-    { "id": "40000000-0000-0000-0000-000000000002", "countryID": "10000000-0000-0000-0000-000000000002", "name": "Aquavit", "year": 2022, "alcohol": true, "percentage": 40 },
-    { "id": "40000000-0000-0000-0000-000000000003", "countryID": "10000000-0000-0000-0000-000000000003", "name": "German Wheat Beer", "year": 2024, "alcohol": true, "percentage": 5 },
-    { "id": "40000000-0000-0000-0000-000000000004", "countryID": "10000000-0000-0000-0000-000000000004", "name": "French Rosé", "year": 2023, "alcohol": true, "percentage": 12 },
-    { "id": "40000000-0000-0000-0000-000000000005", "countryID": "10000000-0000-0000-0000-000000000005", "name": "Aperol Spritz", "year": 2024, "alcohol": true, "percentage": 11 },
-    { "id": "40000000-0000-0000-0000-000000000006", "countryID": "10000000-0000-0000-0000-000000000006", "name": "Sangria", "year": 2023, "alcohol": true, "percentage": 9 },
-    { "id": "40000000-0000-0000-0000-000000000007", "countryID": "10000000-0000-0000-0000-000000000007", "name": "Pimm's Cup", "year": 2023, "alcohol": true, "percentage": 25 },
-    { "id": "40000000-0000-0000-0000-000000000008", "countryID": "10000000-0000-0000-0000-000000000008", "name": "Heineken", "year": 2024, "alcohol": true, "percentage": 5 },
-    { "id": "40000000-0000-0000-0000-000000000009", "countryID": "10000000-0000-0000-0000-000000000009", "name": "Ginjinha", "year": 2022, "alcohol": true, "percentage": 20 },
-    { "id": "40000000-0000-0000-0000-000000000010", "countryID": "10000000-0000-0000-0000-000000000010", "name": "Lonkero", "year": 2024, "alcohol": true, "percentage": 5 },
-    { "id": "40000000-0000-0000-0000-000000000011", "countryID": "10000000-0000-0000-0000-000000000011", "name": "Swiss Rivella", "year": 2024, "alcohol": false, "percentage": 0 },
-    { "id": "40000000-0000-0000-0000-000000000012", "countryID": "10000000-0000-0000-0000-000000000012", "name": "Icelandic Water", "year": 2024, "alcohol": false, "percentage": 0 }
-  ]
+  "drinks": []
 }

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { PageServerData } from './$types';
+	import ActImage from '$lib/components/ActImage.svelte';
 
 	let { data }: { data: PageServerData } = $props();
 
@@ -120,12 +121,11 @@
 										onclick={() => goto('/vote/' + act.act.id)}
 										aria-label="Vote for {act.act.artist}"
 									>
-										<img
-											class="object-contain w-full max-h-40 rounded"
-											style="background: oklch(0.07 0 0);"
+										<ActImage
 											src={act.act.picture_url}
 											alt={act.act.artist}
-											loading="lazy"
+											class="object-contain w-full max-h-40 rounded"
+											style="background: oklch(0.07 0 0);"
 										/>
 									</button>
 								{/each}

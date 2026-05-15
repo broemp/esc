@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db/db';
 import { groups } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import type { RequestEvent } from './$types';
 import type { RequestHandler } from './$types';
@@ -24,6 +24,16 @@ export const POST: RequestHandler = async (request: RequestEvent) => {
 
   if (!name || typeof isPublic !== 'boolean') {
     throw error(400, 'Invalid data');
+  }
+
+  const existing = await db
+    .select({ id: groups.id })
+    .from(groups)
+    .where(and(eq(groups.name, name), ne(groups.id, request.params.id)))
+    .limit(1);
+
+  if (existing.length > 0) {
+    throw error(409, 'A group with that name already exists');
   }
 
   await db

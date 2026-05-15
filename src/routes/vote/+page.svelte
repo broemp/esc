@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageServerData } from './$types';
+	import ActImage from '$lib/components/ActImage.svelte';
 
 	let { data }: { data: PageServerData } = $props();
 
@@ -16,7 +17,7 @@
 			onclick={() => goto(`/vote/${nextAct.id}`)}
 			onkeypress={(e) => e.key === 'Enter' && goto(`/vote/${nextAct.id}`)}
 		>
-			<img
+			<ActImage
 				src={nextAct.picture_url}
 				alt={nextAct.artist}
 				class="w-16 h-16 rounded-lg object-contain shrink-0"
@@ -41,12 +42,11 @@
 				<span class="text-gradient font-bold text-2xl w-10 text-center shrink-0">
 					{act.act.position}
 				</span>
-				<img
-					class="w-14 h-14 object-contain rounded-lg shrink-0"
-					style="background: oklch(0.08 0 0);"
+				<ActImage
 					src={act.act.picture_url}
 					alt={act.act.artist}
-					loading="lazy"
+					class="w-14 h-14 object-contain rounded-lg shrink-0"
+					style="background: oklch(0.08 0 0);"
 				/>
 				<div class="flex-1 min-w-0">
 					<div class="flex items-center gap-1.5 mb-0.5">

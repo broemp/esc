@@ -3,6 +3,7 @@
 	import type { UserCategories, DefaultCategories } from '$lib/server/db/queries';
 	import { toastStore } from '$lib/stores/toast.svelte';
 	import axios from 'axios';
+	import ActImage from '$lib/components/ActImage.svelte';
 
 	let { data }: { data: PageServerData } = $props();
 
@@ -58,7 +59,7 @@
 <div class="max-w-lg mx-auto pb-6">
 	<!-- Hero image -->
 	<div class="w-full" style="background: oklch(0.04 0 0); height: 14rem;">
-		<img
+		<ActImage
 			src={act.picture_url}
 			alt={act.artist}
 			class="w-full h-full object-contain"
