@@ -7,7 +7,7 @@ import { env } from '$env/dynamic/private';
 import { getDb, runMigrations } from '$lib/server/db/db';
 import { seedDevData } from '$lib/server/db/seed';
 import { eq } from 'drizzle-orm';
-import { users, groups, userInGroups, authenticators } from '$lib/server/db/schema';
+import { users, accounts, groups, userInGroups, authenticators } from '$lib/server/db/schema';
 import Reddit from '@auth/core/providers/reddit';
 import Google from '@auth/core/providers/google';
 import Passkey from '@auth/core/providers/passkey';
@@ -15,7 +15,7 @@ import Passkey from '@auth/core/providers/passkey';
 runMigrations().then(seedDevData).catch(console.error);
 
 const { handle: authenticationHandle } = SvelteKitAuth({
-	adapter: DrizzleAdapter(getDb(), { authenticatorsTable: authenticators }),
+	adapter: DrizzleAdapter(getDb(), { usersTable: users, accountsTable: accounts, authenticatorsTable: authenticators }),
 	providers: [
 		Discord({ clientId: env.DISCORD_ID, clientSecret: env.DISCORD_SECRET }),
 		Reddit({ clientId: env.REDDIT_ID, clientSecret: env.REDDIT_SECRET }),

@@ -44,7 +44,7 @@ export const actions = {
     try {
       await createAct(act);
     } catch (e) {
-      return fail(500, { message: 'Could not create database entry, ' + e });
+      return fail(500, { success: false, message: 'Could not create database entry, ' + e });
     }
     redirect(303, '/admin/acts');
   },
@@ -63,7 +63,7 @@ export const actions = {
     try {
       await createCountry(country);
     } catch (e) {
-      return fail(500, { message: 'Could not create database entry, ' + e });
+      return fail(500, { success: false, message: 'Could not create database entry, ' + e });
     }
     redirect(303, '/admin/acts/new');
   }

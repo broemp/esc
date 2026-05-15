@@ -39,7 +39,7 @@ export const actions = {
     try {
       await createDrink(drink);
     } catch (e) {
-      return fail(500, { message: 'Could not create database entry, ' + e });
+      return fail(500, { success: false, message: 'Could not create database entry, ' + e });
     }
     redirect(303, '/admin/drinks');
 
