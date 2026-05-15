@@ -4,3 +4,5 @@ node_modules
 .eslint*
 README.md
 Dockerfile
+build
+.svelte-kit
