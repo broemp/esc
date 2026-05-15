@@ -37,7 +37,7 @@ export const actions = {
       return fail(400, { success: false, message: 'Invalid Data, ' + e });
     }
     try {
-      createDrink(drink);
+      await createDrink(drink);
     } catch (e) {
       return fail(500, { message: 'Could not create database entry, ' + e });
     }

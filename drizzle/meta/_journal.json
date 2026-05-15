@@ -29,6 +29,13 @@
       "when": 1715345474554,
       "tag": "0003_living_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1747353600000,
+      "tag": "0005_everybody_group",
+      "breakpoints": true
     }
   ]
 }

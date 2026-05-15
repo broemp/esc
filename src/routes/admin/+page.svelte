@@ -17,60 +17,36 @@
 			toastStore.trigger('Error deleting votes', 'error');
 		}
 	}
+
+	const stats = [
+		{ label: 'Users', value: data.stats.totalUsers, icon: 'fa-users' },
+		{ label: 'Groups', value: data.stats.totalGroups, icon: 'fa-user-group' },
+		{ label: 'Acts', value: data.stats.totalActs, icon: 'fa-music' },
+		{ label: 'Categories', value: data.stats.totalCategories, icon: 'fa-tags' },
+	];
 </script>
 
-<div class="container mx-auto p-4">
-	<h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+<div class="p-6 max-w-4xl">
+	<h1 class="font-bold text-xl mb-6" style="color: oklch(0.97 0 0);">Dashboard</h1>
 
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-		<div class="card p-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<h3 class="text-lg font-semibold">Users</h3>
-					<p class="text-3xl font-bold">{data.stats.totalUsers}</p>
-				</div>
-				<div class="text-4xl text-[var(--color-primary-500)]">
-					<i class="fa-solid fa-users"></i>
-				</div>
+	<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+		{#each stats as stat}
+			<div class="card-esc p-4">
+				<i class="fa-solid {stat.icon} text-gradient text-xl mb-2 block"></i>
+				<p class="text-gradient font-bold text-3xl leading-none">{stat.value}</p>
+				<p class="text-xs mt-1.5 uppercase tracking-wide" style="color: oklch(0.50 0 0);">{stat.label}</p>
 			</div>
-		</div>
-		<div class="card p-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<h3 class="text-lg font-semibold">Groups</h3>
-					<p class="text-3xl font-bold">{data.stats.totalGroups}</p>
-				</div>
-				<div class="text-4xl text-[var(--color-primary-500)]">
-					<i class="fa-solid fa-user-group"></i>
-				</div>
-			</div>
-		</div>
-		<div class="card p-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<h3 class="text-lg font-semibold">Acts</h3>
-					<p class="text-3xl font-bold">{data.stats.totalActs}</p>
-				</div>
-				<div class="text-4xl text-[var(--color-primary-500)]">
-					<i class="fa-solid fa-music"></i>
-				</div>
-			</div>
-		</div>
-		<div class="card p-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<h3 class="text-lg font-semibold">Categories</h3>
-					<p class="text-3xl font-bold">{data.stats.totalCategories}</p>
-				</div>
-				<div class="text-4xl text-[var(--color-primary-500)]">
-					<i class="fa-solid fa-tags"></i>
-				</div>
-			</div>
-		</div>
+		{/each}
 	</div>
 
-	<div class="card p-4">
-		<h2 class="text-xl font-semibold mb-4">Danger Zone</h2>
-		<button class="btn variant-filled-error" onclick={deleteAllVotes}>Delete All Votes</button>
+	<div class="card-esc p-4">
+		<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.55 0.15 20);">Danger Zone</p>
+		<button
+			onclick={deleteAllVotes}
+			class="px-4 py-2 rounded-lg text-sm font-semibold text-white"
+			style="background: oklch(0.38 0.22 20);"
+		>
+			Delete All Votes
+		</button>
 	</div>
 </div>

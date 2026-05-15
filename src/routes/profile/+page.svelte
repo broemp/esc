@@ -18,34 +18,39 @@
 	$effect(() => {
 		if (form?.success && form?.user) {
 			username = form.user.name;
-			toastStore.trigger('Username updated successfully! 🎉', 'success');
+			toastStore.trigger('Username updated successfully!', 'success');
 		}
 	});
 </script>
 
-<div class="container mx-auto px-4 py-8">
-	<div class="rounded-2xl p-6 text-white" style="background: oklch(0.10 0 0); border: 1px solid oklch(0.22 0.04 82 / 0.35);">
-		<div class="flex items-center justify-between mb-8">
-			<h1 class="text-3xl font-bold">Settings</h1>
-			<button
-				class="btn variant-ghost-surface"
-				onclick={() => goto('/user/' + $page.data.session?.user?.id)}
-			>
-				<i class="fa-solid fa-arrow-left mr-2"></i> Back
-			</button>
-		</div>
-		<div class="mt-8">
-			<form method="post" use:enhance class="space-y-4">
-				<label class="block">
-					<span class="text-gray-300">Username</span>
-					<input
-						class="input w-full mt-1 bg-white/10 border-white/20 text-white"
-						name="username"
-						bind:value={username}
-					/>
-				</label>
-				<button class="btn variant-filled-primary w-full">Update Profile</button>
-			</form>
-		</div>
+<div class="max-w-md mx-auto px-4 pt-6 pb-6">
+	<div class="flex items-center justify-between mb-1">
+		<h1 class="text-gradient font-bold text-2xl tracking-tight">Edit Profile</h1>
+		<button
+			class="btn-ghost p-2 rounded-lg text-sm"
+			onclick={() => goto('/user/' + $page.data.session?.user?.id)}
+		>
+			<i class="fa-solid fa-arrow-left mr-1.5"></i>Back
+		</button>
 	</div>
+	<div class="gradient-line mb-6"></div>
+
+	<form method="post" use:enhance class="space-y-6">
+		<div>
+			<label for="username" class="block text-xs uppercase tracking-widest mb-2" style="color: oklch(0.50 0 0);">
+				Username
+			</label>
+			<input
+				id="username"
+				class="input-esc"
+				name="username"
+				bind:value={username}
+				placeholder="Your display name"
+			/>
+		</div>
+
+		<button class="btn-brand w-full h-12 rounded-xl text-base font-semibold">
+			Update Profile
+		</button>
+	</form>
 </div>

@@ -7,56 +7,83 @@
 	$: isVote = path.startsWith('/vote');
 	$: isGroup = path.startsWith('/group');
 	$: isProfile = path.startsWith('/user');
+
+	const navItems = [
+		{ href: '/', icon: 'fa-house', label: 'Home', active: false },
+		{ href: '/vote', icon: 'fa-check-to-slot', label: 'Vote', active: false },
+		{ href: '/group', icon: 'fa-user-group', label: 'Groups', active: false },
+		{ href: '/user/', icon: 'fa-user', label: 'Profile', active: false }
+	];
 </script>
 
-{#if !$page.data.session}
-	<div class="hidden md:block text-center text-sm py-2" style="color: oklch(0.73 0.16 82 / 0.6);">
-		Designed for mobile — desktop may have layout differences.
-	</div>
-{:else}
-	<nav class="fixed bottom-3 z-50 w-full flex justify-center px-4">
-		<div
-			class="flex items-center gap-1 px-2 py-2 rounded-2xl border"
-			style="background: oklch(0.09 0 0 / 0.92); border-color: oklch(0.22 0.04 82 / 0.35); backdrop-filter: blur(12px);"
-		>
+{#if $page.data.session}
+	<nav
+		class="fixed bottom-0 z-50 w-full"
+		style="background: oklch(0.06 0 0 / 0.95); border-top: 1px solid oklch(0.14 0 0); backdrop-filter: blur(16px);"
+	>
+		<div class="flex items-stretch justify-around max-w-lg mx-auto">
 			<button
 				onclick={() => goto('/')}
-				class="flex flex-col items-center gap-0.5 px-5 py-2 rounded-xl transition-colors"
-				style={isHome ? 'color: #D4AF37;' : 'color: oklch(0.60 0 0);'}
 				aria-label="Home"
+				class="flex flex-col items-center justify-center gap-1 flex-1 py-3 relative transition-colors"
+				style={isHome ? 'color: oklch(0.97 0 0);' : 'color: oklch(0.42 0 0);'}
 			>
-				<i class="fa-solid fa-house text-lg"></i>
-				<span class="text-[10px] font-semibold tracking-wide">Home</span>
+				{#if isHome}
+					<div
+						class="absolute top-0 left-1/2 -translate-x-1/2 w-8 rounded-b-sm"
+						style="height: 2px; background: var(--gradient-brand-horizontal);"
+					></div>
+				{/if}
+				<i class="fa-solid fa-house text-base"></i>
+				<span class="text-[10px] font-semibold tracking-widest uppercase">Home</span>
 			</button>
 
 			<button
 				onclick={() => goto('/vote')}
-				class="flex flex-col items-center gap-0.5 px-5 py-2 rounded-xl transition-colors"
-				style={isVote ? 'color: #D4AF37;' : 'color: oklch(0.60 0 0);'}
 				aria-label="Vote"
+				class="flex flex-col items-center justify-center gap-1 flex-1 py-3 relative transition-colors"
+				style={isVote ? 'color: oklch(0.97 0 0);' : 'color: oklch(0.42 0 0);'}
 			>
-				<i class="fa-solid fa-check-to-slot text-lg"></i>
-				<span class="text-[10px] font-semibold tracking-wide">Vote</span>
+				{#if isVote}
+					<div
+						class="absolute top-0 left-1/2 -translate-x-1/2 w-8 rounded-b-sm"
+						style="height: 2px; background: var(--gradient-brand-horizontal);"
+					></div>
+				{/if}
+				<i class="fa-solid fa-check-to-slot text-base"></i>
+				<span class="text-[10px] font-semibold tracking-widest uppercase">Vote</span>
 			</button>
 
 			<button
 				onclick={() => goto('/group')}
-				class="flex flex-col items-center gap-0.5 px-5 py-2 rounded-xl transition-colors"
-				style={isGroup ? 'color: #D4AF37;' : 'color: oklch(0.60 0 0);'}
 				aria-label="Groups"
+				class="flex flex-col items-center justify-center gap-1 flex-1 py-3 relative transition-colors"
+				style={isGroup ? 'color: oklch(0.97 0 0);' : 'color: oklch(0.42 0 0);'}
 			>
-				<i class="fa-solid fa-user-group text-lg"></i>
-				<span class="text-[10px] font-semibold tracking-wide">Groups</span>
+				{#if isGroup}
+					<div
+						class="absolute top-0 left-1/2 -translate-x-1/2 w-8 rounded-b-sm"
+						style="height: 2px; background: var(--gradient-brand-horizontal);"
+					></div>
+				{/if}
+				<i class="fa-solid fa-user-group text-base"></i>
+				<span class="text-[10px] font-semibold tracking-widest uppercase">Groups</span>
 			</button>
 
 			<button
 				onclick={() => goto('/user/' + $page.data.session?.user?.id)}
-				class="flex flex-col items-center gap-0.5 px-5 py-2 rounded-xl transition-colors"
-				style={isProfile ? 'color: #D4AF37;' : 'color: oklch(0.60 0 0);'}
 				aria-label="Profile"
+				class="flex flex-col items-center justify-center gap-1 flex-1 py-3 relative transition-colors"
+				style={isProfile ? 'color: oklch(0.97 0 0);' : 'color: oklch(0.42 0 0);'}
 			>
-				<i class="fa-solid fa-user text-lg"></i>
-				<span class="text-[10px] font-semibold tracking-wide">Profile</span>
+				{#if isProfile}
+					<div
+						class="absolute top-0 left-1/2 -translate-x-1/2 w-8 rounded-b-sm"
+						style="height: 2px; background: var(--gradient-brand-horizontal);"
+					></div>
+				{/if}
+				<i class="fa-solid fa-user text-base"></i>
+				<span class="text-[10px] font-semibold tracking-widest uppercase">Profile</span>
 			</button>
 		</div>
 	</nav>

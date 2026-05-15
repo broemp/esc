@@ -7,7 +7,7 @@ import { env } from '$env/dynamic/private';
 import { getDb, runMigrations } from '$lib/server/db/db';
 import { seedDevData } from '$lib/server/db/seed';
 import { eq } from 'drizzle-orm';
-import { users } from '$lib/server/db/schema';
+import { users, groups, userInGroups } from '$lib/server/db/schema';
 import Reddit from '@auth/core/providers/reddit';
 import Google from '@auth/core/providers/google';
 
@@ -36,6 +36,21 @@ const { handle: authenticationHandle } = SvelteKitAuth({
 				.limit(1);
 			session.user.role = result[0].role;
 			return session;
+		}
+	},
+	events: {
+		async createUser({ user }) {
+			const defaultGroups = await getDb()
+				.select({ id: groups.id })
+				.from(groups)
+				.where(eq(groups.isDefault, true));
+			for (const group of defaultGroups) {
+				await getDb()
+					.insert(userInGroups)
+					.values({ groupId: group.id, userId: user.id! })
+					.onConflictDoNothing()
+					.execute();
+			}
 		}
 	},
 	trustHost: true

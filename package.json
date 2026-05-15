@@ -12,6 +12,8 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@fontsource-variable/space-grotesk": "^5.2.10",
 		"@skeletonlabs/skeleton": "^4.15.2",
 		"@skeletonlabs/skeleton-svelte": "^4.15.2",
 		"@sveltejs/adapter-auto": "^3.3.1",
@@ -21,7 +23,6 @@
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.3.0",
-		"@eslint/js": "^10.0.1",
 		"@types/eslint": "^9.6.1",
 		"@types/node": "^25.7.0",
 		"@typescript-eslint/eslint-plugin": "^8.59.3",
@@ -41,7 +42,10 @@
 		"vite-imagetools": "^7.1.0"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": ["esbuild", "sharp"]
+		"onlyBuiltDependencies": [
+			"esbuild",
+			"sharp"
+		]
 	},
 	"type": "module",
 	"dependencies": {

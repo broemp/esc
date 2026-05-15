@@ -2,10 +2,7 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	import { signOut } from '@auth/sveltekit/client';
-	import { AppBar } from '@skeletonlabs/skeleton-svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
-	import ResponsiveLogo from '$lib/components/ResponsiveLogo.svelte';
-	import ResponsiveBackground from '$lib/components/ResponsiveBackground.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { browser } from '$app/environment';
 	import { toastStore } from '$lib/stores/toast.svelte';
@@ -44,42 +41,43 @@
 	<title>{$page.data.title ?? 'ESC 2026'}</title>
 </svelte:head>
 
-<div data-theme="cerberus" class="flex flex-col min-h-screen text-white">
+<div
+	data-theme="esc2026"
+	class="flex flex-col min-h-screen"
+	style="background: oklch(0.06 0 0); color: oklch(0.97 0 0);"
+>
 	<Toast />
-	<ResponsiveBackground />
 
-	<AppBar class="bg-[oklch(0.09_0_0)]">
-		<AppBar.Toolbar class="flex items-center justify-between px-4 py-2">
-			<AppBar.Lead class="flex items-center">
-				<a href="/" class="flex items-center gap-3">
-					<ResponsiveLogo class="h-8 w-auto" />
-				</a>
-			</AppBar.Lead>
-			<AppBar.Trail class="flex items-center gap-2">
-				{#if !$page.data.session}
-					<a class="btn btn-sm variant-ghost-surface" href="/auth/signIn">Sign In</a>
-				{:else}
-					{#if !isAdmin}
-						<button class="btn btn-sm variant-ghost-surface" onclick={showHelp} aria-label="Help">
-							<i class="fa-solid fa-circle-question"></i>
-						</button>
-					{/if}
-					{#if isAdmin}
-						<a href="/admin" class="btn btn-sm variant-ghost-surface">Admin</a>
-					{/if}
-					<button class="btn btn-sm variant-ghost-surface" onclick={() => signOut()}>Sign Out</button>
+	<header
+		class="sticky top-0 z-40 flex items-center justify-between px-4 h-14"
+		style="background: oklch(0.06 0 0 / 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid oklch(0.14 0 0);"
+	>
+		<a href="/" class="text-gradient font-bold text-xl tracking-tight leading-none">
+			ESC<span class="font-light" style="opacity: 0.5;">·</span>2026
+		</a>
+
+		<div class="flex items-center gap-1">
+			{#if !$page.data.session}
+				<a href="/auth/signIn" class="btn-brand px-4 py-1.5 rounded-lg text-sm">Sign In</a>
+			{:else}
+				{#if !isAdmin}
+					<button class="btn-ghost p-2 rounded-lg" onclick={showHelp} aria-label="Help">
+						<i class="fa-solid fa-circle-question text-lg"></i>
+					</button>
 				{/if}
-			</AppBar.Trail>
-		</AppBar.Toolbar>
-	</AppBar>
+				{#if isAdmin}
+					<a href="/admin" class="btn-ghost px-3 py-1.5 rounded-lg text-sm font-medium">Admin</a>
+				{/if}
+				<button class="btn-ghost px-3 py-1.5 rounded-lg text-sm" onclick={() => signOut()}>
+					Sign Out
+				</button>
+			{/if}
+		</div>
+	</header>
 
-	<!-- Gold accent line -->
-	<div
-		class="h-px shrink-0"
-		style="background: linear-gradient(90deg, transparent 0%, #D4AF37 25%, #D4AF37 75%, transparent 100%); opacity: 0.45;"
-	></div>
+	<div class="gradient-line"></div>
 
-	<main class="flex-1 mb-14">
+	<main class="flex-1 mb-20">
 		{@render children()}
 	</main>
 

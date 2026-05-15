@@ -17,20 +17,31 @@
 	}
 </script>
 
-<div class="flex h-screen justify-center">
-	<div class="m-auto">
-		<div class="grid grid-cols-1 mt-12">
-			<h1 class="text-xl text-center">Do you wanna join <br /> {group.name}?</h1>
-			<div class="flex justify-center mt-16 space-x-2">
-				<button
-					type="button"
-					class="btn variant-glass-primary w-full"
-					onclick={joinGroup}
-				>
-					Yes
-				</button>
-				<a href="/" class="btn variant-filled-warning w-full">No</a>
-			</div>
+<div class="flex min-h-[85vh] items-center justify-center px-6">
+	<div class="text-center space-y-6 max-w-xs w-full">
+		<i class="fa-solid fa-user-group text-5xl text-gradient"></i>
+
+		<div>
+			<h1 class="font-bold text-2xl leading-tight mb-2">Join {group.name}?</h1>
+			<p class="text-sm" style="color: oklch(0.55 0 0);">
+				Become a member and start voting with this group.
+			</p>
+		</div>
+
+		<div class="flex gap-3 w-full">
+			<button
+				type="button"
+				onclick={joinGroup}
+				class="btn-brand flex-1 h-12 rounded-xl text-sm font-semibold"
+			>
+				Join
+			</button>
+			<a
+				href="/"
+				class="btn-outline-brand flex-1 h-12 rounded-xl text-sm font-semibold"
+			>
+				Cancel
+			</a>
 		</div>
 	</div>
 </div>

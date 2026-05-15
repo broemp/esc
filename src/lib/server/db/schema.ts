@@ -34,7 +34,8 @@ export const groups = pgTable('group', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
-  public: boolean("public").notNull().default(false)
+  public: boolean("public").notNull().default(false),
+  isDefault: boolean("is_default").notNull().default(false)
 });
 
 export const groupsRelations = relations(groups, ({ many }) => ({

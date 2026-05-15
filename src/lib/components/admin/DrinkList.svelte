@@ -10,23 +10,23 @@
 	} = $props();
 </script>
 
-<div class="w-full h-full overflow-y-auto max-h-96">
+<div class="w-full overflow-y-auto max-h-96">
 	{#if !drinks || drinks.length === 0}
-		<div class="text-xl text-center py-4">EMPTY</div>
+		<div class="text-center py-4 text-sm" style="color: oklch(0.45 0 0);">No drinks</div>
 	{:else}
-		<table class="w-full text-sm">
-			<thead class="sticky top-0 preset-tonal-surface">
-				<tr>
-					<th class="px-2 py-1 text-left">Name</th>
+		<table class="table-esc">
+			<thead>
+				<tr style="position: sticky; top: 0; background: oklch(0.09 0 0);">
+					<th>Name</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each drinks as item}
 					<tr
-						class="cursor-pointer hover:preset-tonal-primary {selectedDrink === item.id ? 'preset-filled-primary-500' : ''}"
+						class="cursor-pointer {selectedDrink === item.id ? 'selected' : ''}"
 						onclick={() => (selectedDrink = item.id)}
 					>
-						<td class="px-2 py-1">{item.name}</td>
+						<td>{item.name}</td>
 					</tr>
 				{/each}
 			</tbody>

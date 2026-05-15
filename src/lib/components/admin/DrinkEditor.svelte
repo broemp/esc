@@ -38,45 +38,47 @@
 	loadYears();
 </script>
 
-<div class="w-full h-full">
-	<div class="card text-xl p-4">
+<div class="w-full">
+	<div class="card-esc p-4">
 		{#if drink && country}
-			<form method="POST" action="?/update">
-				<div class="grid grid-cols-5 space-x-2 space-y-2">
-					<label class="label col-span-full">
-						ID
-						<input class="input" type="text" name="id" bind:value={drink.id} readonly />
-					</label>
-					<label class="label col-span-4">
-						<span>Name</span>
-						<input class="input" type="text" name="name" bind:value={drink.name} />
-					</label>
-					<label class="label col-span-1">
-						<span>Year</span>
-						<select class="select" bind:value={drink.year} name="year">
-							<option value={null}>NULL</option>
+			<form method="POST" action="?/update" class="space-y-3">
+				<div>
+					<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">ID</label>
+					<input class="input-box" type="text" name="id" bind:value={drink.id} readonly style="opacity: 0.5;" />
+				</div>
+				<div class="grid grid-cols-5 gap-2">
+					<div class="col-span-4">
+						<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Name</label>
+						<input class="input-box" type="text" name="name" bind:value={drink.name} />
+					</div>
+					<div class="col-span-1">
+						<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Year</label>
+						<select class="select-esc" bind:value={drink.year} name="year">
+							<option value={null}>–</option>
 							{#each years as year}
 								<option value={year}>{year}</option>
 							{/each}
 						</select>
-					</label>
+					</div>
 				</div>
-				<div class="grid grid-cols-5 space-x-2">
-					<label class="label col-span-4">
-						<span>Alcohol Percentage</span>
-						<input class="input" type="number" name="Percentage" bind:value={drink.percentage} />
-					</label>
+				<div>
+					<label class="block text-xs uppercase tracking-widest mb-1" style="color: oklch(0.50 0 0);">Alcohol %</label>
+					<input class="input-box" type="number" name="Percentage" bind:value={drink.percentage} />
 				</div>
 				<CountryAutocomplete {countries} bind:countryID={country.id} bind:countryName={country.name} />
-				<div class="flex justify-between m-4">
-					<label class="flex items-center space-x-2">
-						<input class="checkbox" type="checkbox" name="alcohol" bind:value={drink.alcohol} />
-						<p>Alcoholic</p>
+				<div class="flex justify-between items-center pt-2">
+					<label class="flex items-center gap-2 cursor-pointer">
+						<input class="checkbox-esc" type="checkbox" name="alcohol" bind:value={drink.alcohol} />
+						<span class="text-sm">Alcoholic</span>
 					</label>
-					<button formaction="?/delete" class="btn preset-filled-error-500">Delete</button>
-					<button class="btn preset-filled-primary-500" type="submit">Save</button>
+					<div class="flex gap-2">
+						<button formaction="?/delete" class="px-3 py-1.5 rounded text-xs font-semibold text-white" style="background: oklch(0.38 0.22 20);">Delete</button>
+						<button class="btn-brand px-4 py-1.5 rounded text-xs font-semibold" type="submit">Save</button>
+					</div>
 				</div>
 			</form>
+		{:else}
+			<p class="text-sm" style="color: oklch(0.45 0 0);">Select a drink to edit</p>
 		{/if}
 	</div>
 </div>

@@ -5,8 +5,8 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<div class="container mx-auto p-4">
-	<h1 class="text-2xl font-bold mb-4">User Management</h1>
+<div class="p-4">
+	<h1 class="font-bold text-lg mb-4">User Management</h1>
 	<UserList
 		users={data.users}
 		totalUsers={data.totalUsers}

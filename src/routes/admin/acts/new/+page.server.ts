@@ -42,7 +42,7 @@ export const actions = {
       return fail(400, { success: false, message: 'Invalid Data, ' + e });
     }
     try {
-      createAct(act);
+      await createAct(act);
     } catch (e) {
       return fail(500, { message: 'Could not create database entry, ' + e });
     }
@@ -61,7 +61,7 @@ export const actions = {
       return fail(400, { success: false, message: 'Invalid Data, ' + e });
     }
     try {
-      createCountry(country);
+      await createCountry(country);
     } catch (e) {
       return fail(500, { message: 'Could not create database entry, ' + e });
     }

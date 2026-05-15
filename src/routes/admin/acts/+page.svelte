@@ -26,7 +26,7 @@
 	</div>
 	<div class="md:col-span-1">
 		<a href="/admin/acts/new">
-			<button class="btn variant-glass-primary w-full mb-2">New Act</button>
+			<button class="btn-brand w-full mb-2 py-2 rounded-lg text-sm font-semibold">New Act</button>
 		</a>
 		<ActList acts={data.acts} bind:selectedAct={actID} />
 	</div>
