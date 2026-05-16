@@ -12,7 +12,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   return json(groups);
 };
 
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+  const session = await locals.auth();
+  if (!session?.user || session.user.role !== 'admin') {
+    throw error(403, 'Not authorized');
+  }
   const { id } = params;
   const result = await deleteCategory(id);
   return json(result);
