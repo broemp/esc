@@ -191,18 +191,35 @@
 					</div>
 				</div>
 
-				<!-- Top Public Groups -->
-				{#if data.publicGroups.length > 0}
+				<!-- Your Stats -->
+				{#if data.userStats}
 					<div>
 						<div class="gradient-line mb-4"></div>
-						<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Top Public Groups</p>
+						<div class="flex items-center justify-between mb-3">
+							<p class="text-xs uppercase tracking-widest" style="color: oklch(0.42 0 0);">Your Stats</p>
+							<a href="/stats" class="text-xs font-medium" style="color: oklch(0.52 0 0);">Full stats →</a>
+						</div>
 						<div class="grid grid-cols-2 gap-2">
-							{#each data.publicGroups as group}
-								<a href="/group/{group.id}" class="card-esc p-3 block hover:border-[oklch(0.30_0_0)] transition-colors">
-									<p class="font-semibold text-sm truncate">{group.name}</p>
-									<p class="text-xs mt-0.5" style="color: oklch(0.48 0 0);">{group.memberCount} members</p>
-								</a>
-							{/each}
+							<div class="card-esc p-3 text-center">
+								<p class="text-gradient font-bold text-xl">{data.userStats.overall?.totalVotes ?? 0}</p>
+								<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Votes cast</p>
+							</div>
+							<div class="card-esc p-3 text-center">
+								<p class="text-gradient font-bold text-xl">{data.userStats.overall?.avgScore ?? '—'}</p>
+								<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Avg score</p>
+							</div>
+							{#if data.userStats.byCat.length > 0}
+								{@const top = [...data.userStats.byCat].sort((a, b) => Number(b.avgScore) - Number(a.avgScore))[0]}
+								{@const bot = [...data.userStats.byCat].sort((a, b) => Number(a.avgScore) - Number(b.avgScore))[0]}
+								<div class="card-esc p-3 text-center">
+									<p class="font-bold text-sm truncate capitalize" style="color: oklch(0.72 0.18 142);">{(top.categoryName ?? '').replace('_', ' ')}</p>
+									<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Favorite cat.</p>
+								</div>
+								<div class="card-esc p-3 text-center">
+									<p class="font-bold text-sm truncate capitalize" style="color: oklch(0.65 0.18 25);">{(bot.categoryName ?? '').replace('_', ' ')}</p>
+									<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Toughest on</p>
+								</div>
+							{/if}
 						</div>
 					</div>
 				{/if}

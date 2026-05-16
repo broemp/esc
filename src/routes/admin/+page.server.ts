@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions, RequestEvent } from './$types';
 import { getAdminStats } from '$lib/server/db/queries/stats';
 import { isStatsEnabled, setSetting } from '$lib/server/db/queries/settings';
@@ -23,8 +23,13 @@ export const actions = {
     if (!session?.user || session.user.role !== 'admin') {
       throw error(403, 'Not authorized');
     }
-    const current = await isStatsEnabled();
-    await setSetting('statsEnabled', current ? 'false' : 'true');
-    return { statsEnabled: !current };
+    try {
+      const current = await isStatsEnabled();
+      await setSetting('statsEnabled', current ? 'false' : 'true');
+      return { statsEnabled: !current };
+    } catch (e) {
+      console.error('[toggleStats]', e);
+      return fail(500, { error: 'Failed to update setting' });
+    }
   },
 } satisfies Actions; 

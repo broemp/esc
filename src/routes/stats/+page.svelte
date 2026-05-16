@@ -41,6 +41,7 @@
 
 	// Most generous and harshest voter
 	const sorted = $derived([...data.voterProfiles].sort((a, b) => Number(b.avgScore) - Number(a.avgScore)));
+	let judgesLimit = $state(5);
 	const mostGenerous = $derived(sorted[0]);
 	const harshest = $derived(sorted[sorted.length - 1]);
 
@@ -255,7 +256,7 @@
 		<div class="mb-6">
 			<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">The judges</p>
 			<div class="space-y-2 mb-4">
-				{#each sorted as voter}
+				{#each sorted.slice(0, judgesLimit) as voter}
 					<div class="card-esc p-3 flex items-center gap-3">
 						{#if voter.userImage}
 							<img src={voter.userImage} alt="" class="w-8 h-8 rounded-full object-cover shrink-0" />
@@ -282,6 +283,15 @@
 					</div>
 				{/each}
 			</div>
+			{#if sorted.length > judgesLimit}
+				<button
+					class="w-full text-xs py-2 mb-4 rounded-lg"
+					style="color: oklch(0.55 0 0); border: 1px solid oklch(0.20 0 0 / 0.7);"
+					onclick={() => judgesLimit += 5}
+				>
+					Show more ({sorted.length - judgesLimit} remaining)
+				</button>
+			{/if}
 
 			<!-- Fun facts row -->
 			<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">

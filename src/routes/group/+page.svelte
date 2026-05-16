@@ -36,4 +36,23 @@
 			<p class="text-sm" style="color: oklch(0.48 0 0);">No groups yet — create or join one!</p>
 		</div>
 	{/if}
+
+	{#if data.publicGroups.length > 0}
+		<div class="gradient-line my-5"></div>
+		<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Public Groups</p>
+		<div class="space-y-2">
+			{#each data.publicGroups as group}
+				<a
+					href="/group/{group.id}"
+					class="card-esc px-4 py-3.5 flex items-center justify-between hover:border-[oklch(0.30_0_0)] transition-colors block"
+				>
+					<div>
+						<span class="font-semibold text-sm">{group.name}</span>
+						<span class="text-xs ml-2" style="color: oklch(0.48 0 0);">{group.memberCount} members</span>
+					</div>
+					<i class="fa-solid fa-chevron-right text-xs" style="color: oklch(0.40 0 0);"></i>
+				</a>
+			{/each}
+		</div>
+	{/if}
 </div>

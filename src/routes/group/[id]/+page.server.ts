@@ -1,6 +1,13 @@
-import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, getOverallRankingGroup, type RankingCategoryGroup } from '$lib/server/db/queries';
+import { getGroup, getGroupCategories, getGroupSongVotes, getMembersOfGroup, getRankingCategoryGroup, getOverallRankingGroup, getControversialActs, getAgreedActs, getVoterProfiles, type RankingCategoryGroup } from '$lib/server/db/queries';
+import { getCachedStats, setCachedStats } from '$lib/server/statsCache';
 import { redirect, error, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+
+type GroupStatsData = {
+  controversial: Awaited<ReturnType<typeof getControversialActs>>;
+  agreed: Awaited<ReturnType<typeof getAgreedActs>>;
+  voterProfiles: Awaited<ReturnType<typeof getVoterProfiles>>;
+};
 
 export const load: PageServerLoad = async (event: RequestEvent) => {
   let session = await event.locals.auth()
@@ -25,8 +32,29 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
   }
 
   const categories = await getGroupCategories(groupID)
-  const songVotes = await getGroupSongVotes(groupID)
-  const overallRanking = await getOverallRankingGroup(groupID)
+  const cacheKey = `group-stats-${groupID}`;
+  const cached = getCachedStats<GroupStatsData>(cacheKey);
+
+  let groupStats: GroupStatsData;
+  let statsUpdatedAt: number;
+
+  const [songVotes, overallRanking] = await Promise.all([
+    getGroupSongVotes(groupID),
+    getOverallRankingGroup(groupID),
+  ]);
+
+  if (cached) {
+    groupStats = cached.data;
+    statsUpdatedAt = cached.ts;
+  } else {
+    const [controversial, agreed, voterProfiles] = await Promise.all([
+      getControversialActs(groupID, 3),
+      getAgreedActs(groupID, 3),
+      getVoterProfiles(groupID),
+    ]);
+    groupStats = { controversial, agreed, voterProfiles };
+    statsUpdatedAt = setCachedStats(cacheKey, groupStats);
+  }
   const categoryRankingResults = await Promise.all(
     categories.map((cat) => getRankingCategoryGroup(groupID, cat.category?.id!))
   );
@@ -46,5 +74,7 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
     categoryRanking: categoryRanking,
     overallRanking: overallRanking,
     isAdmin: isAdmin,
+    groupStats,
+    statsUpdatedAt,
   };
 };

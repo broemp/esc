@@ -3,12 +3,15 @@
 	import { enhance } from '$app/forms';
 	import { toastStore } from '$lib/stores/toast.svelte';
 
-	let { data, form }: { data: PageData; form: { statsEnabled?: boolean } | null } = $props();
+	let { data, form }: { data: PageData; form: { statsEnabled?: boolean; error?: string } | null } = $props();
 
 	let statsEnabled = $state(data.statsEnabled);
 
 	$effect(() => {
-		if (form && typeof form.statsEnabled === 'boolean') {
+		if (!form) return;
+		if (form.error) {
+			toastStore.trigger(form.error, 'error');
+		} else if (typeof form.statsEnabled === 'boolean') {
 			statsEnabled = form.statsEnabled;
 		}
 	});
@@ -52,7 +55,13 @@
 	<div class="card-esc p-4 mb-4">
 		<p class="text-xs uppercase tracking-widest mb-4" style="color: oklch(0.55 0 0);">Settings</p>
 		<form method="POST" action="?/toggleStats" use:enhance={() => {
-			return ({ update }) => update({ reset: false });
+			return ({ result, update }) => {
+				if (result.type === 'failure') {
+					toastStore.trigger((result.data as any)?.error ?? 'Failed to update setting', 'error');
+				} else {
+					update({ reset: false });
+				}
+			};
 		}}>
 			<div class="flex items-center justify-between">
 				<div>

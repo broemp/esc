@@ -23,6 +23,20 @@
 	let selectedCategories = $state(new Set(activeCategories));
 	let activeTab = $state(0);
 
+	const groupStats = data.groupStats;
+
+	const statsAge = (() => {
+		const diffMin = Math.floor((Date.now() - data.statsUpdatedAt) / 60000);
+		if (diffMin < 1) return 'just now';
+		return `${diffMin}m ago`;
+	})();
+
+	function scoreColor(score: number) {
+		if (score >= 7.5) return 'oklch(0.72 0.18 142)';
+		if (score >= 5) return 'oklch(0.70 0.15 80)';
+		return 'oklch(0.65 0.18 25)';
+	}
+
 	const ShareURL = env.PUBLIC_APP_URL + '/group/join/' + group.group.id;
 
 	$effect(() => {
@@ -85,7 +99,7 @@
 		selectedCategories = new Set(selectedCategories);
 	}
 
-	const tabs = ['Ranking', 'Members', 'Invite', 'Settings'];
+	const tabs = ['Ranking', 'Members', 'Stats', 'Manage'];
 </script>
 
 <div class="max-w-lg mx-auto">
@@ -152,39 +166,134 @@
 			{/each}
 		</div>
 
-	<!-- Invite tab -->
+	<!-- Stats tab -->
 	{:else if activeTab === 2}
-		<div class="p-8 flex flex-col items-center space-y-6">
-			<div class="gradient-border p-1 rounded-xl inline-block" style="background: oklch(0.09 0 0);">
-				<div class="p-3" style="background: black; border-radius: 0.5rem;">
-					<svg use:qr={{ data: ShareURL, shape: 'circle', moduleFill: '#ffffff', anchorOuterFill: '#ffffff', anchorInnerFill: '#ffffff' }} class="w-40 h-40" />
+		<div class="p-4 space-y-5">
+			<p class="text-xs text-right" style="color: oklch(0.50 0 0);">Updated {statsAge}</p>
+
+			<!-- Voter profiles -->
+			{#if groupStats.voterProfiles.length > 0}
+				<div>
+					<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Judges</p>
+					<div class="space-y-2">
+						{#each groupStats.voterProfiles as voter}
+							<div class="card-esc p-3 flex items-center gap-3">
+								{#if voter.userImage}
+									<img src={voter.userImage} alt="" class="w-8 h-8 rounded-full object-cover shrink-0" />
+								{:else}
+									<div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background: oklch(0.12 0 0);">
+										<span class="text-gradient text-sm font-bold">{(voter.userName ?? '?')[0].toUpperCase()}</span>
+									</div>
+								{/if}
+								<div class="flex-1 min-w-0">
+									<p class="text-sm font-semibold truncate">{voter.userName ?? 'Unknown'}</p>
+									<div class="flex items-center gap-1 mt-0.5">
+										<div class="flex-1 h-1 rounded-full" style="background: oklch(0.15 0 0);">
+											<div class="h-1 rounded-full" style="width: {Math.min(100, (Number(voter.avgScore) / 10) * 100)}%; background: var(--gradient-brand-horizontal);"></div>
+										</div>
+									</div>
+								</div>
+								<div class="text-right shrink-0">
+									<span class="font-bold text-sm" style="color: {scoreColor(Number(voter.avgScore))};">{voter.avgScore}</span>
+									<p class="text-xs" style="color: oklch(0.38 0 0);">{voter.totalVotes} votes</p>
+								</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
+
+			<!-- Controversial + Agreed -->
+			{#if groupStats.controversial.length > 0 || groupStats.agreed.length > 0}
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					{#if groupStats.controversial.length > 0}
+						<div>
+							<p class="text-xs uppercase tracking-widest mb-2" style="color: oklch(0.65 0.18 25);">Most debated</p>
+							<div class="space-y-2">
+								{#each groupStats.controversial as act}
+									<div class="card-esc p-2.5 flex items-center gap-2">
+										{#if act.countryImage}
+											<img src={act.countryImage} alt="" class="w-8 h-8 object-contain rounded shrink-0" />
+										{:else}
+											<div class="w-8 h-8 rounded shrink-0 flex items-center justify-center" style="background: oklch(0.12 0 0);">
+												<i class="fa-solid fa-music text-xs" style="color: oklch(0.35 0 0);"></i>
+											</div>
+										{/if}
+										<div class="flex-1 min-w-0">
+											<p class="text-xs font-semibold truncate">{act.artist}</p>
+											<p class="text-xs truncate" style="color: oklch(0.48 0 0);">{act.title}</p>
+										</div>
+										<span class="text-xs font-medium shrink-0" style="color: oklch(0.65 0.18 25);">±{act.stddev}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/if}
+					{#if groupStats.agreed.length > 0}
+						<div>
+							<p class="text-xs uppercase tracking-widest mb-2" style="color: oklch(0.72 0.18 142);">All agree on</p>
+							<div class="space-y-2">
+								{#each groupStats.agreed as act}
+									<div class="card-esc p-2.5 flex items-center gap-2">
+										{#if act.countryImage}
+											<img src={act.countryImage} alt="" class="w-8 h-8 object-contain rounded shrink-0" />
+										{:else}
+											<div class="w-8 h-8 rounded shrink-0 flex items-center justify-center" style="background: oklch(0.12 0 0);">
+												<i class="fa-solid fa-music text-xs" style="color: oklch(0.35 0 0);"></i>
+											</div>
+										{/if}
+										<div class="flex-1 min-w-0">
+											<p class="text-xs font-semibold truncate">{act.artist}</p>
+											<p class="text-xs truncate" style="color: oklch(0.48 0 0);">{act.title}</p>
+										</div>
+										<span class="text-gradient text-xs font-bold shrink-0">{act.avgScore}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</div>
+			{/if}
+
+			{#if groupStats.voterProfiles.length === 0 && groupStats.controversial.length === 0}
+				<div class="text-center py-16">
+					<i class="fa-solid fa-chart-bar text-3xl mb-3" style="color: oklch(0.25 0 0);"></i>
+					<p class="text-sm" style="color: oklch(0.40 0 0);">No votes yet — stats will appear once people start voting.</p>
+				</div>
+			{/if}
+		</div>
+
+	<!-- Manage tab -->
+	{:else if activeTab === 3}
+		<div class="p-4 space-y-6">
+			<!-- Invite section -->
+			<div>
+				<p class="text-xs uppercase tracking-widest mb-4" style="color: oklch(0.42 0 0);">Invite</p>
+				<div class="flex flex-col items-center space-y-4">
+					<div class="gradient-border p-1 rounded-xl inline-block" style="background: oklch(0.09 0 0);">
+						<div class="p-3" style="background: black; border-radius: 0.5rem;">
+							<svg use:qr={{ data: ShareURL, shape: 'circle', moduleFill: '#ffffff', anchorOuterFill: '#ffffff', anchorInnerFill: '#ffffff' }} class="w-36 h-36" />
+						</div>
+					</div>
+					<ShareButton url={ShareURL} title="Join my ESC Group" design="btn-brand px-6 py-2.5 rounded-xl text-sm font-semibold">
+						{#snippet children()}
+							<i class="fa-solid fa-share-nodes mr-2"></i>Share Link
+						{/snippet}
+					</ShareButton>
+					<p class="text-xs text-center break-all" style="color: oklch(0.40 0 0);">{ShareURL}</p>
 				</div>
 			</div>
 
-			<ShareButton url={ShareURL} title="Join my ESC Group" design="btn-brand px-8 py-3 rounded-xl text-sm font-semibold">
-				{#snippet children()}
-					<i class="fa-solid fa-share-nodes mr-2"></i>Share Link
-				{/snippet}
-			</ShareButton>
+			<div class="gradient-line"></div>
 
-			<p class="text-xs text-center break-all" style="color: oklch(0.40 0 0);">{ShareURL}</p>
-		</div>
-
-	<!-- Settings tab -->
-	{:else if activeTab === 3}
-		{#if isAdmin}
-			<div class="p-4 space-y-6">
+			<!-- Settings / Leave section -->
+			{#if isAdmin}
 				<!-- Basic Settings -->
 				<div class="space-y-4">
-					<p class="text-xs uppercase tracking-widest" style="color: oklch(0.42 0 0);">Basic Settings</p>
+					<p class="text-xs uppercase tracking-widest" style="color: oklch(0.42 0 0);">Settings</p>
 					<div>
 						<label for="groupName" class="block text-xs mb-2" style="color: oklch(0.55 0 0);">Group Name</label>
-						<input
-							id="groupName"
-							class="input-esc"
-							type="text"
-							bind:value={groupName}
-						/>
+						<input id="groupName" class="input-esc" type="text" bind:value={groupName} />
 					</div>
 					<div class="card-esc p-3 flex items-center justify-between">
 						<span class="text-sm font-medium">Public Group</span>
@@ -217,17 +326,17 @@
 						Save Categories
 					</button>
 				</div>
-			</div>
-		{:else}
-			<div class="p-4">
-				<button
-					class="w-full h-12 rounded-xl text-sm font-semibold text-white"
-					style="background: oklch(0.40 0.22 20);"
-					onclick={leaveGroup}
-				>
-					Leave Group
-				</button>
-			</div>
-		{/if}
+			{:else}
+				<div>
+					<button
+						class="w-full h-12 rounded-xl text-sm font-semibold text-white"
+						style="background: oklch(0.40 0.22 20);"
+						onclick={leaveGroup}
+					>
+						Leave Group
+					</button>
+				</div>
+			{/if}
+		</div>
 	{/if}
 </div>

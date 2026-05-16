@@ -1,4 +1,4 @@
-import { getGroupsFromUser } from '$lib/server/db/queries';
+import { getGroupsFromUser, getPublicGroups } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad, RequestEvent } from './$types';
 
@@ -9,9 +9,10 @@ export const load: PageServerLoad = async (event: RequestEvent) => {
     return redirect(303, "/")
   }
 
-  let groups = await getGroupsFromUser(session.user?.id!)
+  const [groups, publicGroups] = await Promise.all([
+    getGroupsFromUser(session.user.id!),
+    getPublicGroups(6, 0),
+  ]);
 
-  return {
-    groups: groups
-  };
+  return { groups, publicGroups };
 };
