@@ -71,7 +71,7 @@ export const authorizationHandle: Handle = async ({ event, resolve }) => {
 	if (session?.user?.role === 'admin') {
 		event.cookies.set('is_admin', 'true', {
 			path: '/',
-			httpOnly: true,
+			httpOnly: false,
 			sameSite: 'lax',
 			secure: process.env.NODE_ENV === 'production',
 			maxAge: 60 * 60 * 24 * 7
