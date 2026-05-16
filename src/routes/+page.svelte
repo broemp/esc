@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import type { PageServerData } from './$types';
 	import ActImage from '$lib/components/ActImage.svelte';
 
@@ -10,8 +11,11 @@
 	let topActs = data.topActs;
 
 	let elemCarousel: HTMLDivElement;
-	let actIndex = $state(0);
-	let currentAct = $state(data.acts[0]);
+	const initialIndex = data.currentAct
+		? Math.max(0, acts.findIndex((a) => a.act.id === data.currentAct!.id))
+		: 0;
+	let actIndex = $state(initialIndex);
+	let currentAct = $state(data.acts[initialIndex]);
 
 	let touchStartX = 0;
 
@@ -46,6 +50,12 @@
 			else carouselLeft();
 		}
 	}
+
+	onMount(() => {
+		if (initialIndex > 0) {
+			elemCarousel.scrollLeft = elemCarousel.clientWidth * initialIndex;
+		}
+	});
 </script>
 
 <div class="w-full">

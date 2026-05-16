@@ -1,14 +1,15 @@
-import { getCurrentTopActs, listActs, getGroupsFromUser, getPublicGroups, getUserStats } from '$lib/server/db/queries';
+import { getCurrentTopActs, listActs, getGroupsFromUser, getPublicGroups, getUserStats, nextAdminAct } from '$lib/server/db/queries';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
   const session = await event.locals.auth();
   const userId = session?.user?.id ?? null;
 
-  const [acts, topActs, publicGroups] = await Promise.all([
+  const [acts, topActs, publicGroups, currentAct] = await Promise.all([
     listActs(40, 0),
     getCurrentTopActs(10, 0),
     getPublicGroups(4, 0),
+    nextAdminAct(),
   ]);
 
   const [userGroups, userStats] = await Promise.all([
@@ -22,5 +23,6 @@ export const load: PageServerLoad = async (event) => {
     groups: userGroups,
     publicGroups,
     userStats,
+    currentAct: currentAct[0] ?? null,
   };
 };
