@@ -5,4 +5,6 @@ export * from './drinks';
 export * from './groups';
 export * from './users';
 export * from './votes';
-export * from './types'; 
+export * from './types';
+export * from './stats';
+export * from './settings'; 

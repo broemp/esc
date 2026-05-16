@@ -16,6 +16,30 @@
 	function capitalize(str: string) {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
+
+	// Mini stats computed from loaded votes
+	const miniStats = $derived.by(() => {
+		if (data.votes.length === 0) return null;
+		const avg = data.votes.reduce((s, v) => s + parseFloat(v.points as string), 0) / data.votes.length;
+		const byCat: Record<string, { sum: number; count: number }> = {};
+		for (const v of data.votes) {
+			const cat = v.category?.name ?? 'song';
+			if (!byCat[cat]) byCat[cat] = { sum: 0, count: 0 };
+			byCat[cat].sum += parseFloat(v.points as string);
+			byCat[cat].count++;
+		}
+		const catAvgs = Object.entries(byCat).map(([name, { sum, count }]) => ({
+			name,
+			avg: sum / count,
+		}));
+		catAvgs.sort((a, b) => b.avg - a.avg);
+		return {
+			total: data.votes.length,
+			avg: avg.toFixed(1),
+			topCat: catAvgs[0] ?? null,
+			bottomCat: catAvgs[catAvgs.length - 1] ?? null,
+		};
+	});
 </script>
 
 <div class="max-w-2xl mx-auto px-4 pt-6 pb-6">
@@ -122,6 +146,41 @@
 			</div>
 		{/if}
 	</div>
+
+	<!-- Mini stats card -->
+	{#if miniStats}
+		<div class="gradient-line mb-5"></div>
+		<div class="mb-6">
+			<div class="flex items-center justify-between mb-3">
+				<p class="text-xs uppercase tracking-widest" style="color: oklch(0.42 0 0);">Stats snapshot</p>
+				<a href="/stats" class="text-xs btn-ghost px-2 py-1 rounded" style="color: oklch(0.50 0 0);">
+					Full stats <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+				</a>
+			</div>
+			<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+				<div class="card-esc p-3 text-center">
+					<p class="text-gradient font-bold text-lg">{miniStats.total}</p>
+					<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Votes cast</p>
+				</div>
+				<div class="card-esc p-3 text-center">
+					<p class="text-gradient font-bold text-lg">{miniStats.avg}</p>
+					<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Avg score</p>
+				</div>
+				{#if miniStats.topCat}
+					<div class="card-esc p-3 text-center">
+						<p class="font-semibold text-sm truncate" style="color: oklch(0.72 0.18 142);">{capitalize(miniStats.topCat.name)}</p>
+						<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Highest rated</p>
+					</div>
+				{/if}
+				{#if miniStats.bottomCat && miniStats.bottomCat.name !== miniStats.topCat?.name}
+					<div class="card-esc p-3 text-center">
+						<p class="font-semibold text-sm truncate" style="color: oklch(0.65 0.18 25);">{capitalize(miniStats.bottomCat.name)}</p>
+						<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">Toughest on</p>
+					</div>
+				{/if}
+			</div>
+		</div>
+	{/if}
 
 	<!-- Public Groups section -->
 	{#if data.publicGroups.length > 0}

@@ -203,3 +203,8 @@ export const votes = pgTable('vote', {
     })
   };
 });
+
+export const settings = pgTable('setting', {
+  key: text('key').notNull().primaryKey(),
+  value: text('value').notNull(),
+});

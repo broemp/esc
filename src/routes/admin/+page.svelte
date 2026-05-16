@@ -1,8 +1,17 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
 	import { toastStore } from '$lib/stores/toast.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: { statsEnabled?: boolean } | null } = $props();
+
+	let statsEnabled = $state(data.statsEnabled);
+
+	$effect(() => {
+		if (form && typeof form.statsEnabled === 'boolean') {
+			statsEnabled = form.statsEnabled;
+		}
+	});
 
 	async function deleteAllVotes() {
 		if (!confirm('Are you sure you want to delete ALL votes? This action cannot be undone.')) return;
@@ -37,6 +46,36 @@
 				<p class="text-xs mt-1.5 uppercase tracking-wide" style="color: oklch(0.50 0 0);">{stat.label}</p>
 			</div>
 		{/each}
+	</div>
+
+	<!-- Settings -->
+	<div class="card-esc p-4 mb-4">
+		<p class="text-xs uppercase tracking-widest mb-4" style="color: oklch(0.55 0 0);">Settings</p>
+		<form method="POST" action="?/toggleStats" use:enhance={() => {
+			return ({ update }) => update({ reset: false });
+		}}>
+			<div class="flex items-center justify-between">
+				<div>
+					<p class="text-sm font-medium">Stats page</p>
+					<p class="text-xs mt-0.5" style="color: oklch(0.45 0 0);">
+						Disable if queries are too slow
+					</p>
+				</div>
+				<button
+					type="submit"
+					class="w-11 h-6 rounded-full transition-colors duration-200 relative shrink-0"
+					style={statsEnabled
+						? 'background: var(--gradient-brand);'
+						: 'background: oklch(0.20 0 0);'}
+					aria-label="Toggle stats"
+				>
+					<span
+						class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-transform duration-200"
+						style="background: oklch(0.97 0 0); transform: translateX({statsEnabled ? '20px' : '0px'});"
+					></span>
+				</button>
+			</div>
+		</form>
 	</div>
 
 	<div class="card-esc p-4">
