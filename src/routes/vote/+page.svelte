@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import type { PageServerData } from './$types';
 	import ActImage from '$lib/components/ActImage.svelte';
 
@@ -7,6 +8,13 @@
 
 	const acts = data.acts;
 	const nextAct = data.nextAct[0];
+	const votedActIds = new Set(data.votedActIds);
+	const firstUnvotedAct = acts.find(a => !votedActIds.has(a.act.id));
+
+	onMount(() => {
+		const el = document.querySelector('[data-first-unvoted]');
+		el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	});
 </script>
 
 <div class="max-w-lg mx-auto pb-6">
@@ -34,10 +42,12 @@
 
 	<div class="act-list">
 		{#each acts as act}
+			{@const voted = votedActIds.has(act.act.id)}
 			<a
 				href="/vote/{act.act.id}"
 				class="flex items-center gap-3 px-4 py-4 transition-colors hover:bg-[oklch(0.10_0_0)] block"
 				style="border-bottom: 1px solid oklch(0.13 0 0);"
+				data-first-unvoted={act.act.id === firstUnvotedAct?.act.id ? '' : undefined}
 			>
 				<span class="text-gradient font-bold text-2xl w-10 text-center shrink-0">
 					{act.act.position}
@@ -60,7 +70,11 @@
 					<p class="font-semibold text-sm truncate">{act.act.artist}</p>
 					<p class="text-xs truncate" style="color: oklch(0.50 0 0);">{act.act.title}</p>
 				</div>
-				<i class="fa-solid fa-chevron-right text-xs shrink-0" style="color: oklch(0.35 0 0);"></i>
+				{#if voted}
+					<i class="fa-solid fa-check text-xs shrink-0" style="color: oklch(0.65 0.17 145);"></i>
+				{:else}
+					<i class="fa-solid fa-chevron-right text-xs shrink-0" style="color: oklch(0.35 0 0);"></i>
+				{/if}
 			</a>
 		{/each}
 	</div>

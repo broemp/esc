@@ -42,6 +42,14 @@ export function getUserVotes(userId: string) {
     .orderBy(desc(votes.points));
 }
 
+export function getVotedActsByUser(userId: string) {
+  return db
+    .select({ actID: votes.actID })
+    .from(votes)
+    .where(eq(votes.userID, userId))
+    .groupBy(votes.actID);
+}
+
 export function deleteAllVotes() {
   return db.delete(votes).execute();
-} 
+}
