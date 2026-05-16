@@ -8,8 +8,8 @@
 		return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 	}
 
-	function simPct(rmse: string | number) {
-		return Math.max(0, Math.round((1 - Number(rmse) / 10) * 100));
+	function pearsonPct(pearson: number) {
+		return Math.max(0, Math.round(pearson * 100));
 	}
 
 	function scoreColor(score: number) {
@@ -17,27 +17,6 @@
 		if (score >= 5) return 'oklch(0.70 0.15 80)';
 		return 'oklch(0.65 0.18 25)';
 	}
-
-	// Pairs involving current user, sorted most→least similar
-	const mySimilarity = $derived(
-		data.similarity
-			.filter((p) => p.user1_id === data.userId || p.user2_id === data.userId)
-			.map((p) => {
-				const mine = p.user1_id === data.userId;
-				return {
-					userId: mine ? p.user2_id : p.user1_id,
-					name: mine ? p.user2_name : p.user1_name,
-					image: mine ? p.user2_image : p.user1_image,
-					rmse: Number(p.rmse),
-					shared: Number(p.shared_votes),
-				};
-			})
-			.sort((a, b) => a.rmse - b.rmse)
-	);
-
-	// Overall most/least similar pairs (excluding self-pairs, deduplicated)
-	const topPairs = $derived(data.similarity.slice(0, 5));
-	const bottomPairs = $derived([...data.similarity].reverse().slice(0, 3));
 
 	// Most generous and harshest voter
 	const sorted = $derived([...data.voterProfiles].sort((a, b) => Number(b.avgScore) - Number(a.avgScore)));
@@ -369,94 +348,62 @@
 	{/if}
 
 	<!-- ── CHEMISTRY ─────────────────────────────────────────── -->
-	{#if data.similarity.length > 0}
-		<div class="mb-6">
-			<p class="text-xs uppercase tracking-widest mb-1" style="color: oklch(0.42 0 0);">Chemistry</p>
-			<p class="text-xs mb-3" style="color: oklch(0.38 0 0);">Vote similarity between users (higher % = more alike)</p>
+	<div class="mb-6">
+		<p class="text-xs uppercase tracking-widest mb-1" style="color: oklch(0.42 0 0);">Chemistry</p>
+		<p class="text-xs mb-3" style="color: oklch(0.38 0 0);">Taste match vs other voters (Pearson correlation)</p>
 
-			<!-- Your similarity breakdown (if logged in and have pairs) -->
-			{#if data.userId && mySimilarity.length > 0}
-				<div class="card-esc p-4 mb-4">
-					<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Your vibe check</p>
-					<div class="space-y-2">
-						{#each mySimilarity as peer}
-							<div class="flex items-center gap-2">
-								{#if peer.image}
-									<img src={peer.image} alt="" class="w-7 h-7 rounded-full object-cover shrink-0" />
-								{:else}
-									<div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background: oklch(0.12 0 0);">
-										<span class="text-gradient text-xs font-bold">{(peer.name ?? '?')[0].toUpperCase()}</span>
-									</div>
-								{/if}
-								<span class="text-sm w-24 shrink-0 truncate" style="color: oklch(0.75 0 0);">{peer.name ?? 'Unknown'}</span>
-								<div class="flex-1 h-1.5 rounded-full" style="background: oklch(0.15 0 0);">
-									<div
-										class="h-1.5 rounded-full"
-										style="width: {simPct(peer.rmse)}%; background: var(--gradient-brand-horizontal);"
-									></div>
-								</div>
-								<span class="text-sm font-semibold w-10 text-right shrink-0 tabular-nums" style="color: oklch(0.65 0 0);">
-									{simPct(peer.rmse)}%
-								</span>
-							</div>
-						{/each}
-					</div>
-				</div>
-			{/if}
-
-			<!-- Most & least similar pairs globally -->
+		{#if !data.userId}
+			<div class="card-esc p-4 text-center">
+				<p class="text-sm" style="color: oklch(0.45 0 0);">Log in to see your chemistry with other voters.</p>
+			</div>
+		{:else if data.mostAlike.length === 0 && data.mostDifferent.length === 0}
+			<div class="card-esc p-4 text-center">
+				<p class="text-sm" style="color: oklch(0.45 0 0);">Vote on more acts to unlock chemistry stats.</p>
+			</div>
+		{:else}
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<!-- Most alike -->
 				<div>
 					<p class="text-xs mb-2" style="color: oklch(0.38 0 0);">Most alike</p>
 					<div class="space-y-2">
-						{#each topPairs as pair}
+						{#each data.mostAlike as peer}
 							<div class="card-esc p-2.5 flex items-center gap-2">
-								<div class="flex -space-x-1 shrink-0">
-									{#each [{ n: pair.user1_name, i: pair.user1_image }, { n: pair.user2_name, i: pair.user2_image }] as u}
-										{#if u.i}
-											<img src={u.i} alt="" class="w-6 h-6 rounded-full object-cover ring-1" style="--tw-ring-color: oklch(0.09 0 0);" />
-										{:else}
-											<div class="w-6 h-6 rounded-full flex items-center justify-center ring-1 shrink-0" style="background: oklch(0.14 0 0); --tw-ring-color: oklch(0.09 0 0);">
-												<span class="text-gradient text-xs font-bold">{(u.n ?? '?')[0].toUpperCase()}</span>
-											</div>
-										{/if}
-									{/each}
-								</div>
-								<span class="text-xs truncate flex-1" style="color: oklch(0.60 0 0);">
-									{pair.user1_name ?? '?'} &amp; {pair.user2_name ?? '?'}
-								</span>
-								<span class="text-xs font-semibold shrink-0" style="color: oklch(0.72 0.18 142);">{simPct(pair.rmse)}%</span>
+								{#if peer.other_image}
+									<img src={peer.other_image} alt="" class="w-6 h-6 rounded-full object-cover shrink-0" />
+								{:else}
+									<div class="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style="background: oklch(0.14 0 0);">
+										<span class="text-gradient text-xs font-bold">{(peer.other_name ?? '?')[0].toUpperCase()}</span>
+									</div>
+								{/if}
+								<span class="text-xs truncate flex-1" style="color: oklch(0.60 0 0);">{peer.other_name ?? 'Unknown'}</span>
+								<span class="text-xs font-semibold shrink-0" style="color: oklch(0.72 0.18 142);">{pearsonPct(peer.pearson)}%</span>
 							</div>
 						{/each}
 					</div>
 				</div>
+
+				<!-- Most different -->
 				<div>
 					<p class="text-xs mb-2" style="color: oklch(0.38 0 0);">Most different</p>
 					<div class="space-y-2">
-						{#each bottomPairs as pair}
+						{#each data.mostDifferent as peer}
 							<div class="card-esc p-2.5 flex items-center gap-2">
-								<div class="flex -space-x-1 shrink-0">
-									{#each [{ n: pair.user1_name, i: pair.user1_image }, { n: pair.user2_name, i: pair.user2_image }] as u}
-										{#if u.i}
-											<img src={u.i} alt="" class="w-6 h-6 rounded-full object-cover ring-1" style="--tw-ring-color: oklch(0.09 0 0);" />
-										{:else}
-											<div class="w-6 h-6 rounded-full flex items-center justify-center ring-1 shrink-0" style="background: oklch(0.14 0 0); --tw-ring-color: oklch(0.09 0 0);">
-												<span class="text-gradient text-xs font-bold">{(u.n ?? '?')[0].toUpperCase()}</span>
-											</div>
-										{/if}
-									{/each}
-								</div>
-								<span class="text-xs truncate flex-1" style="color: oklch(0.60 0 0);">
-									{pair.user1_name ?? '?'} &amp; {pair.user2_name ?? '?'}
-								</span>
-								<span class="text-xs font-semibold shrink-0" style="color: oklch(0.65 0.18 25);">{simPct(pair.rmse)}%</span>
+								{#if peer.other_image}
+									<img src={peer.other_image} alt="" class="w-6 h-6 rounded-full object-cover shrink-0" />
+								{:else}
+									<div class="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style="background: oklch(0.14 0 0);">
+										<span class="text-gradient text-xs font-bold">{(peer.other_name ?? '?')[0].toUpperCase()}</span>
+									</div>
+								{/if}
+								<span class="text-xs truncate flex-1" style="color: oklch(0.60 0 0);">{peer.other_name ?? 'Unknown'}</span>
+								<span class="text-xs font-semibold shrink-0" style="color: oklch(0.65 0.18 25);">{pearsonPct(peer.pearson)}%</span>
 							</div>
 						{/each}
 					</div>
 				</div>
 			</div>
-		</div>
-	{/if}
+		{/if}
+	</div>
 
 	{#if data.controversial.length === 0 && data.voterProfiles.length === 0}
 		<div class="text-center py-16">

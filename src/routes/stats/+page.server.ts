@@ -3,7 +3,8 @@ import {
   getControversialActs,
   getAgreedActs,
   getVoterProfiles,
-  getUserSimilarity,
+  getUserMostAlike,
+  getUserMostDifferent,
   getUserDeviationFromGroup,
   getUserStats,
   getPublicGroups,
@@ -27,7 +28,8 @@ export const load: PageServerLoad = async (event) => {
       controversial: [],
       agreed: [],
       voterProfiles: [],
-      similarity: [],
+      mostAlike: [],
+      mostDifferent: [],
       deviation: [],
       userStats: null,
       userId,
@@ -59,12 +61,13 @@ export const load: PageServerLoad = async (event) => {
 
   const groups = [...publicGroups, ...privateGroups];
 
-  const [controversial, agreed, voterProfiles, similarity, deviation, userStats] =
+  const [controversial, agreed, voterProfiles, mostAlike, mostDifferent, deviation, userStats] =
     await Promise.all([
       getControversialActs(groupId, 5),
       getAgreedActs(groupId, 5),
       getVoterProfiles(groupId),
-      getUserSimilarity(groupId),
+      userId ? getUserMostAlike(userId, groupId, 3) : Promise.resolve([]),
+      userId ? getUserMostDifferent(userId, groupId, 3) : Promise.resolve([]),
       getUserDeviationFromGroup(groupId),
       userId ? getUserStats(userId) : null,
     ]);
@@ -76,7 +79,8 @@ export const load: PageServerLoad = async (event) => {
     controversial,
     agreed,
     voterProfiles,
-    similarity,
+    mostAlike,
+    mostDifferent,
     deviation,
     userStats,
     userId,

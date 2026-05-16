@@ -160,68 +160,84 @@ export function getVoterProfiles(groupId: string | null) {
   return base;
 }
 
-// Pairwise vote similarity using RMSE — lower = more similar
-export type SimilarityRow = {
-  user1_id: string;
-  user2_id: string;
-  user1_name: string | null;
-  user2_name: string | null;
-  user1_image: string | null;
-  user2_image: string | null;
-  rmse: string;
-  shared_votes: string;
+// Pearson correlation of current user's votes vs every other user — higher = more alike
+export type SimilarityPeer = {
+  other_id: string;
+  other_name: string | null;
+  other_image: string | null;
+  shared_votes: number;
+  pearson: number;
 };
 
-export async function getUserSimilarity(groupId: string | null): Promise<SimilarityRow[]> {
-  if (groupId) {
-    const result = await db.execute(sql`
-      SELECT
-        v1."userID"  AS user1_id,
-        v2."userID"  AS user2_id,
-        u1.name      AS user1_name,
-        u2.name      AS user2_name,
-        u1.image     AS user1_image,
-        u2.image     AS user2_image,
-        CAST(SQRT(AVG(POWER(CAST(v1.points AS FLOAT) - CAST(v2.points AS FLOAT), 2))) AS DECIMAL(10,2)) AS rmse,
-        COUNT(*)::int AS shared_votes
-      FROM vote v1
-      JOIN vote v2
-        ON  v1."actID"       = v2."actID"
-        AND v1."categoriesID" = v2."categoriesID"
-        AND v1."userID"      < v2."userID"
-      JOIN user_group ug1 ON ug1.user_id = v1."userID" AND ug1.group_id = ${groupId}::uuid
-      JOIN user_group ug2 ON ug2.user_id = v2."userID" AND ug2.group_id = ${groupId}::uuid
-      JOIN "user" u1 ON u1.id = v1."userID"
-      JOIN "user" u2 ON u2.id = v2."userID"
-      GROUP BY v1."userID", v2."userID", u1.name, u2.name, u1.image, u2.image
-      HAVING COUNT(*) >= 1
-      ORDER BY rmse ASC
-    `);
-    return result as unknown as SimilarityRow[];
-  }
+async function _querySimilarity(
+  userId: string,
+  groupId: string | null,
+  order: 'DESC' | 'ASC',
+  limit: number,
+): Promise<SimilarityPeer[]> {
+  // Pearson = cov(X,Y) / (σX * σY)
+  // cov(X,Y) = E[XY] - E[X]*E[Y]  (computed in one pass via AVG aggregates)
+  // Requires >= 3 shared votes to produce a meaningful correlation.
+  const groupFilter = groupId
+    ? sql`AND EXISTS (
+        SELECT 1 FROM user_group ug
+        WHERE ug.user_id = v."userID" AND ug.group_id = ${groupId}::uuid
+      )`
+    : sql``;
+
+  const orderSql = order === 'DESC' ? sql`DESC` : sql`ASC`;
 
   const result = await db.execute(sql`
+    WITH pairs AS (
+      SELECT
+        v."userID"                                     AS other_id,
+        u.name                                         AS other_name,
+        u.image                                        AS other_image,
+        COUNT(*)::int                                  AS shared_votes,
+        AVG(mv.pts * CAST(v.points AS FLOAT))
+          - AVG(mv.pts) * AVG(CAST(v.points AS FLOAT)) AS covariance,
+        STDDEV_POP(mv.pts)                             AS std_mine,
+        STDDEV_POP(CAST(v.points AS FLOAT))            AS std_theirs
+      FROM vote v
+      JOIN (
+        SELECT "actID", "categoriesID", CAST(points AS FLOAT) AS pts
+        FROM vote WHERE "userID" = ${userId}
+      ) mv ON mv."actID" = v."actID" AND mv."categoriesID" = v."categoriesID"
+      JOIN "user" u ON u.id = v."userID"
+      WHERE v."userID" != ${userId}
+      ${groupFilter}
+      GROUP BY v."userID", u.name, u.image
+      HAVING COUNT(*) >= 3
+    )
     SELECT
-      v1."userID"  AS user1_id,
-      v2."userID"  AS user2_id,
-      u1.name      AS user1_name,
-      u2.name      AS user2_name,
-      u1.image     AS user1_image,
-      u2.image     AS user2_image,
-      CAST(SQRT(AVG(POWER(CAST(v1.points AS FLOAT) - CAST(v2.points AS FLOAT), 2))) AS DECIMAL(10,2)) AS rmse,
-      COUNT(*)::int AS shared_votes
-    FROM vote v1
-    JOIN vote v2
-      ON  v1."actID"       = v2."actID"
-      AND v1."categoriesID" = v2."categoriesID"
-      AND v1."userID"      < v2."userID"
-    JOIN "user" u1 ON u1.id = v1."userID"
-    JOIN "user" u2 ON u2.id = v2."userID"
-    GROUP BY v1."userID", v2."userID", u1.name, u2.name, u1.image, u2.image
-    HAVING COUNT(*) >= 1
-    ORDER BY rmse ASC
+      other_id,
+      other_name,
+      other_image,
+      shared_votes,
+      CAST(
+        COALESCE(covariance / NULLIF(std_mine * std_theirs, 0), 0)
+      AS DECIMAL(6,4)) AS pearson
+    FROM pairs
+    ORDER BY pearson ${orderSql}
+    LIMIT ${limit}
   `);
-  return result as unknown as SimilarityRow[];
+  return result as unknown as SimilarityPeer[];
+}
+
+export async function getUserMostAlike(
+  userId: string,
+  groupId: string | null,
+  limit = 3,
+): Promise<SimilarityPeer[]> {
+  return _querySimilarity(userId, groupId, 'DESC', limit);
+}
+
+export async function getUserMostDifferent(
+  userId: string,
+  groupId: string | null,
+  limit = 3,
+): Promise<SimilarityPeer[]> {
+  return _querySimilarity(userId, groupId, 'ASC', limit);
 }
 
 // How much does each user deviate from the group consensus?
