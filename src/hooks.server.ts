@@ -61,6 +61,7 @@ const { handle: authenticationHandle } = SvelteKitAuth({
 		}
 	},
 	experimental: { enableWebAuthn: true },
+	logger: { warn: (code) => { if (code !== 'experimental-webauthn') console.warn(`[auth][warn][${code}]`) } },
 	trustHost: true
 });
 
