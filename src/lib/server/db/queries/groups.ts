@@ -129,6 +129,14 @@ export function leaveGroup(groupId: string, userId: string) {
     .execute();
 }
 
+export function getGroupsForCategory(categoryId: string) {
+  return db
+    .select({ id: groups.id, name: groups.name, public: groups.public })
+    .from(categoriesInGroup)
+    .where(eq(categoriesInGroup.categoryId, categoryId))
+    .leftJoin(groups, eq(groups.id, categoriesInGroup.groupId));
+}
+
 export function getOverallRankingGroup(groupID: string) {
   UUIDVerifier.parse(groupID)
   return db

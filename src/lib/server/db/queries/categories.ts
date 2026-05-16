@@ -48,10 +48,9 @@ export function updateCategory(category: Category) {
     .returning();
 }
 
-export function deleteCategory(categoryId: string) {
-  return db.delete(categories)
-    .where(eq(categories.id, categoryId))
-    .returning();
+export async function deleteCategory(categoryId: string) {
+  await db.delete(categoriesInGroup).where(eq(categoriesInGroup.categoryId, categoryId));
+  return db.delete(categories).where(eq(categories.id, categoryId)).returning();
 }
 
 export function getTotalCategoriesCount() {
