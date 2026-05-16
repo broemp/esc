@@ -64,6 +64,13 @@
       "when": 1747785600000,
       "tag": "0009_backfill_usernames",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1747872000000,
+      "tag": "0010_fix_song_case_duplicate",
+      "breakpoints": true
     }
   ]
 }
