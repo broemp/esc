@@ -17,12 +17,13 @@ export function getPublicGroups(limit: number, offset: number) {
     id: groups.id,
     name: groups.name,
     public: groups.public,
+    isDefault: groups.isDefault,
     memberCount: sql<number>`count(${userInGroups.userId})`
   })
     .from(groups)
     .where(eq(groups.public, true))
     .leftJoin(userInGroups, eq(groups.id, userInGroups.groupId))
-    .groupBy(groups.id, groups.name, groups.public)
+    .groupBy(groups.id, groups.name, groups.public, groups.isDefault)
     .orderBy(desc(sql<number>`count(${userInGroups.userId})`))
     .limit(4)
 }

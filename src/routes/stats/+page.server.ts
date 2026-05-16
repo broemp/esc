@@ -39,19 +39,25 @@ export const load: PageServerLoad = async (event) => {
 
   const publicGroupsRaw = await getPublicGroups(20, 0);
 
-  let userGroupIds: string[] = [];
+  // Exclude the default "Everybody" group — represented by the hardcoded "Everyone" option
+  const publicGroups = publicGroupsRaw.filter((g) => !g.isDefault);
+
+  let privateGroups: { id: string; name: string; public: boolean; memberCount: number; isDefault: boolean }[] = [];
   if (userId) {
     const userGroupsRaw = await getGroupsFromUser(userId);
-    userGroupIds = userGroupsRaw
-      .map((r) => r.group?.id)
-      .filter((id): id is string => !!id);
+    const publicGroupIds = new Set(publicGroups.map((g) => g.id));
+    privateGroups = userGroupsRaw
+      .filter((r) => r.group && !r.group.isDefault && !publicGroupIds.has(r.group.id))
+      .map((r) => ({
+        id: r.group!.id,
+        name: r.group!.name,
+        public: r.group!.public,
+        isDefault: r.group!.isDefault,
+        memberCount: 0,
+      }));
   }
 
-  const allGroupIds = new Set([
-    ...publicGroupsRaw.map((g) => g.id),
-    ...userGroupIds,
-  ]);
-  const groups = publicGroupsRaw.filter((g) => allGroupIds.has(g.id));
+  const groups = [...publicGroups, ...privateGroups];
 
   const [controversial, agreed, voterProfiles, similarity, deviation, userStats] =
     await Promise.all([
