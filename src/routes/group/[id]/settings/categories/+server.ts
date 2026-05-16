@@ -4,7 +4,10 @@ import { eq, and } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import type { RequestEvent } from './$types';
 import type { RequestHandler } from './$types';
-import { addCategorieToGroup, getGroupCategories } from '$lib/server/db/queries';
+import { linkCategoryToGroup, getGroupCategories } from '$lib/server/db/queries';
+import { z } from 'zod';
+
+const UUIDSchema = z.string().uuid();
 
 async function verifyAdmin(request: RequestEvent) {
   const session = await request.locals.auth();
@@ -50,9 +53,11 @@ export const POST: RequestHandler = async (request: RequestEvent) => {
     .where(eq(categoriesInGroup.groupId, request.params.id))
     .execute();
 
-  // Add new categories
+  // Add new categories (only existing ones, identified by UUID)
   for (const category of categories) {
-    await addCategorieToGroup(category, request.params.id!);
+    if (UUIDSchema.safeParse(category).success) {
+      await linkCategoryToGroup(category, request.params.id!);
+    }
   }
 
   return new Response(null, { status: 200 });

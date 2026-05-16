@@ -1,5 +1,5 @@
 import {
-  addCategorieToGroup,
+  linkCategoryToGroup,
   addUserToGroup,
   createGroup,
   getAllCategories,
@@ -7,6 +7,9 @@ import {
 } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { z } from 'zod';
+
+const UUIDSchema = z.string().uuid();
 
 export const load: PageServerLoad = async () => {
   const categories = await getAllCategories();
@@ -36,8 +39,10 @@ export const actions = {
     const group = await createGroup(newGroup);
 
     for (const [key] of data) {
-      if (key != 'name' && key != 'description' && key != 'public') {
-        await addCategorieToGroup(key.toString(), group[0].id);
+      if (key !== 'name' && key !== 'description' && key !== 'public') {
+        if (UUIDSchema.safeParse(key).success) {
+          await linkCategoryToGroup(key, group[0].id);
+        }
       }
     }
 

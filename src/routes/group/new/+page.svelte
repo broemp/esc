@@ -57,7 +57,7 @@
 			<div class="grid grid-cols-2 gap-2">
 				{#each data.categories as category}
 					<label class="card-esc p-3 flex items-center gap-3 cursor-pointer hover:border-[oklch(0.28_0_0)] transition-colors">
-						<input name={category.name} class="checkbox-esc" type="checkbox" checked={category.default} />
+						<input name={category.id} class="checkbox-esc" type="checkbox" checked={category.default} />
 						<span class="text-sm font-medium">{category.name}</span>
 					</label>
 				{/each}

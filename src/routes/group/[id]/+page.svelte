@@ -19,7 +19,7 @@
 	let groupName = $state(group.group.name || '');
 	let isPublic = $state(group.group.public);
 	let allCategories = $state<{ id: string; name: string; default: boolean }[]>([]);
-	let activeCategories = $state(new Set(groupCategories.map((c) => c.category?.name || '')));
+	let activeCategories = $state(new Set(groupCategories.map((c) => c.category?.id || '')));
 	let selectedCategories = $state(new Set(activeCategories));
 	let activeTab = $state(0);
 
@@ -90,11 +90,11 @@
 		}
 	}
 
-	function toggleCategory(name: string) {
-		if (selectedCategories.has(name)) {
-			selectedCategories.delete(name);
+	function toggleCategory(id: string) {
+		if (selectedCategories.has(id)) {
+			selectedCategories.delete(id);
 		} else {
-			selectedCategories.add(name);
+			selectedCategories.add(id);
 		}
 		selectedCategories = new Set(selectedCategories);
 	}
@@ -315,8 +315,8 @@
 								<input
 									type="checkbox"
 									class="checkbox-esc"
-									checked={selectedCategories.has(category.name)}
-									onchange={() => toggleCategory(category.name)}
+									checked={selectedCategories.has(category.id)}
+									onchange={() => toggleCategory(category.id)}
 								/>
 								<span class="text-sm">{category.name.replace('_', ' ')}</span>
 							</label>

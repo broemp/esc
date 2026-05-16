@@ -14,13 +14,21 @@ export function addCategorieToGroup(name: string, groupID: string) {
       .select({ id: categories.id })
       .from(categories)
       .where(eq(categories.name, name));
-    
+
     if (categorie.length == 0) {
       categorie = await tx.insert(categories).values({ name: name }).returning();
     }
 
     return tx.insert(categoriesInGroup).values({ groupId: groupID, categoryId: categorie[0].id });
   });
+}
+
+export function linkCategoryToGroup(categoryId: string, groupId: string) {
+  return db
+    .insert(categoriesInGroup)
+    .values({ categoryId, groupId })
+    .onConflictDoNothing()
+    .execute();
 }
 
 export function getGroupCategories(groupID: string) {

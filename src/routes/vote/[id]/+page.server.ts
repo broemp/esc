@@ -41,11 +41,16 @@ export const actions = {
     const formData = await event.request.formData()
     const userID = session.user.id
 
+    const points = Number(formData.get("points"));
+    if (!Number.isFinite(points) || points < 0 || points > 10 || (points * 2) % 1 !== 0) {
+      return { success: false, message: "Invalid points value" }
+    }
+
     let newVote: Vote = {
       userID: userID!,
       actID: event.params.id,
       categories: formData.get("categorie_id")?.toString()!,
-      points: formData.get("points")?.toString()!
+      points: points.toString()
     }
 
     try {
