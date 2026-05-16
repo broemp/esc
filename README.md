@@ -1,50 +1,43 @@
-# create-svelte
+# ESC 2026
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A Eurovision Song Contest watch party app. Rate acts across multiple categories, compete with friends in groups, and track who has the best taste in Eurovision.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Voting** — Score each act across configurable categories (vocals, staging, outfit, etc.)
+- **Groups** — Create private or public groups to compare scores with friends
+- **Live stats** — Personal stats, per-category breakdowns, and a top acts leaderboard
+- **Drinks** — Country-paired drink suggestions to complement the viewing experience
+- **Admin panel** — Manage acts, categories, users, votes, and drinks
+- **Passkey support** — Sign in with Discord, Reddit, Google, or a passkey
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Stack
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- [SvelteKit](https://kit.svelte.dev/) with Svelte 5
+- [Drizzle ORM](https://orm.drizzle.team/) + PostgreSQL
+- [Auth.js](https://authjs.dev/) (SvelteKit adapter) with WebAuthn support
+- [Tailwind CSS v4](https://tailwindcss.com/) + [Skeleton UI](https://www.skeleton.dev/)
+- Docker for deployment
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+## Development
 
 ```bash
-npm run build
+pnpm install
+pnpm dev
 ```
 
-You can preview the production build with `npm run preview`.
+The app runs at `http://localhost:5173`. On first start it runs database migrations and seeds development data automatically.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Environment Variables
 
-## Environmental Variable
+Copy and fill in the values:
 
-```environment
+```env
 DEV=false
 
-# DB Change what you need to
+# Database
 DB_HOST=localhost
-DB_PORT=5434
+DB_PORT=5432
 DB_USER=esc
 DB_PASS=CHANGEME
 DB_DB=esc
@@ -52,10 +45,43 @@ DB_SSL=false
 
 # Auth
 AUTH_SECRET=CHANGEME
+
+# OAuth providers (optional — only configure what you use)
 DISCORD_ID=CHANGEME
 DISCORD_SECRET=CHANGEME
 REDDIT_ID=CHANGEME
 REDDIT_SECRET=CHANGEME
 GOOGLE_ID=CHANGEME
 GOOGLE_SECRET=CHANGEME
+```
+
+## Docker
+
+A `docker-compose.yml` is included that runs the app alongside a PostgreSQL 16 database.
+
+```bash
+docker compose up -d
+```
+
+The app is built from `ghcr.io/broemp/esc:latest` and exposed on port 5173.
+
+To build the image locally:
+
+```bash
+docker build -t esc .
+```
+
+## Database Migrations
+
+Migrations are applied automatically on startup. To generate new migrations after schema changes:
+
+```bash
+pnpm drizzle-kit generate
+```
+
+## Building
+
+```bash
+pnpm build
+pnpm preview
 ```
