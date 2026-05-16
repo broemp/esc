@@ -2,10 +2,16 @@ import {
   addCategorieToGroup,
   addUserToGroup,
   createGroup,
+  getAllCategories,
   type NewGroup
 } from '$lib/server/db/queries';
 import { redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async () => {
+  const categories = await getAllCategories();
+  return { categories };
+};
 
 export const actions = {
   default: async (event) => {

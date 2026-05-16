@@ -1,3 +1,8 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+	let { data }: { data: PageData } = $props();
+</script>
+
 <div class="max-w-lg mx-auto px-4 pt-6 pb-6">
 	<h1 class="text-gradient font-bold text-2xl tracking-tight mb-1">Create Group</h1>
 	<div class="gradient-line mb-6"></div>
@@ -50,19 +55,10 @@
 		<div>
 			<p class="text-xs uppercase tracking-widest mb-3" style="color: oklch(0.42 0 0);">Voting Categories</p>
 			<div class="grid grid-cols-2 gap-2">
-				{#each [
-					{ name: 'song', label: 'Song', checked: true },
-					{ name: 'vocals', label: 'Vocals', checked: false },
-					{ name: 'choreography', label: 'Choreography', checked: false },
-					{ name: 'stage_design', label: 'Stage Design', checked: false },
-					{ name: 'outfit', label: 'Outfit', checked: false },
-					{ name: 'drink', label: 'Drink', checked: false },
-					{ name: 'snack', label: 'Snack', checked: false },
-					{ name: 'meme_potential', label: 'Meme Potential', checked: false },
-				] as cat}
+				{#each data.categories as category}
 					<label class="card-esc p-3 flex items-center gap-3 cursor-pointer hover:border-[oklch(0.28_0_0)] transition-colors">
-						<input name={cat.name} class="checkbox-esc" type="checkbox" checked={cat.checked} />
-						<span class="text-sm font-medium">{cat.label}</span>
+						<input name={category.name} class="checkbox-esc" type="checkbox" checked={category.default} />
+						<span class="text-sm font-medium">{category.name}</span>
 					</label>
 				{/each}
 			</div>

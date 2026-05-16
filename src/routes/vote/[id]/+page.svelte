@@ -98,7 +98,7 @@
 		{#each categoryMap as [id, category]}
 			<div class="px-4 py-5">
 				<div class="flex justify-between items-baseline mb-3">
-					<span class="text-xs font-semibold uppercase tracking-widest" style="color: oklch(0.50 0 0);">
+					<span class="text-sm font-semibold uppercase tracking-widest" style="color: oklch(0.50 0 0);">
 						{category.name.replace('_', ' ').trim()}
 					</span>
 					<span class="text-gradient font-bold text-lg">{category.points}</span>

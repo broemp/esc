@@ -19,9 +19,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_DB}
+      POSTGRES_USER: esc
+      POSTGRES_PASSWORD: esc
+      POSTGRES_DB: esc
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

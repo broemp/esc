@@ -40,6 +40,13 @@ const { handle: authenticationHandle } = SvelteKitAuth({
 	},
 	events: {
 		async createUser({ user }) {
+			if (!user.name && user.email) {
+				await getDb()
+					.update(users)
+					.set({ name: user.email.split('@')[0] })
+					.where(eq(users.id, user.id!));
+			}
+
 			const defaultGroups = await getDb()
 				.select({ id: groups.id })
 				.from(groups)
