@@ -24,41 +24,57 @@ export function deleteAct(actID: string) {
   return db.delete(acts).where(eq(acts.id, actID)).execute()
 }
 
-export function listActs(limit: number, offset: number) {
+export function listActs(limit: number, offset: number, year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
   return db
     .select()
     .from(acts)
     .innerJoin(countries, eq(acts.countryID, countries.id))
+    .where(yearCondition)
     .limit(limit)
     .offset(offset)
     .orderBy(asc(acts.position));
 }
 
-export async function nextAdminAct() {
+export async function nextAdminAct(year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
+
   let votedOn = await db.select().from(acts)
     .innerJoin(votes, eq(votes.actID, acts.id))
     .innerJoin(users, and(eq(users.id, votes.userID), eq(users.role, 'admin')))
+    .where(yearCondition)
     .orderBy(desc(acts.position))
 
   if (votedOn.length > 0) {
     let lastVote = votedOn[0].act.position!
-    return db.select().from(acts).where(eq(acts.position, lastVote + 1)).limit(1)
+    return db.select().from(acts).where(
+      yearCondition
+        ? and(eq(acts.position, lastVote + 1), yearCondition)
+        : eq(acts.position, lastVote + 1)
+    ).limit(1)
   }
 
-  return db.select().from(acts).where(eq(acts.position, 1)).limit(1)
+  return db.select().from(acts).where(
+    yearCondition
+      ? and(eq(acts.position, 1), yearCondition)
+      : eq(acts.position, 1)
+  ).limit(1)
 }
 
 export function createAct(newAct: NewAct) {
   return db.insert(acts).values(newAct).onConflictDoNothing().execute();
 }
 
-export function getAdjacentActs(actPosition: number) {
+export function getAdjacentActs(actPosition: number, year?: number) {
+  const positionCondition = or(eq(acts.position, actPosition - 1), eq(acts.position, actPosition + 1));
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
   return db.select().from(acts)
-    .where(or(eq(acts.position, actPosition - 1), eq(acts.position, actPosition + 1)))
+    .where(yearCondition ? and(positionCondition, yearCondition) : positionCondition)
     .orderBy(asc(acts.position));
 }
 
-export function getCurrentTopActs(limit: number, offset: number) {
+export function getCurrentTopActs(limit: number, offset: number, year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
   return db
     .select({
       actID: acts.id,
@@ -70,8 +86,9 @@ export function getCurrentTopActs(limit: number, offset: number) {
     .from(votes)
     .leftJoin(acts, eq(acts.id, votes.actID))
     .leftJoin(countries, eq(countries.id, acts.countryID))
+    .where(yearCondition)
     .groupBy(acts.id, acts.artist, acts.title, countries.imageURL)
     .orderBy(desc(sql<number>`avg(${votes.points})`))
     .limit(limit)
     .offset(offset);
-} 
+}

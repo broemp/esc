@@ -18,6 +18,7 @@
 	const categories: UserCategories | DefaultCategories = data.categories;
 	const votes = data.votes;
 	const adjacentActs = data.adjacentActs;
+	const votingLocked = data.votingLocked;
 	const max = 10;
 
 	let prevAct: string | undefined;
@@ -39,6 +40,7 @@
 	);
 
 	async function updateVote(vote: Vote) {
+		if (votingLocked) return;
 		try {
 			await axios.post('/vote/' + act.id, { data: { category: vote.categoryId, points: vote.points } });
 			toastStore.trigger('Saved!', 'success', 500);
@@ -57,6 +59,18 @@
 </script>
 
 <div class="max-w-lg mx-auto pb-6">
+	<!-- Voting locked banner -->
+	{#if votingLocked}
+		<div class="mx-4 mt-4 mb-2 px-4 py-3 rounded-xl flex items-center gap-3"
+			style="background: oklch(0.18 0.05 20); border: 1px solid oklch(0.30 0.10 20);">
+			<i class="fa-solid fa-lock text-sm shrink-0" style="color: oklch(0.70 0.18 25);"></i>
+			<div>
+				<p class="text-sm font-semibold" style="color: oklch(0.82 0.10 25);">Voting has ended</p>
+				<p class="text-xs" style="color: oklch(0.55 0.05 20);">Scores are locked. <a href="/stats" class="underline">View final results →</a></p>
+			</div>
+		</div>
+	{/if}
+
 	<!-- Hero image -->
 	<div class="w-full" style="background: oklch(0.04 0 0); height: 14rem;">
 		<ActImage
@@ -113,7 +127,8 @@
 					min={0}
 					{max}
 					step={0.5}
-					style="background: linear-gradient(to right, #ff2d78, #7a00cc {(category.points / max * 100)}%, oklch(0.18 0 0) {(category.points / max * 100)}%);"
+					disabled={votingLocked}
+					style="background: linear-gradient(to right, #ff2d78, #7a00cc {(category.points / max * 100)}%, oklch(0.18 0 0) {(category.points / max * 100)}%); {votingLocked ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
 				/>
 
 				<div class="flex justify-between text-[10px] mt-1.5" style="color: oklch(0.32 0 0);">

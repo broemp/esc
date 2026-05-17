@@ -20,7 +20,24 @@ export async function isStatsEnabled(): Promise<boolean> {
     const val = await getSetting('statsEnabled');
     return val !== 'false';
   } catch {
-    // Table doesn't exist yet (migration pending) — default to enabled
     return true;
+  }
+}
+
+export async function isVotingLocked(): Promise<boolean> {
+  try {
+    const val = await getSetting('votingLocked');
+    return val === 'true';
+  } catch {
+    return false;
+  }
+}
+
+export async function getActiveYear(): Promise<number> {
+  try {
+    const val = await getSetting('activeYear');
+    return val ? parseInt(val, 10) : new Date().getFullYear();
+  } catch {
+    return new Date().getFullYear();
   }
 }

@@ -1,12 +1,16 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestEvent } from "./$types";
-import { createVote, type Vote } from "$lib/server/db/queries";
+import { createVote, isVotingLocked, type Vote } from "$lib/server/db/queries";
 
 export async function POST(request: RequestEvent) {
 	const session = await request.locals.auth();
 
 	if (!session?.user) {
 		throw error(403, 'Not authorized');
+	}
+
+	if (await isVotingLocked()) {
+		throw error(423, 'Voting is locked');
 	}
 
 	const { data } = await request.request.json();

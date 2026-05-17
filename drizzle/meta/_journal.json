@@ -78,6 +78,13 @@
       "when": 1747958400000,
       "tag": "0011_settings_table",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1747991040000,
+      "tag": "0012_voting_lock_and_year",
+      "breakpoints": true
     }
   ]
 }

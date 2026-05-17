@@ -1,5 +1,6 @@
 import { getDb } from './db';
 import { acts, categories, categoriesInGroup, countries, drinks, groups, users } from './schema';
+import { eq } from 'drizzle-orm';
 import seedData from './seed-data.json';
 
 const SYSTEM_USER_ID = '00000000-0000-0000-0000-000000000000';
@@ -9,7 +10,7 @@ const SONG_CATEGORY_ID = '30000000-0000-0000-0000-000000000001';
 export async function seedDevData() {
 	const db = getDb();
 
-	const existing = await db.select({ id: acts.id }).from(acts).limit(1);
+	const existing = await db.select({ id: acts.id }).from(acts).where(eq(acts.year, 2026)).limit(1);
 	if (existing.length > 0) return;
 
 	await db.insert(countries).values(seedData.countries).onConflictDoNothing();

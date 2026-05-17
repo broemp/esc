@@ -40,14 +40,26 @@
 </script>
 
 <svelte:head>
-	<title>Stats — ESC 2026</title>
+	<title>Stats — ESC {data.activeYear}</title>
 </svelte:head>
 
 <div class="max-w-2xl mx-auto px-4 pt-6 pb-10">
 	<!-- Header -->
 	<div class="flex items-center justify-between mb-1">
-		<h1 class="text-gradient font-bold text-2xl tracking-tight">Stats</h1>
+		<h1 class="text-gradient font-bold text-2xl tracking-tight">
+			{#if data.votingLocked}Final Results{:else}Stats{/if}
+		</h1>
+		<span class="text-xs font-mono px-2 py-0.5 rounded" style="background: oklch(0.14 0 0); color: oklch(0.45 0 0);">{data.activeYear}</span>
 	</div>
+
+	{#if data.votingLocked}
+		<div class="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg"
+			style="background: oklch(0.14 0.04 145); border: 1px solid oklch(0.25 0.08 145);">
+			<i class="fa-solid fa-lock text-xs shrink-0" style="color: oklch(0.65 0.18 145);"></i>
+			<p class="text-xs" style="color: oklch(0.65 0.10 145);">Voting is closed — these are the final scores</p>
+		</div>
+	{/if}
+
 	<div class="gradient-line mb-5"></div>
 
 	<!-- Disabled state -->

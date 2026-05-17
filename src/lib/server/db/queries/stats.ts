@@ -1,8 +1,8 @@
 import { db } from '../db';
 import { users, votes, groups, acts, categories, countries, userInGroups } from '../schema';
-import { sql, eq, desc, asc } from 'drizzle-orm';
+import { sql, eq, desc, asc, and } from 'drizzle-orm';
 
-export async function getAdminStats() {
+export async function getAdminStats(year?: number) {
   const [
     totalUsers,
     totalVotes,
@@ -11,9 +11,14 @@ export async function getAdminStats() {
     totalCategories,
   ] = await Promise.all([
     db.select({ count: sql<number>`count(*)` }).from(users),
-    db.select({ count: sql<number>`count(*)` }).from(votes),
+    db.select({ count: sql<number>`count(*)` })
+      .from(votes)
+      .leftJoin(acts, eq(acts.id, votes.actID))
+      .where(year !== undefined ? eq(acts.year, year) : undefined),
     db.select({ count: sql<number>`count(*)` }).from(groups),
-    db.select({ count: sql<number>`count(*)` }).from(acts),
+    db.select({ count: sql<number>`count(*)` })
+      .from(acts)
+      .where(year !== undefined ? eq(acts.year, year) : undefined),
     db.select({ count: sql<number>`count(*)` }).from(categories),
   ]);
 
@@ -26,14 +31,20 @@ export async function getAdminStats() {
   };
 }
 
-export async function getUserStats(userId: string) {
+export async function getUserStats(userId: string, year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
+  const userCondition = eq(votes.userID, userId);
+  const baseCondition = yearCondition ? and(userCondition, yearCondition) : userCondition;
+
   const [overall, byCat, topActs, bottomActs] = await Promise.all([
     db.select({
       totalVotes: sql<number>`count(*)::int`,
       avgScore: sql<number>`cast(avg(${votes.points}) as decimal(10,2))`,
       maxScore: sql<number>`cast(max(${votes.points}) as decimal(10,2))`,
       minScore: sql<number>`cast(min(${votes.points}) as decimal(10,2))`,
-    }).from(votes).where(eq(votes.userID, userId)),
+    }).from(votes)
+      .leftJoin(acts, eq(acts.id, votes.actID))
+      .where(baseCondition),
 
     db.select({
       categoryId: categories.id,
@@ -43,7 +54,8 @@ export async function getUserStats(userId: string) {
       spread: sql<number>`cast(max(${votes.points}) - min(${votes.points}) as decimal(10,2))`,
     })
     .from(votes)
-    .where(eq(votes.userID, userId))
+    .leftJoin(acts, eq(acts.id, votes.actID))
+    .where(baseCondition)
     .leftJoin(categories, eq(categories.id, votes.categories))
     .groupBy(categories.id, categories.name),
 
@@ -56,7 +68,7 @@ export async function getUserStats(userId: string) {
       countryImage: countries.imageURL,
     })
     .from(votes)
-    .where(eq(votes.userID, userId))
+    .where(baseCondition)
     .leftJoin(acts, eq(acts.id, votes.actID))
     .leftJoin(countries, eq(countries.id, acts.countryID))
     .leftJoin(categories, eq(categories.id, votes.categories))
@@ -72,7 +84,7 @@ export async function getUserStats(userId: string) {
       countryImage: countries.imageURL,
     })
     .from(votes)
-    .where(eq(votes.userID, userId))
+    .where(baseCondition)
     .leftJoin(acts, eq(acts.id, votes.actID))
     .leftJoin(countries, eq(countries.id, acts.countryID))
     .leftJoin(categories, eq(categories.id, votes.categories))
@@ -83,8 +95,9 @@ export async function getUserStats(userId: string) {
   return { overall: overall[0], byCat, topActs, bottomActs };
 }
 
-// Most controversial acts (highest stddev across voters) in a group (or globally)
-export function getControversialActs(groupId: string | null, limit = 5) {
+export function getControversialActs(groupId: string | null, limit = 5, year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
+
   const base = db.select({
     actId: acts.id,
     artist: acts.artist,
@@ -103,15 +116,18 @@ export function getControversialActs(groupId: string | null, limit = 5) {
   .limit(limit);
 
   if (groupId) {
+    const groupFilter = eq(votes.userID, userInGroups.userId);
+    const whereClause = yearCondition ? and(groupFilter, yearCondition) : groupFilter;
     return base
-      .where(eq(votes.userID, userInGroups.userId))
+      .where(whereClause)
       .leftJoin(userInGroups, eq(userInGroups.groupId, groupId));
   }
-  return base;
+  return yearCondition ? base.where(yearCondition) : base;
 }
 
-// Most agreed-upon acts (lowest stddev) in a group (or globally)
-export function getAgreedActs(groupId: string | null, limit = 5) {
+export function getAgreedActs(groupId: string | null, limit = 5, year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
+
   const base = db.select({
     actId: acts.id,
     artist: acts.artist,
@@ -130,15 +146,18 @@ export function getAgreedActs(groupId: string | null, limit = 5) {
   .limit(limit);
 
   if (groupId) {
+    const groupFilter = eq(votes.userID, userInGroups.userId);
+    const whereClause = yearCondition ? and(groupFilter, yearCondition) : groupFilter;
     return base
-      .where(eq(votes.userID, userInGroups.userId))
+      .where(whereClause)
       .leftJoin(userInGroups, eq(userInGroups.groupId, groupId));
   }
-  return base;
+  return yearCondition ? base.where(yearCondition) : base;
 }
 
-// Per-voter profile: avg score, total votes, stddev (spread of their own votes)
-export function getVoterProfiles(groupId: string | null) {
+export function getVoterProfiles(groupId: string | null, year?: number) {
+  const yearCondition = year !== undefined ? eq(acts.year, year) : undefined;
+
   const base = db.select({
     userId: votes.userID,
     userName: users.name,
@@ -149,18 +168,20 @@ export function getVoterProfiles(groupId: string | null) {
   })
   .from(votes)
   .leftJoin(users, eq(users.id, votes.userID))
+  .leftJoin(acts, eq(acts.id, votes.actID))
   .groupBy(votes.userID, users.name, users.image)
   .orderBy(desc(sql`avg(${votes.points})`));
 
   if (groupId) {
+    const groupFilter = eq(votes.userID, userInGroups.userId);
+    const whereClause = yearCondition ? and(groupFilter, yearCondition) : groupFilter;
     return base
-      .where(eq(votes.userID, userInGroups.userId))
+      .where(whereClause)
       .leftJoin(userInGroups, eq(userInGroups.groupId, groupId));
   }
-  return base;
+  return yearCondition ? base.where(yearCondition) : base;
 }
 
-// Pearson correlation of current user's votes vs every other user — higher = more alike
 export type SimilarityPeer = {
   other_id: string;
   other_name: string | null;
@@ -174,15 +195,21 @@ async function _querySimilarity(
   groupId: string | null,
   order: 'DESC' | 'ASC',
   limit: number,
+  year?: number,
 ): Promise<SimilarityPeer[]> {
-  // Pearson = cov(X,Y) / (σX * σY)
-  // cov(X,Y) = E[XY] - E[X]*E[Y]  (computed in one pass via AVG aggregates)
-  // Requires >= 3 shared votes to produce a meaningful correlation.
   const groupFilter = groupId
     ? sql`AND EXISTS (
         SELECT 1 FROM user_group ug
         WHERE ug.user_id = v."userID" AND ug.group_id = ${groupId}::uuid
       )`
+    : sql``;
+
+  // Year filter via JOIN to act table — avoids needing a WHERE prefix
+  const yearJoin = year !== undefined
+    ? sql`JOIN act _ya ON _ya.id = v."actID" AND _ya.year = ${year}`
+    : sql``;
+  const yearJoinInner = year !== undefined
+    ? sql`JOIN act _ya ON _ya.id = "actID" AND _ya.year = ${year}`
     : sql``;
 
   const orderSql = order === 'DESC' ? sql`DESC` : sql`ASC`;
@@ -199,9 +226,11 @@ async function _querySimilarity(
         STDDEV_POP(mv.pts)                             AS std_mine,
         STDDEV_POP(CAST(v.points AS FLOAT))            AS std_theirs
       FROM vote v
+      ${yearJoin}
       JOIN (
         SELECT "actID", "categoriesID", CAST(points AS FLOAT) AS pts
-        FROM vote WHERE "userID" = ${userId}
+        FROM vote ${yearJoinInner}
+        WHERE "userID" = ${userId}
       ) mv ON mv."actID" = v."actID" AND mv."categoriesID" = v."categoriesID"
       JOIN "user" u ON u.id = v."userID"
       WHERE v."userID" != ${userId}
@@ -228,32 +257,39 @@ export async function getUserMostAlike(
   userId: string,
   groupId: string | null,
   limit = 3,
+  year?: number,
 ): Promise<SimilarityPeer[]> {
-  return _querySimilarity(userId, groupId, 'DESC', limit);
+  return _querySimilarity(userId, groupId, 'DESC', limit, year);
 }
 
 export async function getUserMostDifferent(
   userId: string,
   groupId: string | null,
   limit = 3,
+  year?: number,
 ): Promise<SimilarityPeer[]> {
-  return _querySimilarity(userId, groupId, 'ASC', limit);
+  return _querySimilarity(userId, groupId, 'ASC', limit, year);
 }
 
-// How much does each user deviate from the group consensus?
-export async function getUserDeviationFromGroup(groupId: string | null): Promise<Array<{
+export async function getUserDeviationFromGroup(groupId: string | null, year?: number): Promise<Array<{
   user_id: string;
   user_name: string | null;
   user_image: string | null;
   deviation: string;
   vote_count: string;
 }>> {
+  // Year filter as JOIN to act — avoids needing a WHERE prefix in raw SQL
+  const yearJoin = year !== undefined
+    ? sql`JOIN act _ya ON _ya.id = v."actID" AND _ya.year = ${year}`
+    : sql``;
+
   if (groupId) {
     const result = await db.execute(sql`
       WITH group_avgs AS (
         SELECT v."actID", v."categoriesID",
                AVG(CAST(v.points AS FLOAT)) AS avg_score
         FROM vote v
+        ${yearJoin}
         JOIN user_group ug ON ug.user_id = v."userID" AND ug.group_id = ${groupId}::uuid
         GROUP BY v."actID", v."categoriesID"
       )
@@ -264,6 +300,7 @@ export async function getUserDeviationFromGroup(groupId: string | null): Promise
         CAST(SQRT(AVG(POWER(CAST(v.points AS FLOAT) - ga.avg_score, 2))) AS DECIMAL(10,2)) AS deviation,
         COUNT(*)::int AS vote_count
       FROM vote v
+      ${yearJoin}
       JOIN user_group ug ON ug.user_id = v."userID" AND ug.group_id = ${groupId}::uuid
       JOIN "user" u ON u.id = v."userID"
       JOIN group_avgs ga ON ga."actID" = v."actID" AND ga."categoriesID" = v."categoriesID"
@@ -278,6 +315,7 @@ export async function getUserDeviationFromGroup(groupId: string | null): Promise
       SELECT v."actID", v."categoriesID",
              AVG(CAST(v.points AS FLOAT)) AS avg_score
       FROM vote v
+      ${yearJoin}
       GROUP BY v."actID", v."categoriesID"
     )
     SELECT
@@ -287,6 +325,7 @@ export async function getUserDeviationFromGroup(groupId: string | null): Promise
       CAST(SQRT(AVG(POWER(CAST(v.points AS FLOAT) - ga.avg_score, 2))) AS DECIMAL(10,2)) AS deviation,
       COUNT(*)::int AS vote_count
     FROM vote v
+    ${yearJoin}
     JOIN "user" u ON u.id = v."userID"
     JOIN global_avgs ga ON ga."actID" = v."actID" AND ga."categoriesID" = v."categoriesID"
     GROUP BY u.id, u.name, u.image

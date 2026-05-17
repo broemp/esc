@@ -10,6 +10,8 @@ import {
   getPublicGroups,
   getGroupsFromUser,
   isStatsEnabled,
+  isVotingLocked,
+  getActiveYear,
 } from '$lib/server/db/queries';
 import { z } from 'zod';
 
@@ -19,10 +21,17 @@ export const load: PageServerLoad = async (event) => {
   const session = await event.locals.auth();
   const userId = session?.user?.id ?? null;
 
-  const enabled = await isStatsEnabled();
+  const [enabled, locked, year] = await Promise.all([
+    isStatsEnabled(),
+    isVotingLocked(),
+    getActiveYear(),
+  ]);
+
   if (!enabled) {
     return {
       disabled: true,
+      votingLocked: locked,
+      activeYear: year,
       groupId: null,
       groups: [],
       controversial: [],
@@ -40,8 +49,6 @@ export const load: PageServerLoad = async (event) => {
   const groupId = rawGroup && UUIDSchema.safeParse(rawGroup).success ? rawGroup : null;
 
   const publicGroupsRaw = await getPublicGroups(20, 0);
-
-  // Exclude the default "Everybody" group — represented by the hardcoded "Everyone" option
   const publicGroups = publicGroupsRaw.filter((g) => !g.isDefault);
 
   let privateGroups: { id: string; name: string; public: boolean; memberCount: number; isDefault: boolean }[] = [];
@@ -63,17 +70,19 @@ export const load: PageServerLoad = async (event) => {
 
   const [controversial, agreed, voterProfiles, mostAlike, mostDifferent, deviation, userStats] =
     await Promise.all([
-      getControversialActs(groupId, 5),
-      getAgreedActs(groupId, 5),
-      getVoterProfiles(groupId),
-      userId ? getUserMostAlike(userId, groupId, 3) : Promise.resolve([]),
-      userId ? getUserMostDifferent(userId, groupId, 3) : Promise.resolve([]),
-      getUserDeviationFromGroup(groupId),
-      userId ? getUserStats(userId) : null,
+      getControversialActs(groupId, 5, year),
+      getAgreedActs(groupId, 5, year),
+      getVoterProfiles(groupId, year),
+      userId ? getUserMostAlike(userId, groupId, 3, year) : Promise.resolve([]),
+      userId ? getUserMostDifferent(userId, groupId, 3, year) : Promise.resolve([]),
+      getUserDeviationFromGroup(groupId, year),
+      userId ? getUserStats(userId, year) : null,
     ]);
 
   return {
     disabled: false,
+    votingLocked: locked,
+    activeYear: year,
     groupId,
     groups,
     controversial,
